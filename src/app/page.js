@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import DoctorCard from '@/components/DoctorCard'
 import HeroSearch from '@/components/HeroSearch'
+import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
 export default async function HomePage() {
   const supabase = await createClient()
@@ -12,14 +13,16 @@ export default async function HomePage() {
     supabase.from('reviews').select('*').eq('status', 'approved'),
   ])
 
-  const docs = doctors || []
+  const docs = (doctors || []).map(d => ({
+    ...d,
+    clinic_urls: Object.fromEntries((d.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
+  }))
   const revs = reviews || []
 
   const cities = [...new Set(docs.map(d => d.city))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))]
 
   const statDoctors = docs.length
-  const statReviews = revs.length
   const statCities = cities.length
   const statSpecs = allSpecs.length
 
@@ -41,7 +44,7 @@ export default async function HomePage() {
           style={{ objectFit: 'cover', objectPosition: 'center center', width: '100%', height: 300 }}
         />
         <div className="hero-overlay">
-          <div className="hero-badge">💗 Recomandări verificate de mame, pentru mame</div>
+          <div className="hero-badge">💗 Recomandări verificate de mamele din comunitate</div>
           <h1>Găsește un medic <em>de încredere</em></h1>
           <HeroSearch cities={cities} />
         </div>
@@ -51,10 +54,6 @@ export default async function HomePage() {
         <div className="stat-item">
           <div className="stat-num">{statDoctors}</div>
           <div className="stat-label">Medici listați</div>
-        </div>
-        <div className="stat-item">
-          <div className="stat-num">{statReviews}</div>
-          <div className="stat-label">Recenzii</div>
         </div>
         <div className="stat-item">
           <div className="stat-num">{statCities}</div>

@@ -4,6 +4,7 @@ import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
 import { avatarColor, initials, formatDate } from '@/lib/helpers'
 import { notFound } from 'next/navigation'
+import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
 export async function generateMetadata({ params }) {
   const { id } = await params
@@ -27,6 +28,10 @@ export default async function DoctorDetailPage({ params }) {
 
   if (!doc) notFound()
 
+  const docWithUrls = {
+    ...doc,
+    clinic_urls: Object.fromEntries((doc.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
+  }
   const revs = reviews || []
   const count = revs.length
   const bg = avatarColor(doc.first_name + (doc.last_name || ''))
@@ -53,7 +58,7 @@ export default async function DoctorDetailPage({ params }) {
             ))}
           </div>
           <div style={{ marginBottom: 12 }}>
-            <RecommendButton doctor={doc} />
+            <RecommendButton doctor={docWithUrls} />
             {count > 0 && (
               <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 6 }}>
                 {count} recenz{count === 1 ? 'ie' : 'ii'}
@@ -61,15 +66,15 @@ export default async function DoctorDetailPage({ params }) {
             )}
           </div>
           <div style={{ fontSize: 14, color: 'var(--ink-light)', marginBottom: 8 }}>📍 {doc.city}</div>
-          {doc.clinics?.length > 0 && (
+          {docWithUrls.clinics?.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
-              {doc.clinics.map(c => (
+              {docWithUrls.clinics.map(c => (
                 <span key={c} style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
                   <Link href={`/medici?q=${encodeURIComponent(c)}`} className="clinic-tag">
                     🏥 {c}
                   </Link>
-                  {doc.clinic_urls?.[c] && (
-                    <a href={doc.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-link-icon">↗</a>
+                  {docWithUrls.clinic_urls?.[c] && (
+                    <a href={docWithUrls.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-link-icon">↗</a>
                   )}
                 </span>
               ))}

@@ -13,7 +13,8 @@ export default function Nav() {
     <>
       <nav>
         <Link href="/" className="logo" onClick={closeMenu}>
-          <img src="/logo/logo.png" alt="Moms4Moms" className="logo-img" />
+          <img src="/logo/m4m_logo_farafundal_negru.png" alt="Moms4Moms" className="logo-img" />
+          <span className="logo-tagline">recomandă medici</span>
         </Link>
 
         {/* Desktop nav */}

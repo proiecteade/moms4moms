@@ -4,6 +4,7 @@ import FilterSidebar from '@/components/FilterSidebar'
 import SortSelect from '@/components/SortSelect'
 import { Suspense } from 'react'
 import Link from 'next/link'
+import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
 export const metadata = { title: 'Medici — Moms4Moms' }
 
@@ -23,7 +24,10 @@ export default async function MediciPage({ searchParams }) {
     supabase.from('reviews').select('*').eq('status', 'approved'),
   ])
 
-  const docs = doctors || []
+  const docs = (doctors || []).map(d => ({
+    ...d,
+    clinic_urls: Object.fromEntries((d.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
+  }))
   const revs = reviews || []
 
   const cities = [...new Set(docs.map(d => d.city))].sort()

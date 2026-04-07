@@ -116,6 +116,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .recommend-btn{padding:7px 13px;border-radius:8px;border:1px solid #7AB648;background:transparent;color:#7AB648;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;white-space:nowrap;}
 .recommend-btn:hover:not(:disabled){background:#7AB648;color:white;}
 .recommend-btn.done{border-color:var(--border);color:var(--ink-faint);cursor:default;}
+.recommend-count{font-size:11px;color:var(--ink-faint);text-align:right;}
 /* CLINIC LINK ICON */
 .clinic-link-icon{font-size:10px;color:var(--teal);text-decoration:none;margin-left:2px;opacity:0.7;transition:opacity 0.12s;line-height:1;}
 .clinic-link-icon:hover{opacity:1;}

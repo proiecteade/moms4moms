@@ -35,12 +35,15 @@ export default function RecommendButton({ doctor }) {
   return (
     <div className="recommend-wrap">
       {isTop && <div className="top-badge">⭐ Medic de top</div>}
+      <div className="recommend-count">
+        {count > 0 ? `${count} recomandări` : 'Fii primul care recomandă'}
+      </div>
       <button
         className={`recommend-btn${done ? ' done' : ''}`}
         onClick={recommend}
         disabled={done || loading}
       >
-        {loading ? '…' : done ? `✓ Recomandat (${count})` : `💚 Recomand${count > 0 ? ` (${count})` : ''}`}
+        {loading ? '…' : done ? '✓ Ai recomandat' : '💚 Recomandă'}
       </button>
     </div>
   )
