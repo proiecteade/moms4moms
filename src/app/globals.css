@@ -50,8 +50,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 /* SEARCH BAR HERO */
 .hero-actions{display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;}
 .hero-or{color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;letter-spacing:0.5px;}
-.hero-recommend-btn{background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.4);color:white;padding:12px 28px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s;}
-.hero-recommend-btn:hover{background:rgba(255,255,255,0.25);}
+.hero-recommend-btn{background:#7AB648;border:none;color:white;padding:12px 28px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s;box-shadow:0 4px 16px rgba(122,182,72,0.4);}
+.hero-recommend-btn:hover{background:#6aa33e;}
 .hero-search{display:flex;max-width:680px;width:100%;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.25);}
 .hero-search-field{display:flex;flex:2;align-items:center;padding:0 18px;gap:10px;min-width:0;}
 .hero-search-field svg{flex-shrink:0;opacity:0.4;}

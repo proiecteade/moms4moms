@@ -35,9 +35,7 @@ export default function RecommendButton({ doctor }) {
   return (
     <div className="recommend-wrap">
       {isTop && <div className="top-badge">⭐ Medic de top</div>}
-      <div className="recommend-count">
-        {count > 0 ? `${count} recomandări` : 'Fii primul care recomandă'}
-      </div>
+      {count > 0 && <div className="recommend-count">{count} recomandări</div>}
       <button
         className={`recommend-btn${done ? ' done' : ''}`}
         onClick={recommend}
