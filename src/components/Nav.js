@@ -20,7 +20,6 @@ export default function Nav() {
           <button className="nav-btn nav-btn-primary" onClick={() => setShowModal(true)}>
             + Recomandă medic
           </button>
-          <Link href="/admin" className="nav-btn nav-btn-ghost">Admin</Link>
         </div>
       </nav>
       {showModal && <AddDoctorModal onClose={() => setShowModal(false)} />}
