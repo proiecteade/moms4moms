@@ -33,18 +33,9 @@ export default function DoctorCard({ doctor, reviews = [] }) {
           {doctor.clinics?.length > 0 && (
             <div className="tags-row">
               {doctor.clinics.map(c => (
-                <span key={c} className="clinic-tag">
-                  🏥 {c}
-                  {doctor.clinic_urls?.[c] && (
-                    <a
-                      href={doctor.clinic_urls[c]}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="clinic-link-icon"
-                      onClick={e => e.stopPropagation()}
-                    >↗</a>
-                  )}
-                </span>
+                doctor.clinic_urls?.[c]
+                  ? <a key={c} href={doctor.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link" onClick={e => e.stopPropagation()}>🏥 {c}</a>
+                  : <span key={c} className="clinic-tag">🏥 {c}</span>
               ))}
             </div>
           )}

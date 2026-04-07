@@ -69,14 +69,9 @@ export default async function DoctorDetailPage({ params }) {
           {docWithUrls.clinics?.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
               {docWithUrls.clinics.map(c => (
-                <span key={c} style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
-                  <Link href={`/medici?q=${encodeURIComponent(c)}`} className="clinic-tag">
-                    🏥 {c}
-                  </Link>
-                  {docWithUrls.clinic_urls?.[c] && (
-                    <a href={docWithUrls.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-link-icon">↗</a>
-                  )}
-                </span>
+                docWithUrls.clinic_urls?.[c]
+                  ? <a key={c} href={docWithUrls.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link">🏥 {c}</a>
+                  : <span key={c} className="clinic-tag">🏥 {c}</span>
               ))}
             </div>
           )}

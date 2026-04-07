@@ -101,6 +101,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .tags-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
 .clinic-tag{font-size:11px;background:var(--warm);color:var(--ink-light);padding:2px 8px;border-radius:20px;border:1px solid var(--border);font-weight:500;cursor:pointer;transition:background 0.12s;text-decoration:none;}
 .clinic-tag:hover{background:#d8d0c6;}
+.clinic-tag-link{border-color:var(--teal);color:var(--teal);}
+.clinic-tag-link:hover{background:var(--teal-light);}
 .obs-tag{font-size:11px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:20px;border:1px solid rgba(192,123,42,0.2);font-weight:500;}
 .doctor-card-right{text-align:right;flex-shrink:0;min-width:90px;align-self:center;}
 .stars-display{display:flex;gap:2px;justify-content:flex-end;margin-bottom:2px;}
@@ -116,7 +118,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .recommend-btn{padding:7px 13px;border-radius:8px;border:1px solid #7AB648;background:transparent;color:#7AB648;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;white-space:nowrap;}
 .recommend-btn:hover:not(:disabled){background:#7AB648;color:white;}
 .recommend-btn.done{border-color:var(--border);color:var(--ink-faint);cursor:default;}
-.recommend-count{font-size:11px;color:var(--ink-faint);text-align:right;}
+.recommend-count{font-size:14px;font-weight:800;color:#7AB648;text-align:right;letter-spacing:-0.3px;}
 /* CLINIC LINK ICON */
 .clinic-link-icon{font-size:10px;color:var(--teal);text-decoration:none;margin-left:2px;opacity:0.7;transition:opacity 0.12s;line-height:1;}
 .clinic-link-icon:hover{opacity:1;}
