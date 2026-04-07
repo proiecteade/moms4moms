@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moms4Moms — Recomandări Medici</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:#F7F3EE; --warm:#EDE8E1; --ink:#2C2420; --ink-light:#6B5F58; --ink-faint:#A89E96;
+  --teal:#3D8B7A; --teal-light:#EAF5F2; --amber:#C07B2A; --amber-light:#FBF3E6;
+  --rose:#C44B4B; --rose-light:#FAEAEA; --blue:#3A6EA5; --blue-light:#EAF0F8;
+  --border:rgba(44,36,32,0.1); --border-strong:rgba(44,36,32,0.18);
+  --white:#FFFFFF; --shadow:0 2px 16px rgba(44,36,32,0.06); --shadow-hover:0 8px 32px rgba(44,36,32,0.11);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh;}
+
+/* NAV */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.logo-wordmark{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-0.3px;}
+.logo-wordmark .green{color:#7AB648;}
+.logo-divider{width:1px;height:22px;background:var(--border-strong);}
+.logo-sub{font-size:11px;font-weight:400;color:var(--ink-faint);line-height:1.3;}
+.nav-links{display:flex;gap:8px;align-items:center;}
+.nav-btn{padding:7px 14px;border-radius:8px;font-size:14px;font-family:'Nunito',sans-serif;font-weight:500;cursor:pointer;border:none;transition:all 0.15s;}
+.nav-btn-ghost{background:transparent;color:var(--ink-light);}
+.nav-btn-ghost:hover{background:var(--warm);}
+.nav-btn-primary{background:var(--teal);color:white;font-weight:600;}
+.nav-btn-primary:hover{background:#2e7060;}
+
+.page{display:none;} .page.active{display:block;}
+
+/* HERO */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--border);}
+.hero-bg{width:100%;height:300px;object-fit:cover;object-position:center 35%;display:block;}
+.hero-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;background:linear-gradient(to bottom,rgba(20,14,10,0.3) 0%,rgba(20,14,10,0.62) 100%);}
+.hero-badge{display:inline-block;background:rgba(255,255,255,0.15);backdrop-filter:blur(6px);color:rgba(255,255,255,0.92);font-size:12px;font-weight:600;padding:5px 16px;border-radius:20px;margin-bottom:1.1rem;border:1px solid rgba(255,255,255,0.25);}
+.hero h1{font-weight:300;font-size:clamp(1.8rem,4vw,2.7rem);line-height:1.2;color:white;text-shadow:0 2px 12px rgba(0,0,0,0.35);margin-bottom:1.5rem;}
+.hero h1 em{font-style:italic;font-weight:400;color:#b8e8df;}
+
+/* SEARCH BAR HERO */
+.hero-search{display:flex;max-width:680px;width:100%;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.25);}
+.hero-search-field{display:flex;flex:2;align-items:center;padding:0 18px;gap:10px;min-width:0;}
+.hero-search-field svg{flex-shrink:0;opacity:0.4;}
+.hero-search-field input{border:none;outline:none;font-family:'Nunito',sans-serif;font-size:15px;color:var(--ink);background:transparent;width:100%;padding:16px 0;}
+.hero-search-field input::placeholder{color:var(--ink-faint);}
+.hero-search-sep{width:1px;background:var(--border);align-self:stretch;margin:10px 0;flex-shrink:0;}
+.hero-search-city{display:flex;flex:1;align-items:center;padding:0 14px;gap:8px;min-width:0;}
+.hero-search-city svg{flex-shrink:0;opacity:0.35;}
+.hero-search-city select{border:none;outline:none;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);background:transparent;width:100%;padding:16px 0;cursor:pointer;min-width:0;}
+.hero-search-city select option:first-child{color:var(--ink-faint);}
+.hero-search button{background:var(--teal);color:white;border:none;padding:0 28px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background 0.15s;white-space:nowrap;flex-shrink:0;}
+.hero-search button:hover{background:#2e7060;}
+
+/* STATS */
+.stats-row{display:flex;justify-content:center;gap:3rem;padding:1.75rem 2rem;border-bottom:1px solid var(--border);background:white;flex-wrap:wrap;}
+.stat-item{text-align:center;}
+.stat-num{font-weight:300;font-size:2rem;color:var(--teal);line-height:1;}
+.stat-label{font-size:11px;color:var(--ink-faint);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* MAIN LAYOUT */
+.main-layout{display:grid;grid-template-columns:260px 1fr;gap:0;max-width:1180px;margin:0 auto;padding:2rem;align-items:start;}
+.filters-sidebar{background:white;border-radius:14px;border:1px solid var(--border);padding:1.5rem;position:sticky;top:84px;}
+.filter-section{margin-bottom:1.5rem;}
+.filter-section:last-child{margin-bottom:0;}
+.filter-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px;}
+.filter-input{width:100%;padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);background:var(--warm);outline:none;transition:border-color 0.15s;}
+.filter-input:focus{border-color:var(--teal);background:white;}
+.filter-chip-group{display:flex;flex-wrap:wrap;gap:5px;max-height:200px;overflow-y:auto;}
+.filter-chip{padding:4px 10px;border-radius:20px;font-size:11.5px;cursor:pointer;border:1px solid var(--border-strong);background:white;color:var(--ink-light);transition:all 0.12s;font-family:'Nunito',sans-serif;font-weight:500;}
+.filter-chip:hover{border-color:var(--teal);color:var(--teal);}
+.filter-chip.active{background:var(--teal);border-color:var(--teal);color:white;}
+.clear-btn{width:100%;padding:9px;border:1px solid var(--border-strong);border-radius:8px;background:transparent;color:var(--ink-light);font-family:'Nunito',sans-serif;font-size:13px;cursor:pointer;transition:all 0.15s;}
+.clear-btn:hover{background:var(--warm);}
+
+/* DOCTORS */
+.doctors-area{padding-left:2rem;}
+.results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.results-count{font-size:13px;color:var(--ink-faint);}
+.sort-select{padding:7px 12px;border:1px solid var(--border-strong);border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink);background:white;outline:none;cursor:pointer;}
+.doctors-list{display:flex;flex-direction:column;gap:.9rem;}
+
+.doctor-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.4rem;display:grid;grid-template-columns:54px 1fr auto;gap:1.1rem;align-items:center;transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;}
+.doctor-card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);}
+.doctor-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:white;flex-shrink:0;}
+.doctor-name{font-weight:700;font-size:15.5px;line-height:1.25;color:var(--ink);margin-bottom:1px;}
+.doctor-specs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
+.spec-badge{font-size:11.5px;color:var(--teal);font-weight:600;background:var(--teal-light);padding:2px 8px;border-radius:12px;cursor:pointer;transition:background 0.12s;}
+.spec-badge:hover{background:#c5e8e3;}
+.doctor-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:4px;}
+.meta-pill{font-size:12px;color:var(--ink-faint);display:flex;align-items:center;gap:3px;}
+.tags-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}
+.clinic-tag{font-size:11px;background:var(--warm);color:var(--ink-light);padding:2px 8px;border-radius:20px;border:1px solid var(--border);font-weight:500;cursor:pointer;transition:background 0.12s;}
+.clinic-tag:hover{background:#d8d0c6;}
+.obs-tag{font-size:11px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:20px;border:1px solid rgba(192,123,42,0.2);font-weight:500;}
+.doctor-card-right{text-align:right;flex-shrink:0;min-width:90px;align-self:center;}
+.stars-display{display:flex;gap:2px;justify-content:flex-end;margin-bottom:2px;}
+.star{font-size:12px;} .star.filled{color:#E8A838;} .star.empty{color:#DDD;}
+.rating-num{font-size:20px;font-weight:700;color:var(--ink);line-height:1;}
+.rating-count{font-size:11px;color:var(--ink-faint);margin-top:1px;}
+.review-btn{margin-top:8px;padding:6px 12px;border-radius:8px;border:1px solid var(--teal);background:transparent;color:var(--teal);font-size:12px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.review-btn:hover{background:var(--teal);color:white;}
+.pending-badge{display:inline-block;background:var(--amber-light);color:var(--amber);font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(44,36,32,0.55);z-index:200;align-items:center;justify-content:center;padding:1rem;}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:20px;width:100%;max-width:560px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 64px rgba(44,36,32,0.2);}
+.modal-header{padding:1.5rem 1.5rem 0;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;}
+.modal-title{font-weight:700;font-size:20px;}
+.modal-close{background:var(--warm);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:18px;color:var(--ink-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s;}
+.modal-close:hover{background:var(--border);}
+.modal-body{padding:1.5rem;}
+.dup-warning{display:none;margin-bottom:1rem;padding:14px;background:#fff8e6;border:1px solid rgba(192,123,42,0.3);border-radius:12px;}
+.dup-warning-title{font-weight:700;font-size:14px;color:var(--amber);margin-bottom:6px;}
+.dup-warning-text{font-size:13px;color:var(--ink-light);margin-bottom:10px;}
+.dup-card{background:white;border:1px solid var(--border);border-radius:10px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+.dup-card-name{font-weight:600;font-size:14px;}
+.dup-card-sub{font-size:12px;color:var(--ink-faint);}
+.btn-go-review{padding:7px 14px;background:var(--teal);color:white;border:none;border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background 0.15s;}
+.btn-go-review:hover{background:#2e7060;}
+
+/* FORM */
+.form-group{margin-bottom:1.1rem;}
+.form-label{display:block;font-size:13px;font-weight:600;color:var(--ink-light);margin-bottom:5px;}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 12px;border:1px solid var(--border-strong);border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);background:white;outline:none;transition:border-color 0.15s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--teal);}
+.form-textarea{min-height:80px;resize:vertical;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.clinics-editor{display:flex;flex-direction:column;gap:7px;}
+.clinic-row{display:flex;gap:7px;align-items:center;}
+.clinic-row input{flex:1;}
+.btn-remove-clinic{background:none;border:1px solid var(--border-strong);border-radius:8px;width:34px;height:38px;cursor:pointer;color:var(--ink-faint);font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s;}
+.btn-remove-clinic:hover{background:var(--rose-light);border-color:var(--rose);color:var(--rose);}
+.btn-add-clinic{background:none;border:1px dashed var(--border-strong);border-radius:8px;padding:7px 12px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--teal);cursor:pointer;transition:all 0.15s;text-align:left;font-weight:600;}
+.btn-add-clinic:hover{background:var(--teal-light);border-color:var(--teal);}
+
+/* MULTI-SPEC SELECTOR */
+.spec-selector{border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;}
+.spec-selected-list{display:flex;flex-wrap:wrap;gap:5px;padding:8px 10px;min-height:42px;background:white;cursor:text;}
+.spec-selected-item{background:var(--teal-light);color:var(--teal);font-size:12px;font-weight:600;padding:3px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;}
+.spec-selected-item button{background:none;border:none;cursor:pointer;color:var(--teal);font-size:14px;line-height:1;padding:0;}
+.spec-select-input{width:100%;border:none;border-top:1px solid var(--border-strong);padding:9px 12px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);outline:none;background:var(--warm);}
+
+.star-picker{display:flex;gap:6px;margin-top:6px;}
+.star-pick{font-size:30px;cursor:pointer;color:#DDD;transition:color 0.1s,transform 0.1s;line-height:1;}
+.star-pick:hover,.star-pick.selected{color:#E8A838;transform:scale(1.1);}
+.submit-btn{width:100%;padding:13px;background:var(--teal);color:white;border:none;border-radius:10px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:background 0.15s;}
+.submit-btn:hover{background:#2e7060;}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* DETAIL */
+.doctor-detail{max-width:780px;margin:0 auto;padding:2rem;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--ink-light);font-size:14px;cursor:pointer;background:none;border:none;font-family:'Nunito',sans-serif;margin-bottom:1.5rem;padding:0;transition:color 0.15s;font-weight:500;}
+.back-btn:hover{color:var(--teal);}
+.detail-hero{background:white;border-radius:20px;border:1px solid var(--border);padding:2rem;display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem;}
+.detail-avatar{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;color:white;flex-shrink:0;}
+.detail-name{font-weight:700;font-size:22px;line-height:1.2;margin-bottom:4px;}
+.reviews-section{background:white;border-radius:20px;border:1px solid var(--border);padding:1.5rem;}
+.section-title{font-weight:700;font-size:18px;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.review-card{padding:1rem 0;border-bottom:1px solid var(--border);}
+.review-card:last-child{border-bottom:none;padding-bottom:0;}
+.review-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+.reviewer-name{font-weight:600;font-size:14px;}
+.review-date{font-size:12px;color:var(--ink-faint);}
+.review-text{font-size:14px;color:var(--ink-light);line-height:1.6;}
+.no-reviews{text-align:center;padding:2rem;color:var(--ink-faint);font-style:italic;}
+
+/* ADMIN */
+.admin-layout{max-width:1000px;margin:0 auto;padding:2rem;}
+.admin-tabs{display:flex;gap:4px;background:white;border:1px solid var(--border);border-radius:12px;padding:4px;margin-bottom:1.5rem;flex-wrap:wrap;width:fit-content;}
+.admin-tab{padding:8px 16px;border-radius:8px;border:none;background:transparent;font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;color:var(--ink-light);cursor:pointer;transition:all 0.15s;}
+.admin-tab.active{background:var(--ink);color:white;font-weight:600;}
+.admin-section{display:none;} .admin-section.active{display:block;}
+
+.admin-search-bar{display:flex;gap:8px;margin-bottom:1rem;}
+.admin-search-bar input{flex:1;padding:9px 14px;border:1px solid var(--border-strong);border-radius:8px;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);outline:none;background:white;}
+.admin-search-bar input:focus{border-color:var(--teal);}
+
+.admin-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.4rem;margin-bottom:.8rem;display:flex;align-items:flex-start;gap:1rem;justify-content:space-between;}
+.admin-card-info{flex:1;min-width:0;}
+.admin-card-name{font-weight:700;font-size:15px;margin-bottom:3px;}
+.admin-card-sub{font-size:13px;color:var(--ink-faint);}
+.admin-card-actions{display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap;}
+.btn-approve{padding:6px 12px;background:var(--teal-light);color:var(--teal);border:1px solid rgba(61,139,122,0.2);border-radius:8px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.btn-approve:hover{background:var(--teal);color:white;}
+.btn-reject{padding:6px 12px;background:var(--rose-light);color:var(--rose);border:1px solid rgba(196,75,75,0.2);border-radius:8px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.btn-reject:hover{background:var(--rose);color:white;}
+.btn-edit{padding:6px 12px;background:var(--blue-light);color:var(--blue);border:1px solid rgba(58,110,165,0.2);border-radius:8px;font-family:'Nunito',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.btn-edit:hover{background:var(--blue);color:white;}
+.empty-state{text-align:center;padding:3rem 2rem;color:var(--ink-faint);}
+.empty-icon{font-size:36px;margin-bottom:1rem;display:block;}
+.empty-label{font-size:14px;}
+.admin-login{max-width:380px;margin:4rem auto;padding:2rem;background:white;border-radius:20px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.admin-login-title{font-weight:700;font-size:22px;margin-bottom:.5rem;}
+.admin-login-sub{font-size:13px;color:var(--ink-faint);margin-bottom:1.5rem;}
+
+/* EDIT MODAL */
+.edit-specs-list{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;}
+.edit-spec-tag{background:var(--teal-light);color:var(--teal);font-size:12px;font-weight:600;padding:3px 8px;border-radius:12px;display:flex;align-items:center;gap:4px;}
+.edit-spec-tag button{background:none;border:none;cursor:pointer;color:var(--teal);font-size:14px;line-height:1;padding:0;}
+
+/* FEEDBACK WIDGET */
+.feedback-float{position:fixed;bottom:1.5rem;left:1.5rem;z-index:150;}
+.feedback-btn{background:var(--white);border:1px solid var(--border-strong);border-radius:24px;padding:8px 16px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:var(--shadow-hover);transition:all 0.15s;}
+.feedback-btn:hover{background:var(--cream);color:var(--ink);}
+.feedback-box{display:none;position:absolute;bottom:calc(100% + 10px);left:0;background:white;border:1px solid var(--border-strong);border-radius:16px;padding:1.25rem;width:290px;box-shadow:var(--shadow-hover);}
+.feedback-box.open{display:block;}
+.feedback-box-title{font-weight:700;font-size:15px;margin-bottom:.75rem;}
+.feedback-stars{display:flex;gap:6px;margin-bottom:.75rem;}
+.fb-star{font-size:26px;cursor:pointer;color:#DDD;transition:color 0.1s;}
+.fb-star.sel{color:#E8A838;}
+.feedback-box textarea{width:100%;padding:9px 11px;border:1px solid var(--border-strong);border-radius:9px;font-family:'Nunito',sans-serif;font-size:13px;resize:none;min-height:72px;outline:none;margin-bottom:8px;}
+.feedback-box textarea:focus{border-color:var(--teal);}
+.feedback-submit{width:100%;padding:10px;background:var(--teal);color:white;border:none;border-radius:9px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;cursor:pointer;}
+.feedback-submit:hover{background:#2e7060;}
+
+/* SUGGEST CHANGE */
+.suggest-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border-strong);border-radius:8px;background:white;color:var(--ink-light);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.suggest-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-light);}
+
+.toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:500;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--ink);color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;opacity:0;transform:translateY(8px);transition:all 0.25s;max-width:320px;font-family:'Nunito',sans-serif;}
+.toast.show{opacity:1;transform:translateY(0);}
+.toast.success{background:var(--teal);} .toast.error{background:var(--rose);}
+.notif-dot{display:inline-block;width:8px;height:8px;background:var(--rose);border-radius:50%;margin-left:6px;vertical-align:middle;}
+
+@media(max-width:768px){
+  .main-layout{grid-template-columns:1fr;}
+  .doctors-area{padding-left:0;padding-top:1rem;}
+  .filters-sidebar{position:static;}
+  .doctor-card{grid-template-columns:46px 1fr;}
+  .doctor-card-right{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .hero-search{flex-direction:column;border-radius:12px;}
+  .hero-search-sep{width:100%;height:1px;margin:0;}
+  .hero-bg{height:240px;}
+  .detail-hero{flex-direction:column;}
+  .form-row{grid-template-columns:1fr;}
+  .stats-row{gap:1.5rem;}
+  .logo-sub,.logo-divider{display:none;}
+  .feedback-float{bottom:5rem;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-wordmark">MOMS<span class="green">4</span>MOMS</div>
+    <div class="logo-divider"></div>
+    <div class="logo-sub">recomandă<br>medici</div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-btn nav-btn-ghost" onclick="showPage('home')">Acasă</button>
+    <button class="nav-btn nav-btn-primary" onclick="openAddDoctorModal()">+ Recomandă medic</button>
+    <button class="nav-btn nav-btn-ghost" onclick="showPage('admin')">Admin<span class="notif-dot" id="admin-notif" style="display:none"></span></button>
+  </div>
+</nav>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- FEEDBACK FLOAT -->
+<div class="feedback-float">
+  <button class="feedback-btn" onclick="toggleFeedbackBox()">💬 Feedback pentru site</button>
+  <div class="feedback-box" id="feedbackBox">
+    <div class="feedback-box-title">Cum ți se pare site-ul?</div>
+    <div class="feedback-stars" id="fbStars">
+      <span class="fb-star" onclick="setFbStar(1)">★</span>
+      <span class="fb-star" onclick="setFbStar(2)">★</span>
+      <span class="fb-star" onclick="setFbStar(3)">★</span>
+      <span class="fb-star" onclick="setFbStar(4)">★</span>
+      <span class="fb-star" onclick="setFbStar(5)">★</span>
+    </div>
+    <textarea id="fbText" placeholder="Ce îți place? Ce am putea îmbunătăți?"></textarea>
+    <button class="feedback-submit" onclick="submitSiteFeedback()">Trimite feedback</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <img class="hero-bg" id="heroBgImg" src="" alt="">
+    <div class="hero-overlay">
+      <div class="hero-badge">💗 Recomandări verificate de mame, pentru mame</div>
+      <h1>Găsește un medic <em>de încredere</em></h1>
+      <div class="hero-search">
+        <div class="hero-search-field">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="heroSearch" placeholder="Nume medic sau specialitate…" oninput="syncSearch(this.value)">
+        </div>
+        <div class="hero-search-sep"></div>
+        <div class="hero-search-city">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <select id="heroCity" onchange="syncCity(this.value)"><option value="">Toate localitățile</option></select>
+        </div>
+        <button onclick="showPage('listing')">Caută</button>
+      </div>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-item"><div class="stat-num" id="statDoctors">0</div><div class="stat-label">Medici listați</div></div>
+    <div class="stat-item"><div class="stat-num" id="statReviews">0</div><div class="stat-label">Recenzii</div></div>
+    <div class="stat-item"><div class="stat-num" id="statCities">0</div><div class="stat-label">Localități</div></div>
+    <div class="stat-item"><div class="stat-num" id="statSpecs">0</div><div class="stat-label">Specialități</div></div>
+  </div>
+  <div style="max-width:1100px;margin:2rem auto;padding:0 2rem;">
+    <h2 style="font-weight:700;font-size:20px;margin-bottom:1.25rem;">Cei mai bine evaluați</h2>
+    <div id="featuredDocs" class="doctors-list"></div>
+    <div style="text-align:center;margin-top:1.5rem;">
+      <button class="nav-btn nav-btn-primary" onclick="showPage('listing')" style="font-size:15px;padding:10px 28px;">Vezi toți medicii →</button>
+    </div>
+  </div>
+</div>
+
+<!-- LISTING -->
+<div class="page" id="page-listing">
+  <div class="main-layout">
+    <div class="filters-sidebar">
+      <div class="filter-section"><div class="filter-label">Caută</div><input class="filter-input" type="text" id="filterSearch" placeholder="Nume sau cuvânt cheie…" oninput="applyFilters()"></div>
+      <div class="filter-section"><div class="filter-label">Localitate</div><select class="filter-input" id="filterCity" onchange="applyFilters()"><option value="">Toate localitățile</option></select></div>
+      <div class="filter-section"><div class="filter-label">Specialitate</div><div class="filter-chip-group" id="specChips"></div></div>
+      <div class="filter-section"><div class="filter-label">Rating minim</div><div class="filter-chip-group"><button class="filter-chip active" onclick="setRatingFilter(0,this)">Toate</button><button class="filter-chip" onclick="setRatingFilter(4,this)">4+ ⭐</button><button class="filter-chip" onclick="setRatingFilter(4.5,this)">4.5+ ⭐</button></div></div>
+      <button class="clear-btn" onclick="clearFilters()">✕ Resetează filtrele</button>
+    </div>
+    <div class="doctors-area">
+      <div class="results-header"><div class="results-count" id="resultsCount">Se încarcă…</div><select class="sort-select" id="sortSelect" onchange="applyFilters()"><option value="name">Alfabetic (A–Z)</option><option value="rating">Cel mai bine evaluat</option><option value="reviews">Cele mai multe recenzii</option></select></div>
+      <div class="doctors-list" id="doctorsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL -->
+<div class="page" id="page-detail">
+  <div class="doctor-detail"><button class="back-btn" onclick="goBack()">← Înapoi</button><div id="detailContent"></div></div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div class="admin-layout">
+    <div id="adminLogin"><div class="admin-login"><div class="admin-login-title">Panou Administrator</div><div class="admin-login-sub">Introdu parola pentru a accesa panoul.</div><div class="form-group"><label class="form-label">Parolă</label><input class="form-input" type="password" id="adminPassInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')adminLogin()"></div><button class="submit-btn" onclick="adminLogin()">Intră în panou</button><div id="loginError" style="color:var(--rose);font-size:13px;margin-top:10px;display:none;">Parolă incorectă.</div></div></div>
+    <div id="adminPanel" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;"><h1 style="font-weight:700;font-size:24px;">Panou Administrator</h1><button class="nav-btn nav-btn-ghost" onclick="adminLogout()">Deconectare</button></div>
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('pending-docs',this)">Medici în așteptare <span id="pendingDocsCount"></span></button>
+        <button class="admin-tab" onclick="switchAdminTab('pending-reviews',this)">Recenzii în așteptare <span id="pendingReviewsCount"></span></button>
+        <button class="admin-tab" onclick="switchAdminTab('suggestions',this)">Sugestii modificare <span id="pendingSuggestionsCount"></span></button>
+        <button class="admin-tab" onclick="switchAdminTab('site-feedback',this)">Feedback site <span id="pendingFeedbackCount"></span></button>
+        <button class="admin-tab" onclick="switchAdminTab('all-docs',this)">Toți medicii</button>
+      </div>
+      <div class="admin-section active" id="admin-pending-docs"><div id="pendingDocsList"></div></div>
+      <div class="admin-section" id="admin-pending-reviews"><div id="pendingReviewsList"></div></div>
+      <div class="admin-section" id="admin-suggestions"><div id="suggestionsList"></div></div>
+      <div class="admin-section" id="admin-site-feedback"><div id="siteFeedbackList"></div></div>
+      <div class="admin-section" id="admin-all-docs">
+        <div class="admin-search-bar"><input type="text" id="adminDocSearch" placeholder="Caută medic…" oninput="renderAllDocs()"></div>
+        <div id="allDocsList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ADAUGĂ MEDIC -->
+<div class="modal-overlay" id="addDoctorModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Recomandă un medic</div><button class="modal-close" onclick="closeModal('addDoctorModal')">×</button></div>
+    <div class="modal-body">
+      <p style="font-size:13px;margin-bottom:1.25rem;padding:10px 12px;background:var(--amber-light);border-radius:8px;color:var(--amber);font-weight:500;">ℹ️ Recomandarea va fi verificată de un administrator înainte de publicare.</p>
+      <div class="dup-warning" id="dupWarning">
+        <div class="dup-warning-title">⚠️ Acest medic există deja!</div>
+        <div class="dup-warning-text">Am găsit un medic cu același nume și specialitate. Poate îi lași o recenzie?</div>
+        <div class="dup-card"><div><div class="dup-card-name" id="dupDocName"></div><div class="dup-card-sub" id="dupDocSub"></div></div><button class="btn-go-review" id="dupReviewBtn">Lasă recenzie →</button></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Prenume *</label><input class="form-input" id="docFirstName" placeholder="ex: Maria" oninput="checkDuplicate()"></div>
+        <div class="form-group"><label class="form-label">Nume *</label><input class="form-input" id="docLastName" placeholder="ex: Ionescu" oninput="checkDuplicate()"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Specialități * (una sau mai multe)</label>
+        <div class="spec-selector">
+          <div class="spec-selected-list" id="specSelectedList" onclick="document.getElementById('specAddSelect').focus()"></div>
+          <select class="spec-select-input" id="specAddSelect" onchange="addSpecFromSelect(this)">
+            <option value="">+ Adaugă specialitate…</option>
+            <optgroup label="Cardiologie"><option>Cardiologie adulți</option><option>Cardiologie pediatrică</option></optgroup>
+            <optgroup label="Chirurgie"><option>Chirurgie generală adulți</option><option>Chirurgie pediatrică</option><option>Neurochirurgie</option></optgroup>
+            <optgroup label="Dermatologie"><option>Dermatologie adulți</option><option>Dermatologie pediatrică</option></optgroup>
+            <optgroup label="Diabetologie"><option>Diabetologie</option></optgroup>
+            <optgroup label="Ecografie"><option>Ecografie generală</option><option>Ecografie mamară</option><option>Ecografie pediatrică</option></optgroup>
+            <optgroup label="Endocrinologie"><option>Endocrinologie adulți</option><option>Endocrinologie pediatrică</option></optgroup>
+            <optgroup label="Gastroenterologie"><option>Gastroenterologie adulți</option><option>Gastroenterologie pediatrică</option></optgroup>
+            <optgroup label="Ginecologie"><option>Obstetrică-ginecologie</option><option>Obstetrică-ginecologie pediatrică / adolescenți</option></optgroup>
+            <optgroup label="Hematologie"><option>Hematologie adulți</option><option>Hematologie pediatrică</option></optgroup>
+            <optgroup label="Imagistică"><option>Imagistică / radiologie</option><option>Imagistică pediatrică</option></optgroup>
+            <optgroup label="Medicină de familie"><option>Medicină de familie</option></optgroup>
+            <optgroup label="Medicină internă"><option>Medicină internă</option><option>Nutriție / dietetică</option></optgroup>
+            <optgroup label="Nefrologie"><option>Nefrologie adulți</option><option>Nefrologie pediatrică</option></optgroup>
+            <optgroup label="Neonatologie"><option>Neonatologie</option></optgroup>
+            <optgroup label="Neurologie"><option>Neurologie adulți</option><option>Neurologie pediatrică</option></optgroup>
+            <optgroup label="Oftalmologie"><option>Oftalmologie adulți</option><option>Oftalmologie pediatrică</option></optgroup>
+            <optgroup label="Oncologie"><option>Oncologie adulți</option><option>Oncologie pediatrică</option></optgroup>
+            <optgroup label="ORL"><option>ORL adulți</option><option>ORL pediatric</option></optgroup>
+            <optgroup label="Ortopedie"><option>Ortopedie adulți</option><option>Ortopedie pediatrică</option></optgroup>
+            <optgroup label="Pediatrie"><option>Pediatrie</option></optgroup>
+            <optgroup label="Pneumologie"><option>Pneumologie adulți</option><option>Pneumologie pediatrică</option></optgroup>
+            <optgroup label="Psihiatrie"><option>Psihiatrie adulți</option><option>Psihiatrie pediatrică</option></optgroup>
+            <optgroup label="Psihologie"><option>Psihologie adulți</option><option>Psihologie copii / adolescenți</option></optgroup>
+            <optgroup label="Reumatologie"><option>Reumatologie adulți</option><option>Reumatologie pediatrică</option></optgroup>
+            <optgroup label="Stomatologie"><option>Stomatologie adulți</option><option>Stomatologie pediatrică</option></optgroup>
+            <optgroup label="Urologie"><option>Urologie adulți</option><option>Urologie pediatrică</option></optgroup>
+            <optgroup label="Alergologie"><option>Alergologie adulți</option><option>Alergologie pediatrică</option></optgroup>
+            <optgroup label="Anestezie"><option>Anestezie</option></optgroup>
+            <optgroup label="Altele"><option>Altele</option></optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Localitate *</label><input class="form-input" id="docCity" placeholder="ex: București"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Spital / Clinică (una sau mai multe)</label>
+        <div class="clinics-editor" id="clinicsEditor"><div class="clinic-row"><input class="form-input" placeholder="ex: Regina Maria"></div></div>
+        <button class="btn-add-clinic" onclick="addClinicRow()" style="margin-top:8px;">+ Adaugă altă clinică</button>
+      </div>
+      <div class="form-group"><label class="form-label">Observații utile (opțional)</label><input class="form-input" id="docObs" placeholder="ex: merge cu bilet de trimitere, vede copii peste 2 ani…"></div>
+      <div class="form-group"><label class="form-label">De ce o/îl recomanzi? (opțional)</label><textarea class="form-textarea" id="docNote" placeholder="Scrie câteva cuvinte despre experiența ta…"></textarea></div>
+      <button class="submit-btn" id="submitDoctorBtn" onclick="submitDoctor()">Trimite recomandarea</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: RECENZIE -->
+<div class="modal-overlay" id="addReviewModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Lasă o recenzie</div><button class="modal-close" onclick="closeModal('addReviewModal')">×</button></div>
+    <div class="modal-body">
+      <div id="reviewDoctorName" style="font-weight:600;font-size:15px;color:var(--teal);margin-bottom:1.25rem;padding:10px 14px;background:var(--teal-light);border-radius:10px;"></div>
+      <div class="form-group"><label class="form-label">Evaluare *</label><div class="star-picker"><span class="star-pick" onclick="selectStar(1)">★</span><span class="star-pick" onclick="selectStar(2)">★</span><span class="star-pick" onclick="selectStar(3)">★</span><span class="star-pick" onclick="selectStar(4)">★</span><span class="star-pick" onclick="selectStar(5)">★</span></div></div>
+      <div class="form-group"><label class="form-label">Numele tău (opțional)</label><input class="form-input" id="reviewerName" placeholder="ex: A.M. sau lasă gol pentru anonim"></div>
+      <div class="form-group"><label class="form-label">Experiența ta *</label><textarea class="form-textarea" id="reviewText" placeholder="Descrie experiența cu acest medic…"></textarea></div>
+      <button class="submit-btn" onclick="submitReview()">Trimite recenzia</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUGEREAZĂ MODIFICARE -->
+<div class="modal-overlay" id="suggestModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Sugerează o modificare</div><button class="modal-close" onclick="closeModal('suggestModal')">×</button></div>
+    <div class="modal-body">
+      <div id="suggestDoctorName" style="font-weight:600;font-size:15px;color:var(--amber);margin-bottom:1.25rem;padding:10px 14px;background:var(--amber-light);border-radius:10px;"></div>
+      <div class="form-group"><label class="form-label">Ce s-a schimbat? *</label><textarea class="form-textarea" id="suggestText" placeholder="ex: s-a mutat la altă clinică, nu mai merge cu bilet de trimitere, are specialitate nouă…"></textarea></div>
+      <button class="submit-btn" onclick="submitSuggestion()">Trimite sugestia</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT MEDIC (ADMIN) -->
+<div class="modal-overlay" id="editDoctorModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">Editează medic</div><button class="modal-close" onclick="closeModal('editDoctorModal')">×</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="editDocId">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Prenume</label><input class="form-input" id="editFirstName"></div>
+        <div class="form-group"><label class="form-label">Nume</label><input class="form-input" id="editLastName"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Specialități</label>
+        <div class="edit-specs-list" id="editSpecsList"></div>
+        <select class="form-select" id="editSpecAdd" onchange="editAddSpec(this)" style="margin-top:6px;">
+          <option value="">+ Adaugă specialitate…</option>
+          <option>Cardiologie adulți</option><option>Cardiologie pediatrică</option>
+          <option>Chirurgie generală adulți</option><option>Chirurgie pediatrică</option><option>Neurochirurgie</option>
+          <option>Dermatologie adulți</option><option>Dermatologie pediatrică</option>
+          <option>Diabetologie</option>
+          <option>Ecografie generală</option><option>Ecografie mamară</option><option>Ecografie pediatrică</option>
+          <option>Endocrinologie adulți</option><option>Endocrinologie pediatrică</option>
+          <option>Gastroenterologie adulți</option><option>Gastroenterologie pediatrică</option>
+          <option>Obstetrică-ginecologie</option><option>Obstetrică-ginecologie pediatrică / adolescenți</option>
+          <option>Hematologie adulți</option><option>Hematologie pediatrică</option>
+          <option>Imagistică / radiologie</option><option>Imagistică pediatrică</option>
+          <option>Medicină de familie</option><option>Medicină internă</option><option>Nutriție / dietetică</option>
+          <option>Nefrologie adulți</option><option>Nefrologie pediatrică</option>
+          <option>Neonatologie</option>
+          <option>Neurologie adulți</option><option>Neurologie pediatrică</option>
+          <option>Oftalmologie adulți</option><option>Oftalmologie pediatrică</option>
+          <option>Oncologie adulți</option><option>Oncologie pediatrică</option>
+          <option>ORL adulți</option><option>ORL pediatric</option>
+          <option>Ortopedie adulți</option><option>Ortopedie pediatrică</option>
+          <option>Pediatrie</option>
+          <option>Pneumologie adulți</option><option>Pneumologie pediatrică</option>
+          <option>Psihiatrie adulți</option><option>Psihiatrie pediatrică</option>
+          <option>Psihologie adulți</option><option>Psihologie copii / adolescenți</option>
+          <option>Reumatologie adulți</option><option>Reumatologie pediatrică</option>
+          <option>Stomatologie adulți</option><option>Stomatologie pediatrică</option>
+          <option>Urologie adulți</option><option>Urologie pediatrică</option>
+          <option>Alergologie adulți</option><option>Alergologie pediatrică</option>
+          <option>Anestezie</option><option>Altele</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Localitate</label><input class="form-input" id="editCity"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Clinici (una pe rând)</label><div class="clinics-editor" id="editClinicsEditor"></div><button class="btn-add-clinic" onclick="editAddClinicRow()" style="margin-top:8px;">+ Adaugă clinică</button></div>
+      <div class="form-group"><label class="form-label">Observații</label><input class="form-input" id="editObs"></div>
+      <div class="form-group"><label class="form-label">Notă</label><textarea class="form-textarea" id="editNote"></textarea></div>
+      <button class="submit-btn" onclick="saveEditDoctor()">Salvează modificările</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD='_3HWog!x6jLqcJP';
+const STORAGE_KEY='moms4moms_medici_v4';
+const HERO_IMG='https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=1400&q=80';
+const AVATAR_COLORS=['#3D8B7A','#C07B2A','#5B73C4','#C44B4B','#7B5BC4','#2A9D8F','#B05A9A','#5A8A3A','#8A5A3A'];
+
+let state={doctors:[],pendingDoctors:[],reviews:[],pendingReviews:[],suggestions:[],siteFeedback:[]};
+let currentFilters={search:'',city:'',spec:'',rating:0};
+let currentPage='home',prevPage='home';
+let selectedStar=0,reviewTargetId=null,suggestTargetId=null,isAdminLoggedIn=false,dupFoundId=null;
+let fbStarVal=0, selectedSpecs=[], editSpecs=[];
+
+// ---- HERO IMAGE ----
+document.getElementById('heroBgImg').src = HERO_IMG;
+
+// ---- SEED DATA ----
+const SEED_DOCTORS=[
+  {id:'g1',firstName:'Anca Maria',lastName:'Panaitescu',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Spitalul Filantropia','Elithia'],obs:'Conf. Univ. Dr., supraspecializată în medicină materno-fetală',note:'',status:'approved',submittedAt:1},
+  {id:'g2',firstName:'Adriana',lastName:'Ghelmene',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:2},
+  {id:'g3',firstName:'Anca Marina',lastName:'Slabu (Ciobanu)',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Spitalul Filantropia','Elithia'],obs:'Medicină materno-fetală, ecografie obstetricală',note:'',status:'approved',submittedAt:3},
+  {id:'g4',firstName:'Roxana',lastName:'Dumitru',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Sanador'],obs:'',note:'',status:'approved',submittedAt:4},
+  {id:'g5',firstName:'Shadi',lastName:'El Sawas',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:5},
+  {id:'g6',firstName:'Silviu',lastName:'Butuc',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Regina Maria','Ponderas'],obs:'',note:'',status:'approved',submittedAt:6},
+  {id:'g7',firstName:'Silviu-Petrisor',lastName:'Istoc',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Medicover'],obs:'',note:'',status:'approved',submittedAt:7},
+  {id:'g8',firstName:'Dragomir Radu',lastName:'Ioan',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Medicover'],obs:'',note:'',status:'approved',submittedAt:8},
+  {id:'g9',firstName:'Corina',lastName:'Stoica',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:9},
+  {id:'g10',firstName:'Laura',lastName:'Dumitrași',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Regina Maria','Spitalul Filantropia','Donna Medical'],obs:'',note:'',status:'approved',submittedAt:10},
+  {id:'g11',firstName:'Diana',lastName:'Comandașu',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Spitalul Giulești','Elginmed'],obs:'',note:'',status:'approved',submittedAt:11},
+  {id:'g12',firstName:'Corina',lastName:'Georgescu-Bortea',specs:['Obstetrică-ginecologie'],city:'București',clinics:['Regina Maria','Le Clinic'],obs:'',note:'',status:'approved',submittedAt:12},
+  {id:'e1',firstName:'Anca',lastName:'Hoișescu',specs:['Endocrinologie adulți'],city:'București',clinics:['Enayati Medical City'],obs:'Medic primar, competență în ecografie endocrină',note:'',status:'approved',submittedAt:13},
+  {id:'e2',firstName:'Krystyna',lastName:'Dyachenko',specs:['Endocrinologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:14},
+  {id:'e3',firstName:'Alina-Antonela',lastName:'Burlacu',specs:['Endocrinologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:15},
+  {id:'e4',firstName:'Oana',lastName:'Popa',specs:['Endocrinologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:16},
+  {id:'e5',firstName:'Grigore-Vadim',lastName:'Gavan',specs:['Endocrinologie adulți'],city:'București',clinics:['Medicover'],obs:'Se poate cu bilet de trimitere',note:'',status:'approved',submittedAt:17},
+  {id:'e6',firstName:'Maria-Lavinia',lastName:'Ștefan',specs:['Endocrinologie pediatrică'],city:'București',clinics:['Grigore Alexandrescu'],obs:'',note:'',status:'approved',submittedAt:18},
+  {id:'o1',firstName:'Gabriel',lastName:'Ganea',specs:['ORL adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:19},
+  {id:'o2',firstName:'Andreea',lastName:'Bajan',specs:['ORL pediatric','ORL adulți'],city:'București',clinics:['Regina Maria','Ponderas'],obs:'Vede și adulți',note:'',status:'approved',submittedAt:20},
+  {id:'o3',firstName:'Claudia',lastName:'Radu',specs:['ORL adulți'],city:'București',clinics:['Medicover'],obs:'',note:'',status:'approved',submittedAt:21},
+  {id:'o4',firstName:'Borangiu',lastName:'',specs:['ORL adulți'],city:'București',clinics:['Budimex','Cabinet privat'],obs:'',note:'',status:'approved',submittedAt:22},
+  {id:'o5',firstName:'Udroiu',lastName:'',specs:['ORL adulți'],city:'București',clinics:['Regina Maria','Budimex'],obs:'',note:'',status:'approved',submittedAt:23},
+  {id:'o6',firstName:'Andrei',lastName:'Luca',specs:['ORL pediatric'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:24},
+  {id:'o7',firstName:'Alexis',lastName:'Vuzitas',specs:['ORL pediatric'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:25},
+  {id:'o8',firstName:'Ana Maria',lastName:'Apostol',specs:['ORL pediatric'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:26},
+  {id:'c1',firstName:'Alexandru',lastName:'Cârjan',specs:['Cardiologie adulți'],city:'București',clinics:['CardioRec'],obs:'',note:'',status:'approved',submittedAt:27},
+  {id:'c2',firstName:'Ioana',lastName:'Bejan',specs:['Cardiologie pediatrică'],city:'București',clinics:['Grigore Alexandrescu','Regina Maria'],obs:'',note:'',status:'approved',submittedAt:28},
+  {id:'c3',firstName:'Iulia',lastName:'Bădulescu',specs:['Cardiologie adulți'],city:'București',clinics:['Medif Otopeni'],obs:'Bilet de trimitere',note:'',status:'approved',submittedAt:29},
+  {id:'c4',firstName:'Silvia',lastName:'Iancovici',specs:['Cardiologie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:30},
+  {id:'c5',firstName:'Ana Maria',lastName:'Șerban',specs:['Cardiologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:31},
+  {id:'c6',firstName:'Iulian',lastName:'Cosei',specs:['Cardiologie adulți'],city:'București',clinics:['Regina Maria'],obs:'Nu este și pediatru',note:'',status:'approved',submittedAt:32},
+  {id:'c7',firstName:'Iuliana-Cristina',lastName:'Calmac',specs:['Cardiologie adulți'],city:'București',clinics:['Medicover'],obs:'Ecocardiografie',note:'',status:'approved',submittedAt:33},
+  {id:'p1',firstName:'Ioana',lastName:'Tritean',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:34},
+  {id:'p2',firstName:'Monica',lastName:'Fildan',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:35},
+  {id:'p3',firstName:'Alexandra',lastName:'Dragomirescu',specs:['Pediatrie'],city:'București',clinics:['Medicover'],obs:'',note:'',status:'approved',submittedAt:36},
+  {id:'p4',firstName:'Roxana',lastName:'Maxim',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:37},
+  {id:'p5',firstName:'Carmen',lastName:'Toma',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:38},
+  {id:'p6',firstName:'Alexandru',lastName:'Ulici',specs:['Ortopedie pediatrică'],city:'București',clinics:['MedLife','Grigore Alexandrescu'],obs:'',note:'',status:'approved',submittedAt:39},
+  {id:'p7',firstName:'Victorie',lastName:'Istrate',specs:['Pediatrie'],city:'București',clinics:['MedLife'],obs:'',note:'',status:'approved',submittedAt:40},
+  {id:'p8',firstName:'Cristina',lastName:'Burlac',specs:['Pediatrie'],city:'București',clinics:['MedLife'],obs:'',note:'',status:'approved',submittedAt:41},
+  {id:'p9',firstName:'Raluca',lastName:'Ciauș',specs:['Pediatrie'],city:'București',clinics:['MedLife'],obs:'',note:'',status:'approved',submittedAt:42},
+  {id:'p10',firstName:'Oana',lastName:'Iaru',specs:['Pediatrie'],city:'București',clinics:['Medicum'],obs:'',note:'',status:'approved',submittedAt:43},
+  {id:'p11',firstName:'Veronica',lastName:'Grosoșiu',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:44},
+  {id:'p12',firstName:'Valentina',lastName:'Pavel',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'Oferă și consult la domiciliu',note:'',status:'approved',submittedAt:45},
+  {id:'p13',firstName:'Irina',lastName:'Costache',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:46},
+  {id:'p14',firstName:'Oana',lastName:'Vîrban',specs:['Pediatrie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:47},
+  {id:'p15',firstName:'Camelia',lastName:'Toader',specs:['Pediatrie'],city:'București',clinics:['Regina Maria','Medsana'],obs:'',note:'',status:'approved',submittedAt:48},
+  {id:'n1',firstName:'Adriana',lastName:'Tecuci',specs:['Neonatologie'],city:'București',clinics:['Medicover'],obs:'',note:'',status:'approved',submittedAt:49},
+  {id:'n2',firstName:'Dana',lastName:'Zaciu',specs:['Neonatologie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:50},
+  {id:'ort1',firstName:'Hesham',lastName:'Sabbagh',specs:['Ortopedie adulți'],city:'București',clinics:['Memorial'],obs:'Medic specialist ortopedie și traumatologie',note:'',status:'approved',submittedAt:51},
+  {id:'ort2',firstName:'Cătălin',lastName:'Nahoi',specs:['Ortopedie pediatrică'],city:'București',clinics:['Regina Maria','Grigore Alexandrescu','Rosana Medical'],obs:'',note:'',status:'approved',submittedAt:52},
+  {id:'ort3',firstName:'Violeta',lastName:'Orița',specs:['Ortopedie pediatrică'],city:'București',clinics:['Rosana Medical'],obs:'Bilet de trimitere; include și ecografie de șold',note:'',status:'approved',submittedAt:53},
+  {id:'ort4',firstName:'Valentina',lastName:'Contanu',specs:['Ortopedie pediatrică'],city:'București',clinics:['Cron Phoenix'],obs:'',note:'',status:'approved',submittedAt:54},
+  {id:'ort5',firstName:'Raluca',lastName:'Damean',specs:['Ortopedie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:55},
+  {id:'ort6',firstName:'Mihai',lastName:'Cordunianu',specs:['Ortopedie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:56},
+  {id:'ch1',firstName:'Carmen',lastName:'Gorgan',specs:['Chirurgie generală adulți','Ecografie generală'],city:'București',clinics:['Regina Maria'],obs:'Și ecografist adulți',note:'',status:'approved',submittedAt:57},
+  {id:'ch2',firstName:'Mircea',lastName:'Andriescu',specs:['Chirurgie pediatrică'],city:'București',clinics:['Grigore Alexandrescu','MedLife','KidMed'],obs:'',note:'',status:'approved',submittedAt:58},
+  {id:'ch3',firstName:'Jean',lastName:'Ciurea',specs:['Chirurgie generală adulți','Neurochirurgie'],city:'București',clinics:['Sanador'],obs:'',note:'',status:'approved',submittedAt:59},
+  {id:'ch4',firstName:'Violeta',lastName:'Coman',specs:['Chirurgie generală adulți'],city:'București',clinics:['Cabinet privat'],obs:'',note:'',status:'approved',submittedAt:60},
+  {id:'ch5',firstName:'Ionuț',lastName:'Coman',specs:['Chirurgie generală adulți'],city:'București',clinics:['Cabinet privat'],obs:'',note:'',status:'approved',submittedAt:61},
+  {id:'st1',firstName:'Mihaela',lastName:'Șerbănoiu',specs:['Stomatologie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'Pedodont',note:'',status:'approved',submittedAt:62},
+  {id:'st2',firstName:'Cristina',lastName:'Capetti',specs:['Stomatologie adulți'],city:'București',clinics:[],obs:'',note:'',status:'approved',submittedAt:63},
+  {id:'of1',firstName:'Sanda',lastName:'Ionescu',specs:['Oftalmologie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:64},
+  {id:'of2',firstName:'Roxana',lastName:'Cozubaș',specs:['Oftalmologie pediatrică'],city:'București',clinics:['Ocuvista'],obs:'',note:'',status:'approved',submittedAt:65},
+  {id:'of3',firstName:'Mihaela',lastName:'Dragomir',specs:['Oftalmologie pediatrică'],city:'București',clinics:['Arena Med'],obs:'Cu plată',note:'',status:'approved',submittedAt:66},
+  {id:'of4',firstName:'Adrian',lastName:'Burloiu',specs:['Oftalmologie adulți'],city:'București',clinics:['Clinică proprie privată'],obs:'',note:'',status:'approved',submittedAt:67},
+  {id:'of5',firstName:'Diana',lastName:'Stoenescu',specs:['Oftalmologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:68},
+  {id:'of6',firstName:'Irina',lastName:'Barcă',specs:['Oftalmologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:69},
+  {id:'of7',firstName:'Tatiana',lastName:'Stângu',specs:['Oftalmologie adulți'],city:'București',clinics:[],obs:'',note:'',status:'approved',submittedAt:70},
+  {id:'of8',firstName:'Livia',lastName:'Sram',specs:['Oftalmologie adulți'],city:'București',clinics:[],obs:'',note:'',status:'approved',submittedAt:71},
+  {id:'al1',firstName:'Cezara',lastName:'Motei',specs:['Alergologie adulți','Alergologie pediatrică'],city:'București',clinics:['Memormed'],obs:'Vede și copii peste 2 ani; bilet de trimitere',note:'',status:'approved',submittedAt:72},
+  {id:'al2',firstName:'Lucia',lastName:'Cărbune',specs:['Alergologie adulți'],city:'București',clinics:['Cabinet propriu'],obs:'Merge cu bilet de trimitere',note:'',status:'approved',submittedAt:73},
+  {id:'al3',firstName:'Adriana',lastName:'Nicolae',specs:['Alergologie adulți'],city:'București',clinics:['Medicum'],obs:'',note:'',status:'approved',submittedAt:74},
+  {id:'al4',firstName:'Bianca',lastName:'Postoroancă',specs:['Alergologie adulți'],city:'București',clinics:['Cabinet propriu'],obs:'Cu bilet de trimitere sau cu plată',note:'',status:'approved',submittedAt:75},
+  {id:'nr1',firstName:'Ana',lastName:'Gheorghiu',specs:['Neurologie adulți'],city:'București',clinics:[],obs:'',note:'',status:'approved',submittedAt:76},
+  {id:'nr2',firstName:'Mihai',lastName:'Mușetescu',specs:['Neurologie pediatrică'],city:'București',clinics:['Epi TSA','Spitalul Obregia'],obs:'',note:'',status:'approved',submittedAt:77},
+  {id:'nr3',firstName:'Gabriela',lastName:'Damian-Burueană',specs:['Neurologie pediatrică'],city:'București',clinics:['Spitalul Universitar'],obs:'',note:'',status:'approved',submittedAt:78},
+  {id:'ps1',firstName:'Mihaela',lastName:'Vișan',specs:['Psihiatrie pediatrică'],city:'București',clinics:['Neuroatipic'],obs:'',note:'',status:'approved',submittedAt:79},
+  {id:'ps2',firstName:'Cristina',lastName:'Stanciu',specs:['Psihiatrie pediatrică'],city:'București',clinics:[],obs:'',note:'',status:'approved',submittedAt:80},
+  {id:'ps3',firstName:'Gabriela',lastName:'Profir',specs:['Medicină internă','Nutriție / dietetică'],city:'București',clinics:['Kilostop'],obs:'Medic internist și nutriționist',note:'',status:'approved',submittedAt:81},
+  {id:'pn1',firstName:'Mihaela',lastName:'Oros',specs:['Pneumologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:82},
+  {id:'pn2',firstName:'Iustina',lastName:'Stan',specs:['Pneumologie pediatrică'],city:'București',clinics:['Medicum'],obs:'',note:'',status:'approved',submittedAt:83},
+  {id:'pn3',firstName:'Lavinia',lastName:'Butum',specs:['Pneumologie pediatrică'],city:'București',clinics:['Sanador'],obs:'',note:'',status:'approved',submittedAt:84},
+  {id:'pn4',firstName:'Ruxandra',lastName:'Spătaru',specs:['Pneumologie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:85},
+  {id:'ec1',firstName:'Madalina',lastName:'Ion',specs:['Ecografie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:86},
+  {id:'ec2',firstName:'Dana',lastName:'Nedelcu',specs:['Ecografie mamară'],city:'București',clinics:['Sanador'],obs:'Cu plată',note:'',status:'approved',submittedAt:87},
+  {id:'ec3',firstName:'Maria',lastName:'Câșcaval',specs:['Imagistică pediatrică'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:88},
+  {id:'ec4',firstName:'Diana',lastName:'Stănescu',specs:['Ecografie generală'],city:'București',clinics:['Spitalul Marie Curie','Qmed'],obs:'',note:'',status:'approved',submittedAt:89},
+  {id:'nf1',firstName:'Claudiu',lastName:'Costea',specs:['Nefrologie pediatrică'],city:'București',clinics:['Fundeni','KidMed'],obs:'',note:'',status:'approved',submittedAt:90},
+  {id:'gas1',firstName:'Alexandra',lastName:'Coroleucă',specs:['Gastroenterologie pediatrică'],city:'București',clinics:['Grigore Alexandrescu'],obs:'',note:'',status:'approved',submittedAt:91},
+  {id:'gas2',firstName:'Codruța',lastName:'Momîrlă',specs:['Gastroenterologie pediatrică'],city:'București',clinics:['Medicover'],obs:'',note:'',status:'approved',submittedAt:92},
+  {id:'hem1',firstName:'Uncheselu',lastName:'',specs:['Hematologie adulți'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:93},
+  {id:'hem2',firstName:'Mihaela',lastName:'Andreescu',specs:['Hematologie adulți'],city:'București',clinics:['Clinica Smart'],obs:'',note:'',status:'approved',submittedAt:94},
+  {id:'diab1',firstName:'Iustina Cosmina',lastName:'Mogoș',specs:['Diabetologie'],city:'București',clinics:['Medsana'],obs:'',note:'',status:'approved',submittedAt:95},
+  {id:'derm1',firstName:'Georgiana',lastName:'Gheba',specs:['Dermatologie adulți','Dermatologie pediatrică'],city:'București',clinics:['Regina Maria'],obs:'Vede și copii',note:'',status:'approved',submittedAt:96},
+  {id:'derm2',firstName:'Veronica',lastName:'Dinu',specs:['Dermatologie adulți','Dermatologie pediatrică'],city:'București',clinics:['Dermalexia Otopeni'],obs:'Vede adulți și copii',note:'',status:'approved',submittedAt:97},
+  {id:'anest1',firstName:'Laurențiu',lastName:'Pricope',specs:['Anestezie'],city:'București',clinics:['Regina Maria'],obs:'',note:'',status:'approved',submittedAt:98},
+];
+
+function loadState(){
+  try{const s=localStorage.getItem(STORAGE_KEY);if(s){state=JSON.parse(s);}else{state.doctors=SEED_DOCTORS;state.reviews=[];state.pendingDoctors=[];state.pendingReviews=[];state.suggestions=[];state.siteFeedback=[];saveState();}}
+  catch(e){state.doctors=SEED_DOCTORS;state.reviews=[];state.pendingDoctors=[];state.pendingReviews=[];state.suggestions=[];state.siteFeedback=[];}
+  if(!state.suggestions)state.suggestions=[];
+  if(!state.siteFeedback)state.siteFeedback=[];
+}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}}
+
+function showPage(pg){prevPage=currentPage;currentPage=pg;document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+pg).classList.add('active');window.scrollTo(0,0);if(pg==='home')renderHome();if(pg==='listing'){populateCityFilters();populateSpecChips();applyFilters();}if(pg==='admin')renderAdmin();}
+function goBack(){showPage(prevPage==='detail'?'listing':(prevPage||'home'));}
+
+// MODALS
+function openAddDoctorModal(){resetDocForm();document.getElementById('addDoctorModal').classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
+
+function resetDocForm(){selectedSpecs=[];renderSpecSelected();document.getElementById('specAddSelect').value='';['docFirstName','docLastName','docCity','docObs','docNote'].forEach(id=>{document.getElementById(id).value='';});resetClinicRows();resetDupWarning();}
+function resetClinicRows(){document.getElementById('clinicsEditor').innerHTML='<div class="clinic-row"><input class="form-input" placeholder="ex: Regina Maria"></div>';}
+function addClinicRow(){const r=document.createElement('div');r.className='clinic-row';r.innerHTML='<input class="form-input" placeholder="ex: Sanador"><button class="btn-remove-clinic" onclick="this.parentElement.remove()">×</button>';document.getElementById('clinicsEditor').appendChild(r);}
+function getClinics(editorId){editorId=editorId||'clinicsEditor';return Array.from(document.querySelectorAll('#'+editorId+' input')).map(i=>i.value.trim()).filter(Boolean);}
+
+// MULTI-SPEC
+function addSpecFromSelect(sel){const v=sel.value;if(!v||selectedSpecs.includes(v))return;selectedSpecs.push(v);renderSpecSelected();sel.value='';checkDuplicate();}
+function removeSpec(s){selectedSpecs=selectedSpecs.filter(x=>x!==s);renderSpecSelected();checkDuplicate();}
+function renderSpecSelected(){const el=document.getElementById('specSelectedList');el.innerHTML=selectedSpecs.map(s=>`<span class="spec-selected-item">${s}<button onclick="removeSpec('${s.replace(/'/g,"\\'")}')" type="button">×</button></span>`).join('');}
+
+// DUPLICATE CHECK
+function checkDuplicate(){
+  const fn=document.getElementById('docFirstName').value.trim().toLowerCase();
+  const ln=document.getElementById('docLastName').value.trim().toLowerCase();
+  if(!fn||!selectedSpecs.length){resetDupWarning();return;}
+  const match=[...state.doctors,...state.pendingDoctors].find(d=>d.status==='approved'&&d.firstName.toLowerCase().includes(fn)&&d.lastName.toLowerCase().includes(ln)&&d.specs&&selectedSpecs.some(s=>d.specs.includes(s)));
+  if(match){dupFoundId=match.id;document.getElementById('dupDocName').textContent=`Dr. ${match.firstName}${match.lastName?' '+match.lastName:''}`;document.getElementById('dupDocSub').textContent=`${match.specs.join(', ')} • ${match.city}`;document.getElementById('dupReviewBtn').onclick=()=>{closeModal('addDoctorModal');openReviewModal(match.id);};document.getElementById('dupWarning').style.display='block';document.getElementById('submitDoctorBtn').disabled=true;}
+  else{resetDupWarning();}
+}
+function resetDupWarning(){dupFoundId=null;document.getElementById('dupWarning').style.display='none';document.getElementById('submitDoctorBtn').disabled=false;}
+
+// HOME
+function renderHome(){
+  const docs=state.doctors.filter(d=>d.status==='approved');
+  const revs=state.reviews.filter(r=>r.status==='approved');
+  document.getElementById('statDoctors').textContent=docs.length;
+  document.getElementById('statReviews').textContent=revs.length;
+  const cities=[...new Set(docs.map(d=>d.city))];
+  document.getElementById('statCities').textContent=cities.length;
+  const allSpecs=new Set();docs.forEach(d=>(d.specs||[d.spec||'']).forEach(s=>allSpecs.add(s)));
+  document.getElementById('statSpecs').textContent=allSpecs.size;
+  const heroCitySel=document.getElementById('heroCity');
+  heroCitySel.innerHTML='<option value="">Todas localitățile</option>';
+  cities.sort().forEach(c=>{heroCitySel.innerHTML+=`<option>${c}</option>`;});
+  heroCitySel.options[0].text='Toate localitățile';
+  const featured=docs.map(d=>({d,rating:avgRating(d.id),count:reviewCount(d.id)})).filter(x=>x.count>0).sort((a,b)=>b.rating-a.rating||b.count-a.count).slice(0,3);
+  document.getElementById('featuredDocs').innerHTML=(featured.length?featured.map(x=>doctorCardHTML(x.d)):docs.slice(0,3).map(d=>doctorCardHTML(d))).join('');
+}
+function syncSearch(v){currentFilters.search=v;}
+function syncCity(v){currentFilters.city=v;}
+
+function populateCityFilters(){const docs=state.doctors.filter(d=>d.status==='approved');const cities=[...new Set(docs.map(d=>d.city))].sort();document.getElementById('filterCity').innerHTML='<option value="">Toate localitățile</option>'+cities.map(c=>`<option${currentFilters.city===c?' selected':''}>${c}</option>`).join('');}
+function populateSpecChips(){
+  const allSpecs=new Set();state.doctors.filter(d=>d.status==='approved').forEach(d=>(d.specs||[d.spec||'']).forEach(s=>allSpecs.add(s)));
+  const specs=[...allSpecs].sort();
+  document.getElementById('specChips').innerHTML=specs.map(s=>`<button class="filter-chip${currentFilters.spec===s?' active':''}" onclick="setSpecFilter(this)">${s}</button>`).join('');
+}
+function setSpecFilter(el){const spec=el.textContent;currentFilters.spec=currentFilters.spec===spec?'':spec;document.querySelectorAll('#specChips .filter-chip').forEach(c=>c.classList.remove('active'));if(currentFilters.spec)el.classList.add('active');applyFilters();}
+function setRatingFilter(r,el){currentFilters.rating=r;document.querySelectorAll('.filter-chip[onclick^="setRatingFilter"]').forEach(c=>c.classList.remove('active'));el.classList.add('active');applyFilters();}
+function clearFilters(){currentFilters={search:'',city:'',spec:'',rating:0};document.getElementById('filterSearch').value='';document.getElementById('filterCity').value='';document.querySelectorAll('#specChips .filter-chip').forEach(c=>c.classList.remove('active'));document.querySelectorAll('.filter-chip[onclick^="setRatingFilter"]').forEach((c,i)=>c.classList.toggle('active',i===0));applyFilters();}
+
+function applyFilters(){
+  const search=(document.getElementById('filterSearch')?.value||'').toLowerCase();
+  const city=document.getElementById('filterCity')?.value||'';
+  const sort=document.getElementById('sortSelect')?.value||'name';
+  let docs=state.doctors.filter(d=>d.status==='approved');
+  if(search)docs=docs.filter(d=>(d.firstName+' '+d.lastName).toLowerCase().includes(search)||(d.specs||[]).some(s=>s.toLowerCase().includes(search))||(d.clinics||[]).some(c=>c.toLowerCase().includes(search)));
+  if(city)docs=docs.filter(d=>d.city===city);
+  if(currentFilters.spec)docs=docs.filter(d=>(d.specs||[]).includes(currentFilters.spec));
+  if(currentFilters.rating)docs=docs.filter(d=>avgRating(d.id)>=currentFilters.rating);
+  docs.sort((a,b)=>{if(sort==='rating')return avgRating(b.id)-avgRating(a.id);if(sort==='reviews')return reviewCount(b.id)-reviewCount(a.id);return (a.lastName+a.firstName).localeCompare(b.lastName+b.firstName,'ro');});
+  const container=document.getElementById('doctorsList');if(!container)return;
+  document.getElementById('resultsCount').textContent=`${docs.length} medic${docs.length===1?'':'i'} găs${docs.length===1?'it':'iți'}`;
+  container.innerHTML=docs.length?docs.map(d=>doctorCardHTML(d)).join(''):'<div class="empty-state"><span class="empty-icon">🔍</span><div class="empty-label">Nu există medici pentru filtrele selectate</div></div>';
+}
+
+function avgRating(id){const r=state.reviews.filter(r=>r.doctorId===id&&r.status==='approved');return r.length?r.reduce((s,r)=>s+r.rating,0)/r.length:0;}
+function reviewCount(id){return state.reviews.filter(r=>r.doctorId===id&&r.status==='approved').length;}
+function starsHTML(rating,size){size=size||'12px';let h='<div class="stars-display">';for(let i=1;i<=5;i++)h+=`<span class="star ${rating>=i-0.5?'filled':'empty'}" style="font-size:${size}">★</span>`;return h+'</div>';}
+function avatarColor(name){let h=0;for(let c of name)h=c.charCodeAt(0)+h*31;return AVATAR_COLORS[Math.abs(h)%AVATAR_COLORS.length];}
+function clinicTagsHTML(clinics,clickable){if(!clinics||!clinics.length)return '';return clinics.map(c=>clickable?`<span class="clinic-tag" onclick="event.stopPropagation();filterByClinic('${c.replace(/'/g,"\\'")}')">🏥 ${c}</span>`:`<span class="clinic-tag">🏥 ${c}</span>`).join('');}
+function specBadgesHTML(specs,clickable){if(!specs||!specs.length)return '';return specs.map(s=>clickable?`<span class="spec-badge" onclick="event.stopPropagation();filterBySpec('${s.replace(/'/g,"\\'")}')">🏷 ${s}</span>`:`<span class="spec-badge">${s}</span>`).join('');}
+
+function filterBySpec(spec){currentFilters.spec=spec;showPage('listing');}
+function filterByClinic(clinic){currentFilters.search=clinic;showPage('listing');}
+
+function doctorCardHTML(d){
+  const rating=avgRating(d.id),count=reviewCount(d.id);
+  const bg=avatarColor(d.firstName+(d.lastName||''));
+  const initials=(d.firstName[0]+((d.lastName&&d.lastName[0])||'')).toUpperCase();
+  const specs=d.specs||[d.spec||''];
+  return `<div class="doctor-card" onclick="openDoctorDetail('${d.id}')">
+    <div class="doctor-avatar" style="background:${bg}">${initials}</div>
+    <div>
+      <div class="doctor-name">Dr. ${d.firstName}${d.lastName?' '+d.lastName:''}</div>
+      <div class="doctor-specs">${specBadgesHTML(specs,false)}</div>
+      <div class="doctor-meta"><span class="meta-pill">📍 ${d.city}</span></div>
+      ${d.clinics&&d.clinics.length?`<div class="tags-row">${clinicTagsHTML(d.clinics,false)}</div>`:''}
+      ${d.obs?`<div class="tags-row"><span class="obs-tag">ℹ️ ${d.obs}</span></div>`:''}
+    </div>
+    <div class="doctor-card-right">
+      ${starsHTML(rating)}
+      <div class="rating-num">${rating?rating.toFixed(1):'—'}</div>
+      <div class="rating-count">${count} recenz${count===1?'ie':'ii'}</div>
+      <button class="review-btn" onclick="event.stopPropagation();openReviewModal('${d.id}')">+ Recenzie</button>
+    </div>
+  </div>`;
+}
+
+function openDoctorDetail(id){
+  prevPage=currentPage;currentPage='detail';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-detail').classList.add('active');window.scrollTo(0,0);
+  const d=[...state.doctors,...state.pendingDoctors].find(x=>x.id===id);if(!d)return;
+  const rating=avgRating(id),count=reviewCount(id);
+  const bg=avatarColor(d.firstName+(d.lastName||''));
+  const initials=(d.firstName[0]+((d.lastName&&d.lastName[0])||'')).toUpperCase();
+  const specs=d.specs||[d.spec||''];
+  const revs=state.reviews.filter(r=>r.doctorId===id&&r.status==='approved');
+  let html=`<div class="detail-hero">
+    <div class="detail-avatar" style="background:${bg}">${initials}</div>
+    <div style="flex:1">
+      <div class="detail-name">Dr. ${d.firstName}${d.lastName?' '+d.lastName:''}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;">${specBadgesHTML(specs,true)}</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">${starsHTML(rating,'16px')}<span style="font-size:22px;font-weight:700">${rating?rating.toFixed(1):'—'}</span><span style="font-size:13px;color:var(--ink-faint)">(${count} recenz${count===1?'ie':'ii'})</span></div>
+      <div style="font-size:14px;color:var(--ink-light);margin-bottom:8px;">📍 ${d.city}</div>
+      ${d.clinics&&d.clinics.length?`<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">${clinicTagsHTML(d.clinics,true)}</div>`:''}
+      ${d.obs?`<div style="margin-bottom:8px;"><span class="obs-tag" style="font-size:13px;">ℹ️ ${d.obs}</span></div>`:''}
+      ${d.note?`<div style="margin-top:10px;padding:12px;background:var(--teal-light);border-radius:10px;font-size:14px;color:var(--teal);font-style:italic;">"${d.note}"</div>`:''}
+      <div style="margin-top:14px;"><button class="suggest-btn" onclick="openSuggestModal('${id}')">✏️ Sugerează o modificare</button></div>
+    </div>
+  </div>
+  <div class="reviews-section">
+    <div class="section-title">Recenzii <button class="review-btn" onclick="openReviewModal('${id}')">+ Adaugă recenzie</button></div>`;
+  html+=revs.length?revs.map(r=>`<div class="review-card"><div class="review-header"><div>${starsHTML(r.rating,'13px')}<div class="reviewer-name">${r.reviewer||'Anonim'}</div></div><div class="review-date">${r.date||''}</div></div><div class="review-text">${r.text}</div></div>`).join(''):'<div class="no-reviews">Nicio recenzie încă. Fii prima care lasă un feedback! 💗</div>';
+  html+='</div>';
+  document.getElementById('detailContent').innerHTML=html;
+}
+
+// SUBMIT DOCTOR
+function submitDoctor(){
+  if(document.getElementById('submitDoctorBtn').disabled)return;
+  const firstName=document.getElementById('docFirstName').value.trim();
+  const lastName=document.getElementById('docLastName').value.trim();
+  const city=document.getElementById('docCity').value.trim();
+  if(!firstName||!lastName||!selectedSpecs.length||!city){showToast('Completează câmpurile obligatorii','error');return;}
+  state.pendingDoctors.push({id:'d'+Date.now(),firstName,lastName,specs:selectedSpecs,city,clinics:getClinics(),obs:document.getElementById('docObs').value.trim(),note:document.getElementById('docNote').value.trim(),status:'pending',submittedAt:Date.now()});
+  saveState();closeModal('addDoctorModal');showToast('Mulțumim! Recomandarea va fi verificată în curând. 💗','success');updateAdminNotif();
+}
+
+// REVIEW
+function openReviewModal(doctorId){reviewTargetId=doctorId;selectedStar=0;const d=[...state.doctors,...state.pendingDoctors].find(x=>x.id===doctorId);const specs=d?(d.specs||[d.spec||'']).join(', '):'';document.getElementById('reviewDoctorName').textContent=d?`Dr. ${d.firstName}${d.lastName?' '+d.lastName:''} — ${specs}`:'';document.getElementById('reviewerName').value='';document.getElementById('reviewText').value='';document.querySelectorAll('.star-pick').forEach(s=>s.classList.remove('selected'));document.getElementById('addReviewModal').classList.add('open');}
+function selectStar(n){selectedStar=n;document.querySelectorAll('.star-pick').forEach((s,i)=>s.classList.toggle('selected',i<n));}
+function submitReview(){if(!selectedStar){showToast('Selectează un număr de stele','error');return;}const text=document.getElementById('reviewText').value.trim();if(!text){showToast('Scrie câteva cuvinte','error');return;}state.pendingReviews.push({id:'r'+Date.now(),doctorId:reviewTargetId,rating:selectedStar,reviewer:document.getElementById('reviewerName').value.trim()||'Anonim',text,date:new Date().toISOString().split('T')[0],status:'pending'});saveState();closeModal('addReviewModal');showToast('Recenzie trimisă! Va fi publicată după verificare.','success');updateAdminNotif();}
+
+// SUGGEST
+function openSuggestModal(id){suggestTargetId=id;const d=[...state.doctors,...state.pendingDoctors].find(x=>x.id===id);document.getElementById('suggestDoctorName').textContent=d?`Dr. ${d.firstName}${d.lastName?' '+d.lastName:''}`:'' ;document.getElementById('suggestText').value='';document.getElementById('suggestModal').classList.add('open');}
+function submitSuggestion(){const text=document.getElementById('suggestText').value.trim();if(!text){showToast('Descrie ce s-a schimbat','error');return;}const d=[...state.doctors,...state.pendingDoctors].find(x=>x.id===suggestTargetId);state.suggestions.push({id:'s'+Date.now(),doctorId:suggestTargetId,doctorName:d?`Dr. ${d.firstName}${d.lastName?' '+d.lastName:''}`:suggestTargetId,text,date:new Date().toISOString().split('T')[0]});saveState();closeModal('suggestModal');showToast('Sugestie trimisă, mulțumim!','success');updateAdminNotif();}
+
+// SITE FEEDBACK
+let fbOpen=false;
+function toggleFeedbackBox(){fbOpen=!fbOpen;document.getElementById('feedbackBox').classList.toggle('open',fbOpen);}
+function setFbStar(n){fbStarVal=n;document.querySelectorAll('.fb-star').forEach((s,i)=>s.classList.toggle('sel',i<n));}
+function submitSiteFeedback(){const text=document.getElementById('fbText').value.trim();if(!fbStarVal&&!text){showToast('Adaugă un rating sau un comentariu','error');return;}state.siteFeedback.push({id:'fb'+Date.now(),rating:fbStarVal,text,date:new Date().toISOString().split('T')[0]});saveState();fbOpen=false;document.getElementById('feedbackBox').classList.remove('open');document.getElementById('fbText').value='';fbStarVal=0;document.querySelectorAll('.fb-star').forEach(s=>s.classList.remove('sel'));showToast('Feedback trimis, mulțumim! 💗','success');updateAdminNotif();}
+
+// ADMIN
+function adminLogin(){if(document.getElementById('adminPassInput').value===ADMIN_PASSWORD){isAdminLoggedIn=true;document.getElementById('adminLogin').style.display='none';document.getElementById('adminPanel').style.display='block';renderAdmin();}else{document.getElementById('loginError').style.display='block';}}
+function adminLogout(){isAdminLoggedIn=false;document.getElementById('adminLogin').style.display='block';document.getElementById('adminPanel').style.display='none';document.getElementById('adminPassInput').value='';document.getElementById('loginError').style.display='none';}
+function switchAdminTab(tab,el){document.querySelectorAll('.admin-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.admin-section').forEach(s=>s.classList.remove('active'));el.classList.add('active');document.getElementById('admin-'+tab).classList.add('active');}
+
+function renderAdmin(){
+  if(!isAdminLoggedIn)return;
+  document.getElementById('pendingDocsCount').textContent=state.pendingDoctors.length?`(${state.pendingDoctors.length})`:'';
+  document.getElementById('pendingReviewsCount').textContent=state.pendingReviews.length?`(${state.pendingReviews.length})`:'';
+  document.getElementById('pendingSuggestionsCount').textContent=state.suggestions.length?`(${state.suggestions.length})`:'';
+  document.getElementById('pendingFeedbackCount').textContent=state.siteFeedback.length?`(${state.siteFeedback.length})`:'';
+  // pending docs
+  document.getElementById('pendingDocsList').innerHTML=state.pendingDoctors.length?state.pendingDoctors.map(d=>`<div class="admin-card"><div class="admin-card-info"><div class="admin-card-name">Dr. ${d.firstName}${d.lastName?' '+d.lastName:''}</div><div class="admin-card-sub">${(d.specs||[]).join(', ')} • ${d.city}${d.clinics&&d.clinics.length?' • '+d.clinics.join(', '):''}</div>${d.obs?`<div style="font-size:12px;color:var(--amber);margin-top:3px">ℹ️ ${d.obs}</div>`:''}<div style="font-size:11px;color:var(--ink-faint);margin-top:3px">${new Date(d.submittedAt).toLocaleDateString('ro-RO')}</div></div><div class="admin-card-actions"><button class="btn-approve" onclick="approveDoctor('${d.id}')">✓ Aprobă</button><button class="btn-edit" onclick="openEditDoctor('${d.id}')">✎ Editează</button><button class="btn-reject" onclick="rejectDoctor('${d.id}')">✕ Respinge</button></div></div>`).join(''):'<div class="empty-state"><span class="empty-icon">✅</span><div class="empty-label">Nu există medici în așteptare</div></div>';
+  // pending reviews
+  document.getElementById('pendingReviewsList').innerHTML=state.pendingReviews.length?state.pendingReviews.map(r=>{const d=[...state.doctors,...state.pendingDoctors].find(x=>x.id===r.doctorId);return`<div class="admin-card"><div class="admin-card-info"><div class="admin-card-name">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)} — ${r.reviewer}</div><div class="admin-card-sub">${d?`Dr. ${d.firstName}${d.lastName?' '+d.lastName:''} (${(d.specs||[]).join(', ')})`:r.doctorId}</div><div style="font-size:14px;color:var(--ink-light);margin-top:7px">${r.text}</div><div style="font-size:11px;color:var(--ink-faint);margin-top:3px">${r.date}</div></div><div class="admin-card-actions"><button class="btn-approve" onclick="approveReview('${r.id}')">✓ Aprobă</button><button class="btn-reject" onclick="rejectReview('${r.id}')">✕ Respinge</button></div></div>`;}).join(''):'<div class="empty-state"><span class="empty-icon">✅</span><div class="empty-label">Nu există recenzii în așteptare</div></div>';
+  // suggestions
+  document.getElementById('suggestionsList').innerHTML=state.suggestions.length?state.suggestions.map(s=>`<div class="admin-card"><div class="admin-card-info"><div class="admin-card-name">${s.doctorName}</div><div class="admin-card-sub">${s.date}</div><div style="font-size:14px;color:var(--ink-light);margin-top:7px">${s.text}</div></div><div class="admin-card-actions"><button class="btn-reject" onclick="dismissSuggestion('${s.id}')">✕ Arhivează</button></div></div>`).join(''):'<div class="empty-state"><span class="empty-icon">✅</span><div class="empty-label">Nu există sugestii</div></div>';
+  // site feedback
+  document.getElementById('siteFeedbackList').innerHTML=state.siteFeedback.length?state.siteFeedback.map(f=>`<div class="admin-card"><div class="admin-card-info"><div class="admin-card-name">${f.rating?'★'.repeat(f.rating)+'☆'.repeat(5-f.rating):'Fără rating'}</div><div class="admin-card-sub">${f.date}</div><div style="font-size:14px;color:var(--ink-light);margin-top:7px">${f.text||'—'}</div></div><div class="admin-card-actions"><button class="btn-reject" onclick="dismissFeedback('${f.id}')">✕ Arhivează</button></div></div>`).join(''):'<div class="empty-state"><span class="empty-icon">💬</span><div class="empty-label">Nu există feedback pentru site</div></div>';
+  // all docs
+  renderAllDocs();
+}
+
+function renderAllDocs(){
+  const q=(document.getElementById('adminDocSearch')?.value||'').toLowerCase();
+  const all=[...state.doctors,...state.pendingDoctors].filter(d=>!q||(d.firstName+' '+d.lastName).toLowerCase().includes(q)||(d.specs||[]).some(s=>s.toLowerCase().includes(q)));
+  all.sort((a,b)=>(a.lastName+a.firstName).localeCompare(b.lastName+b.firstName,'ro'));
+  document.getElementById('allDocsList').innerHTML=all.map(d=>`<div class="admin-card"><div class="admin-card-info"><div class="admin-card-name">Dr. ${d.firstName}${d.lastName?' '+d.lastName:''}</div><div class="admin-card-sub">${(d.specs||[]).join(', ')} • ${d.city}${d.clinics&&d.clinics.length?' • '+d.clinics.join(', '):''}</div><div style="margin-top:4px">${d.status==='approved'?'<span style="background:#EAF5F2;color:#3D8B7A;font-size:11px;font-weight:700;padding:3px 9px;border-radius:12px;">✓ Aprobat</span>':'<span class="pending-badge">⏳ În așteptare</span>'}</div></div><div class="admin-card-actions"><button class="btn-edit" onclick="openEditDoctor('${d.id}')">✎ Editează</button>${d.status==='approved'?`<button class="btn-reject" onclick="removeDoctor('${d.id}')">✕ Elimină</button>`:`<button class="btn-approve" onclick="approveDoctor('${d.id}')">✓ Aprobă</button><button class="btn-reject" onclick="rejectDoctor('${d.id}')">✕ Respinge</button>`}</div></div>`).join('');
+}
+
+// EDIT DOCTOR
+function openEditDoctor(id){
+  const d=[...state.doctors,...state.pendingDoctors].find(x=>x.id===id);if(!d)return;
+  document.getElementById('editDocId').value=id;
+  document.getElementById('editFirstName').value=d.firstName;
+  document.getElementById('editLastName').value=d.lastName||'';
+  document.getElementById('editCity').value=d.city;
+  document.getElementById('editObs').value=d.obs||'';
+  document.getElementById('editNote').value=d.note||'';
+  editSpecs=[...(d.specs||[d.spec||''].filter(Boolean))];
+  renderEditSpecs();
+  const ce=document.getElementById('editClinicsEditor');
+  ce.innerHTML=(d.clinics&&d.clinics.length?d.clinics:['']).map((c,i)=>`<div class="clinic-row"><input class="form-input" value="${c}">${i>0?'<button class="btn-remove-clinic" onclick="this.parentElement.remove()">×</button>':''}</div>`).join('');
+  document.getElementById('editDoctorModal').classList.add('open');
+}
+function renderEditSpecs(){document.getElementById('editSpecsList').innerHTML=editSpecs.map(s=>`<span class="edit-spec-tag">${s}<button onclick="editRemoveSpec('${s.replace(/'/g,"\\'")}')">×</button></span>`).join('');}
+function editAddSpec(sel){const v=sel.value;if(!v||editSpecs.includes(v))return;editSpecs.push(v);renderEditSpecs();sel.value='';}
+function editRemoveSpec(s){editSpecs=editSpecs.filter(x=>x!==s);renderEditSpecs();}
+function editAddClinicRow(){const r=document.createElement('div');r.className='clinic-row';r.innerHTML='<input class="form-input" placeholder="ex: Regina Maria"><button class="btn-remove-clinic" onclick="this.parentElement.remove()">×</button>';document.getElementById('editClinicsEditor').appendChild(r);}
+
+function saveEditDoctor(){
+  const id=document.getElementById('editDocId').value;
+  const allDocs=[...state.doctors,...state.pendingDoctors];
+  const idx=allDocs.findIndex(d=>d.id===id);if(idx===-1)return;
+  const target=allDocs[idx];
+  target.firstName=document.getElementById('editFirstName').value.trim();
+  target.lastName=document.getElementById('editLastName').value.trim();
+  target.city=document.getElementById('editCity').value.trim();
+  target.specs=editSpecs;
+  target.clinics=getClinics('editClinicsEditor');
+  target.obs=document.getElementById('editObs').value.trim();
+  target.note=document.getElementById('editNote').value.trim();
+  // sync back to correct array
+  const inDocs=state.doctors.findIndex(d=>d.id===id);
+  const inPending=state.pendingDoctors.findIndex(d=>d.id===id);
+  if(inDocs!==-1)state.doctors[inDocs]=target;
+  else if(inPending!==-1)state.pendingDoctors[inPending]=target;
+  saveState();closeModal('editDoctorModal');showToast('Medic actualizat!','success');renderAdmin();
+}
+
+function approveDoctor(id){const idx=state.pendingDoctors.findIndex(d=>d.id===id);if(idx===-1)return;const doc=state.pendingDoctors.splice(idx,1)[0];doc.status='approved';state.doctors.push(doc);saveState();showToast('Medic aprobat!','success');renderAdmin();updateAdminNotif();}
+function rejectDoctor(id){state.pendingDoctors=state.pendingDoctors.filter(d=>d.id!==id);saveState();showToast('Recomandare respinsă.','error');renderAdmin();updateAdminNotif();}
+function removeDoctor(id){if(!confirm('Elimini acest medic?'))return;state.doctors=state.doctors.filter(d=>d.id!==id);state.reviews=state.reviews.filter(r=>r.doctorId!==id);saveState();showToast('Medic eliminat.','error');renderAdmin();}
+function approveReview(id){const idx=state.pendingReviews.findIndex(r=>r.id===id);if(idx===-1)return;const rev=state.pendingReviews.splice(idx,1)[0];rev.status='approved';state.reviews.push(rev);saveState();showToast('Recenzie aprobată!','success');renderAdmin();updateAdminNotif();}
+function rejectReview(id){state.pendingReviews=state.pendingReviews.filter(r=>r.id!==id);saveState();showToast('Recenzie respinsă.','error');renderAdmin();updateAdminNotif();}
+function dismissSuggestion(id){state.suggestions=state.suggestions.filter(s=>s.id!==id);saveState();showToast('Sugestie arhivată.','success');renderAdmin();updateAdminNotif();}
+function dismissFeedback(id){state.siteFeedback=state.siteFeedback.filter(f=>f.id!==id);saveState();showToast('Feedback arhivat.','success');renderAdmin();updateAdminNotif();}
+
+function updateAdminNotif(){const t=state.pendingDoctors.length+state.pendingReviews.length+state.suggestions.length+state.siteFeedback.length;document.getElementById('admin-notif').style.display=t?'inline-block':'none';}
+function showToast(msg,type){const t=document.createElement('div');t.className='toast '+(type||'');t.textContent=msg;document.getElementById('toastContainer').appendChild(t);requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3500);}
+
+loadState();renderHome();updateAdminNotif();
+</script>
+</body>
+</html>
