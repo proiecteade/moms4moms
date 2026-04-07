@@ -212,6 +212,18 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .suggest-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border-strong);border-radius:8px;background:white;color:var(--ink-light);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
 .suggest-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-light);}
 
+/* PAGINATION */
+.pagination{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
+.page-btn{padding:8px 18px;border-radius:9px;border:1px solid var(--border-strong);background:white;color:var(--ink);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:all 0.15s;}
+.page-btn:hover{border-color:var(--teal);color:var(--teal);}
+.page-btn.disabled{color:var(--ink-faint);cursor:default;border-color:var(--border);}
+.page-btn.disabled:hover{border-color:var(--border);color:var(--ink-faint);}
+.page-info{font-size:13px;color:var(--ink-light);font-weight:500;}
+
+/* MOBILE FILTER TOGGLE */
+.filters-toggle-btn{display:none;width:100%;padding:10px 16px;background:white;border:1px solid var(--border-strong);border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--ink);cursor:pointer;margin-bottom:1rem;text-align:left;}
+.filters-toggle-btn:hover{border-color:var(--teal);color:var(--teal);}
+
 /* TOAST */
 .toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none;}
 .toast{background:var(--ink);color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;opacity:0;transform:translateY(8px);transition:all 0.25s;max-width:320px;font-family:'Nunito',sans-serif;}
@@ -223,11 +235,14 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 @media(max-width:768px){
   .main-layout{grid-template-columns:1fr;}
   .doctors-area{padding-left:0;padding-top:1rem;}
-  .filters-sidebar{position:static;}
+  .filters-toggle-btn{display:block;}
+  .filters-sidebar{position:static;display:none;}
+  .filters-sidebar.mobile-open{display:block;margin-bottom:1rem;}
   .doctor-card{grid-template-columns:46px 1fr;}
   .doctor-card-right{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;}
   .hero-search{flex-direction:column;border-radius:12px;}
   .hero-search-sep{width:100%;height:1px;margin:0;}
+  .hero-search button{padding:14px 28px;width:100%;border-radius:0 0 12px 12px;}
   .hero-bg{height:240px;}
   .detail-hero{flex-direction:column;}
   .form-row{grid-template-columns:1fr;}

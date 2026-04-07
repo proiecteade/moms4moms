@@ -4,8 +4,10 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { SPECIALTIES } from '@/lib/constants'
 import { doctorFullName } from '@/lib/helpers'
+import { useToast } from '@/components/Toast'
 
 export default function AdminPage() {
+  const toast = useToast()
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
   const [tab, setTab] = useState('pending-docs')
@@ -55,7 +57,7 @@ export default function AdminPage() {
     const email = e.target.email.value
     const password = e.target.password.value
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) alert('Email sau parolă incorectă.')
+    if (error) toast('Email sau parolă incorectă.', 'error')
   }
 
   async function logout() { await supabase.auth.signOut() }

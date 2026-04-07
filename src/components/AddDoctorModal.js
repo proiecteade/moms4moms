@@ -3,8 +3,10 @@ import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { SPECIALTIES } from '@/lib/constants'
 import { uid, todayISO } from '@/lib/helpers'
+import { useToast } from '@/components/Toast'
 
 export default function AddDoctorModal({ onClose }) {
+  const toast = useToast()
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [city, setCity] = useState('')
@@ -25,7 +27,7 @@ export default function AddDoctorModal({ onClose }) {
 
   async function submit() {
     if (!firstName.trim() || !lastName.trim() || !specs.length || !city.trim()) {
-      alert('Completează câmpurile obligatorii (prenume, nume, specialitate, localitate)')
+      toast('Completează câmpurile obligatorii (prenume, nume, specialitate, localitate)', 'error')
       return
     }
     setLoading(true)
@@ -43,7 +45,7 @@ export default function AddDoctorModal({ onClose }) {
       submitted_at: Date.now(),
     })
     setLoading(false)
-    if (error) { alert('Eroare. Încearcă din nou.'); return }
+    if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
     setDone(true)
   }
 

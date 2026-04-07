@@ -1,7 +1,9 @@
 'use client'
+import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 
 export default function FilterSidebar({ cities, specs, currentCity, currentSpec, currentQ, currentRating, currentSort }) {
+  const [open, setOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -10,6 +12,7 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
     const params = new URLSearchParams(searchParams.toString())
     if (value) params.set(key, value)
     else params.delete(key)
+    params.delete('page')
     router.push(pathname + '?' + params.toString())
   }
 
@@ -17,6 +20,7 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
     const params = new URLSearchParams(searchParams.toString())
     if (currentSpec === s) params.delete('spec')
     else params.set('spec', s)
+    params.delete('page')
     router.push(pathname + '?' + params.toString())
   }
 
@@ -24,6 +28,7 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
     const params = new URLSearchParams(searchParams.toString())
     if (r) params.set('rating', r)
     else params.delete('rating')
+    params.delete('page')
     router.push(pathname + '?' + params.toString())
   }
 
@@ -31,8 +36,17 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
     router.push(pathname)
   }
 
+  const hasFilters = currentQ || currentCity || currentSpec || currentRating
+
   return (
-    <div className="filters-sidebar">
+    <>
+      <button
+        className="filters-toggle-btn"
+        onClick={() => setOpen(o => !o)}
+      >
+        {open ? '✕ Închide filtrele' : `🔍 Filtre${hasFilters ? ' ●' : ''}`}
+      </button>
+    <div className={`filters-sidebar${open ? ' mobile-open' : ''}`}>
       <div className="filter-section">
         <div className="filter-label">Caută</div>
         <input
@@ -81,5 +95,6 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
       </div>
       <button className="clear-btn" onClick={clearAll}>✕ Resetează filtrele</button>
     </div>
+    </>
   )
 }

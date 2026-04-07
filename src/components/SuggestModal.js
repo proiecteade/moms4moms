@@ -2,14 +2,16 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { uid, todayISO, doctorFullName } from '@/lib/helpers'
+import { useToast } from '@/components/Toast'
 
 export default function SuggestModal({ doctor, onClose }) {
+  const toast = useToast()
   const [text, setText] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
   async function submit() {
-    if (!text.trim()) return alert('Descrie ce s-a schimbat')
+    if (!text.trim()) return toast('Descrie ce s-a schimbat', 'error')
     setLoading(true)
     const supabase = createClient()
     const { error } = await supabase.from('suggestions').insert({
@@ -20,7 +22,7 @@ export default function SuggestModal({ doctor, onClose }) {
       date: todayISO(),
     })
     setLoading(false)
-    if (error) { alert('Eroare. Încearcă din nou.'); return }
+    if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
     setDone(true)
   }
 

@@ -2,8 +2,10 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { uid, todayISO } from '@/lib/helpers'
+import { useToast } from '@/components/Toast'
 
 export default function AddReviewModal({ doctor, onClose }) {
+  const toast = useToast()
   const [star, setStar] = useState(0)
   const [reviewer, setReviewer] = useState('')
   const [text, setText] = useState('')
@@ -13,8 +15,8 @@ export default function AddReviewModal({ doctor, onClose }) {
   const name = `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
 
   async function submit() {
-    if (!star) return alert('Selectează un număr de stele')
-    if (!text.trim()) return alert('Scrie câteva cuvinte')
+    if (!star) return toast('Selectează un număr de stele', 'error')
+    if (!text.trim()) return toast('Scrie câteva cuvinte', 'error')
     setLoading(true)
     const supabase = createClient()
     const { error } = await supabase.from('reviews').insert({
@@ -27,7 +29,7 @@ export default function AddReviewModal({ doctor, onClose }) {
       status: 'pending',
     })
     setLoading(false)
-    if (error) { alert('Eroare. Încearcă din nou.'); return }
+    if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
     setDone(true)
   }
 

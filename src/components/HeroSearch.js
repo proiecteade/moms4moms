@@ -22,7 +22,7 @@ export default function HeroSearch({ cities }) {
         </svg>
         <input
           type="text"
-          placeholder="Nume medic sau specialitate…"
+          placeholder="Medic sau specialitate…"
           value={q}
           onChange={e => setQ(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && search()}

@@ -3,8 +3,11 @@ import DoctorCard from '@/components/DoctorCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import SortSelect from '@/components/SortSelect'
 import { Suspense } from 'react'
+import Link from 'next/link'
 
 export const metadata = { title: 'Medici — Moms4Moms' }
+
+const PER_PAGE = 24
 
 export default async function MediciPage({ searchParams }) {
   const params = await searchParams
@@ -13,6 +16,7 @@ export default async function MediciPage({ searchParams }) {
   const spec = params.spec || ''
   const minRating = parseFloat(params.rating || '0')
   const sort = params.sort || 'name'
+  const page = Math.max(1, parseInt(params.page || '1'))
 
   const supabase = await createClient()
   const [{ data: doctors }, { data: reviews }] = await Promise.all([
@@ -48,6 +52,10 @@ export default async function MediciPage({ searchParams }) {
     return (a.last_name + a.first_name).localeCompare(b.last_name + b.first_name, 'ro')
   })
 
+  const totalPages = Math.ceil(filtered.length / PER_PAGE)
+  const safePage = Math.min(page, totalPages || 1)
+  const paginated = filtered.slice((safePage - 1) * PER_PAGE, safePage * PER_PAGE)
+
   return (
     <div className="main-layout">
       <Suspense>
@@ -71,8 +79,8 @@ export default async function MediciPage({ searchParams }) {
           </Suspense>
         </div>
         <div className="doctors-list">
-          {filtered.length > 0
-            ? filtered.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} />)
+          {paginated.length > 0
+            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} />)
             : (
               <div className="empty-state">
                 <span className="empty-icon">🔍</span>
@@ -81,6 +89,17 @@ export default async function MediciPage({ searchParams }) {
             )
           }
         </div>
+        {totalPages > 1 && (
+          <div className="pagination">
+            {safePage > 1 ? (
+              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(minRating && { rating: minRating }), ...(sort !== 'name' && { sort }), page: safePage - 1 }).toString()}`} className="page-btn">← Înapoi</Link>
+            ) : <span className="page-btn disabled">← Înapoi</span>}
+            <span className="page-info">Pagina {safePage} din {totalPages}</span>
+            {safePage < totalPages ? (
+              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(minRating && { rating: minRating }), ...(sort !== 'name' && { sort }), page: safePage + 1 }).toString()}`} className="page-btn">Înainte →</Link>
+            ) : <span className="page-btn disabled">Înainte →</span>}
+          </div>
+        )}
       </div>
     </div>
   )
