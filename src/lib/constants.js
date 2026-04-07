@@ -1,0 +1,34 @@
+export const AVATAR_COLORS = [
+  '#3D8B7A','#C07B2A','#5B73C4','#C44B4B',
+  '#7B5BC4','#2A9D8F','#B05A9A','#5A8A3A','#8A5A3A'
+]
+
+export const SPECIALTIES = [
+  'Cardiologie adulți','Cardiologie pediatrică',
+  'Chirurgie generală adulți','Chirurgie pediatrică','Neurochirurgie',
+  'Dermatologie adulți','Dermatologie pediatrică',
+  'Diabetologie',
+  'Ecografie generală','Ecografie mamară','Ecografie pediatrică',
+  'Endocrinologie adulți','Endocrinologie pediatrică',
+  'Gastroenterologie adulți','Gastroenterologie pediatrică',
+  'Obstetrică-ginecologie','Obstetrică-ginecologie pediatrică / adolescenți',
+  'Hematologie adulți','Hematologie pediatrică',
+  'Imagistică / radiologie','Imagistică pediatrică',
+  'Medicină de familie','Medicină internă','Nutriție / dietetică',
+  'Nefrologie adulți','Nefrologie pediatrică',
+  'Neonatologie',
+  'Neurologie adulți','Neurologie pediatrică',
+  'Oftalmologie adulți','Oftalmologie pediatrică',
+  'Oncologie adulți','Oncologie pediatrică',
+  'ORL adulți','ORL pediatric',
+  'Ortopedie adulți','Ortopedie pediatrică',
+  'Pediatrie',
+  'Pneumologie adulți','Pneumologie pediatrică',
+  'Psihiatrie adulți','Psihiatrie pediatrică',
+  'Psihologie adulți','Psihologie copii / adolescenți',
+  'Reumatologie adulți','Reumatologie pediatrică',
+  'Stomatologie adulți','Stomatologie pediatrică',
+  'Urologie adulți','Urologie pediatrică',
+  'Alergologie adulți','Alergologie pediatrică',
+  'Anestezie','Altele',
+]

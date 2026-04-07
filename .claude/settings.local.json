@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m ':*)",
+      "Bash(python3:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8080/medici-ro.html)",
+      "Bash(gh auth:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(brew install:*)",
+      "Bash(gh repo:*)",
+      "Bash(GH_TOKEN=$\\(gh auth token\\) git push -u origin main)",
+      "Bash(git config:*)",
+      "Bash(npm --version)",
+      "Bash(nvm --version)",
+      "Bash(brew list:*)",
+      "Bash(/opt/homebrew/bin/node --version)",
+      "Bash(/opt/homebrew/bin/npm --version)",
+      "Bash(mkdir -p /Users/Adelina/projects/moms4moms/archive)",
+      "Bash(mv /Users/Adelina/projects/moms4moms/medici-ro.html /Users/Adelina/projects/moms4moms/archive/)",
+      "Bash(/opt/homebrew/bin/npx create-next-app@latest:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp -r src package.json package-lock.json jsconfig.json next.config.mjs public /Users/Adelina/projects/moms4moms/)",
+      "Bash(cp -r favicon.ico globals.css layout.js page.js page.module.css /Users/Adelina/projects/moms4moms/)",
+      "Bash(cp /Users/Adelina/projects/moms4moms/header.png /Users/Adelina/projects/moms4moms/public/)",
+      "Bash(/opt/homebrew/bin/npm install:*)",
+      "Bash(/opt/homebrew/bin/npm run:*)"
+    ]
+  }
+}

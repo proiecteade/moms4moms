@@ -1,0 +1,87 @@
+import { createClient } from '@/lib/supabase/server'
+import DoctorCard from '@/components/DoctorCard'
+import FilterSidebar from '@/components/FilterSidebar'
+import SortSelect from '@/components/SortSelect'
+import { Suspense } from 'react'
+
+export const metadata = { title: 'Medici — Moms4Moms' }
+
+export default async function MediciPage({ searchParams }) {
+  const params = await searchParams
+  const q = (params.q || '').toLowerCase()
+  const city = params.city || ''
+  const spec = params.spec || ''
+  const minRating = parseFloat(params.rating || '0')
+  const sort = params.sort || 'name'
+
+  const supabase = await createClient()
+  const [{ data: doctors }, { data: reviews }] = await Promise.all([
+    supabase.from('doctors').select('*').eq('status', 'approved'),
+    supabase.from('reviews').select('*').eq('status', 'approved'),
+  ])
+
+  const docs = doctors || []
+  const revs = reviews || []
+
+  const cities = [...new Set(docs.map(d => d.city))].sort()
+  const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))].sort()
+
+  function getRating(id) {
+    const r = revs.filter(r => r.doctor_id === id)
+    return r.length ? r.reduce((s, x) => s + x.rating, 0) / r.length : 0
+  }
+  function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
+
+  let filtered = docs
+  if (q) filtered = filtered.filter(d =>
+    (d.first_name + ' ' + d.last_name).toLowerCase().includes(q) ||
+    (d.specs || []).some(s => s.toLowerCase().includes(q)) ||
+    (d.clinics || []).some(c => c.toLowerCase().includes(q))
+  )
+  if (city) filtered = filtered.filter(d => d.city === city)
+  if (spec) filtered = filtered.filter(d => (d.specs || []).includes(spec))
+  if (minRating) filtered = filtered.filter(d => getRating(d.id) >= minRating)
+
+  filtered.sort((a, b) => {
+    if (sort === 'rating') return getRating(b.id) - getRating(a.id)
+    if (sort === 'reviews') return getReviews(b.id).length - getReviews(a.id).length
+    return (a.last_name + a.first_name).localeCompare(b.last_name + b.first_name, 'ro')
+  })
+
+  return (
+    <div className="main-layout">
+      <Suspense>
+        <FilterSidebar
+          cities={cities}
+          specs={allSpecs}
+          currentCity={city}
+          currentSpec={spec}
+          currentQ={q}
+          currentRating={minRating}
+          currentSort={sort}
+        />
+      </Suspense>
+      <div className="doctors-area">
+        <div className="results-header">
+          <div className="results-count">
+            {filtered.length} medic{filtered.length === 1 ? '' : 'i'} găs{filtered.length === 1 ? 'it' : 'iți'}
+          </div>
+          <Suspense>
+            <SortSelect current={sort} />
+          </Suspense>
+        </div>
+        <div className="doctors-list">
+          {filtered.length > 0
+            ? filtered.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} />)
+            : (
+              <div className="empty-state">
+                <span className="empty-icon">🔍</span>
+                <div className="empty-label">Nu există medici pentru filtrele selectate</div>
+              </div>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  )
+}
