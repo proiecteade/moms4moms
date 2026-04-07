@@ -90,10 +90,7 @@ export default async function DoctorDetailPage({ params }) {
       </div>
 
       <div className="reviews-section">
-        <div className="section-title">
-          Recenzii
-          <DetailActions doctor={doc} reviewOnly />
-        </div>
+        <div className="section-title">Recenzii</div>
         {revs.length > 0
           ? revs.map(r => (
             <div key={r.id} className="review-card">
@@ -104,7 +101,7 @@ export default async function DoctorDetailPage({ params }) {
               <div className="review-text">{r.text}</div>
             </div>
           ))
-          : <div className="no-reviews">Nicio recenzie încă. Fii prima care lasă un feedback! 💗</div>
+          : <div className="no-reviews">Fii primul care lasă un feedback! 💗</div>
         }
       </div>
     </div>

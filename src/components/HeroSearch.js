@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import AddDoctorModal from './AddDoctorModal'
 
 export default function HeroSearch({ cities }) {
   const [q, setQ] = useState('')
   const [city, setCity] = useState('')
+  const [showModal, setShowModal] = useState(false)
   const router = useRouter()
 
   function search() {
@@ -15,30 +17,39 @@ export default function HeroSearch({ cities }) {
   }
 
   return (
-    <div className="hero-search">
-      <div className="hero-search-field">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-        </svg>
-        <input
-          type="text"
-          placeholder="Medic sau specialitate…"
-          value={q}
-          onChange={e => setQ(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && search()}
-        />
+    <>
+      <div className="hero-actions">
+        <div className="hero-search">
+          <div className="hero-search-field">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              type="text"
+              placeholder="Medic sau specialitate…"
+              value={q}
+              onChange={e => setQ(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && search()}
+            />
+          </div>
+          <div className="hero-search-sep" />
+          <div className="hero-search-city">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+            </svg>
+            <select value={city} onChange={e => setCity(e.target.value)}>
+              <option value="">Toate localitățile</option>
+              {cities.map(c => <option key={c}>{c}</option>)}
+            </select>
+          </div>
+          <button onClick={search}>Caută</button>
+        </div>
+        <div className="hero-or">sau</div>
+        <button className="hero-recommend-btn" onClick={() => setShowModal(true)}>
+          + Recomandă un medic
+        </button>
       </div>
-      <div className="hero-search-sep" />
-      <div className="hero-search-city">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
-        </svg>
-        <select value={city} onChange={e => setCity(e.target.value)}>
-          <option value="">Toate localitățile</option>
-          {cities.map(c => <option key={c}>{c}</option>)}
-        </select>
-      </div>
-      <button onClick={search}>Caută</button>
-    </div>
+      {showModal && <AddDoctorModal onClose={() => setShowModal(false)} />}
+    </>
   )
 }

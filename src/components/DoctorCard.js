@@ -1,12 +1,9 @@
 'use client'
 import Link from 'next/link'
 import { avatarColor, initials } from '@/lib/helpers'
-import { useState } from 'react'
-import AddReviewModal from './AddReviewModal'
 import RecommendButton from './RecommendButton'
 
 export default function DoctorCard({ doctor, reviews = [] }) {
-  const [showReview, setShowReview] = useState(false)
   const count = reviews.length
   const bg = avatarColor(doctor.first_name + (doctor.last_name || ''))
   const init = initials(doctor.first_name, doctor.last_name)
@@ -50,17 +47,8 @@ export default function DoctorCard({ doctor, reviews = [] }) {
           {count > 0 && (
             <div className="rating-count">{count} recenz{count === 1 ? 'ie' : 'ii'}</div>
           )}
-          <button
-            className="review-btn"
-            onClick={e => { e.preventDefault(); setShowReview(true) }}
-          >
-            + Recenzie
-          </button>
         </div>
       </Link>
-      {showReview && (
-        <AddReviewModal doctor={doctor} onClose={() => setShowReview(false)} />
-      )}
     </>
   )
 }
