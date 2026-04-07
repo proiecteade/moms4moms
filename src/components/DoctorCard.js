@@ -15,7 +15,10 @@ export default function DoctorCard({ doctor, reviews = [] }) {
   return (
     <>
       <Link href={`/medici/${doctor.id}`} className="doctor-card">
-        <div className="doctor-avatar" style={{ background: bg }}>{init}</div>
+        {doctor.photo_url
+          ? <img src={doctor.photo_url} className="doctor-avatar" alt={`Dr. ${doctor.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
+          : <div className="doctor-avatar" style={{ background: bg }}>{init}</div>
+        }
         <div>
           <div className="doctor-name">
             Dr. {doctor.first_name}{doctor.last_name ? ' ' + doctor.last_name : ''}

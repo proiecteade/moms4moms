@@ -108,6 +108,7 @@ export default function AdminPage() {
       clinics: editClinics.filter(Boolean),
       obs: editDoc.obs,
       note: editDoc.note,
+      photo_url: editDoc.photo_url || '',
     }).eq('id', editDoc.id)
     setEditDoc(null)
     loadData()
@@ -343,6 +344,13 @@ export default function AdminPage() {
               <div className="form-group">
                 <label className="form-label">Notă</label>
                 <textarea className="form-textarea" value={editDoc.note || ''} onChange={e => setEditDoc(d => ({ ...d, note: e.target.value }))} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Poză (URL)</label>
+                <input className="form-input" placeholder="https://..." value={editDoc.photo_url || ''} onChange={e => setEditDoc(d => ({ ...d, photo_url: e.target.value }))} />
+                {editDoc.photo_url && (
+                  <img src={editDoc.photo_url} alt="preview" style={{ marginTop: 8, width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', objectPosition: 'top', border: '2px solid var(--border)' }} />
+                )}
               </div>
               <button className="submit-btn" onClick={saveEdit}>Salvează modificările</button>
             </div>

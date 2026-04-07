@@ -76,7 +76,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 
 .doctor-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.4rem;display:grid;grid-template-columns:54px 1fr auto;gap:1.1rem;align-items:center;transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;text-decoration:none;color:inherit;}
 .doctor-card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);}
-.doctor-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:white;flex-shrink:0;}
+.doctor-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:white;flex-shrink:0;overflow:hidden;}
 .doctor-name{font-weight:700;font-size:15.5px;line-height:1.25;color:var(--ink);margin-bottom:1px;}
 .doctor-specs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
 .spec-badge{font-size:11.5px;color:var(--teal);font-weight:600;background:var(--teal-light);padding:2px 8px;border-radius:12px;cursor:pointer;transition:background 0.12s;text-decoration:none;}
@@ -150,7 +150,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--ink-light);font-size:14px;cursor:pointer;background:none;border:none;font-family:'Nunito',sans-serif;margin-bottom:1.5rem;padding:0;transition:color 0.15s;font-weight:500;text-decoration:none;}
 .back-btn:hover{color:var(--teal);}
 .detail-hero{background:white;border-radius:20px;border:1px solid var(--border);padding:2rem;display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem;}
-.detail-avatar{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;color:white;flex-shrink:0;}
+.detail-avatar{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;color:white;flex-shrink:0;overflow:hidden;}
 .detail-name{font-weight:700;font-size:22px;line-height:1.2;margin-bottom:4px;}
 .reviews-section{background:white;border-radius:20px;border:1px solid var(--border);padding:1.5rem;}
 .section-title{font-weight:700;font-size:18px;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;}

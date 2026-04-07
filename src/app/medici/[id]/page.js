@@ -38,7 +38,10 @@ export default async function DoctorDetailPage({ params }) {
       <Link href="/medici" className="back-btn">← Înapoi la lista de medici</Link>
 
       <div className="detail-hero">
-        <div className="detail-avatar" style={{ background: bg }}>{init}</div>
+        {doc.photo_url
+          ? <img src={doc.photo_url} className="detail-avatar" alt={`Dr. ${doc.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
+          : <div className="detail-avatar" style={{ background: bg }}>{init}</div>
+        }
         <div style={{ flex: 1 }}>
           <div className="detail-name">
             Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
