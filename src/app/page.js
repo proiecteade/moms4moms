@@ -67,7 +67,7 @@ export default async function HomePage() {
         </div>
         <div className="stat-item">
           <div className="stat-num">{statCities}</div>
-          <div className="stat-label">Localități</div>
+          <div className="stat-label">{statCities === 1 ? 'Localitate' : 'Localități'}</div>
         </div>
         <div className="stat-item">
           <div className="stat-num">{statSpecs}</div>
