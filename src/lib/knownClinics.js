@@ -1,0 +1,18 @@
+export const KNOWN_CLINIC_URLS = {
+  'Regina Maria': 'https://www.reginamaria.ro',
+  'MedLife': 'https://www.medlife.ro',
+  'Medicover': 'https://www.medicover.ro',
+  'Sanador': 'https://www.sanador.ro',
+  'Monza': 'https://www.monzaspital.ro',
+  'Synevo': 'https://www.synevo.ro',
+  'Gral Medical': 'https://www.gral.ro',
+  'Provita': 'https://www.provitabucuresti.ro',
+  'Centrul Medical Unirea': 'https://www.cmu.ro',
+  'Elithia': 'https://www.elithia.ro',
+  'Arcadia': 'https://www.arcadiaspitale.ro',
+  'Hiperdia': 'https://www.hiperdia.ro',
+  'Ponderas Academic Hospital': 'https://www.ponderas-ah.ro',
+  'Spitalul Clinic de Urgență "Sf. Ioan"': null,
+  'Spitalul Clinic Colțea': null,
+  'Spitalul Clinic Județean de Urgență': null,
+}

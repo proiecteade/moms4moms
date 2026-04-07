@@ -6,7 +6,6 @@ import { useToast } from '@/components/Toast'
 
 export default function AddReviewModal({ doctor, onClose }) {
   const toast = useToast()
-  const [star, setStar] = useState(0)
   const [reviewer, setReviewer] = useState('')
   const [text, setText] = useState('')
   const [loading, setLoading] = useState(false)
@@ -15,14 +14,12 @@ export default function AddReviewModal({ doctor, onClose }) {
   const name = `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
 
   async function submit() {
-    if (!star) return toast('Selectează un număr de stele', 'error')
     if (!text.trim()) return toast('Scrie câteva cuvinte', 'error')
     setLoading(true)
     const supabase = createClient()
     const { error } = await supabase.from('reviews').insert({
       id: uid(),
       doctor_id: doctor.id,
-      rating: star,
       reviewer: reviewer.trim() || 'Anonim',
       text: text.trim(),
       date: todayISO(),
@@ -54,14 +51,6 @@ export default function AddReviewModal({ doctor, onClose }) {
             <>
               <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--teal)', marginBottom: '1.25rem', padding: '10px 14px', background: 'var(--teal-light)', borderRadius: 10 }}>
                 {name}
-              </div>
-              <div className="form-group">
-                <label className="form-label">Evaluare *</label>
-                <div className="star-picker">
-                  {[1,2,3,4,5].map(n => (
-                    <span key={n} className={`star-pick${star >= n ? ' selected' : ''}`} onClick={() => setStar(n)}>★</span>
-                  ))}
-                </div>
               </div>
               <div className="form-group">
                 <label className="form-label">Numele tău (opțional)</label>

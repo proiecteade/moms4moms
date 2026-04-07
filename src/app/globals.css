@@ -110,6 +110,20 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .rating-count{font-size:11px;color:var(--ink-faint);margin-top:1px;}
 .review-btn{margin-top:8px;padding:6px 12px;border-radius:8px;border:1px solid var(--teal);background:transparent;color:var(--teal);font-size:12px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;white-space:nowrap;}
 .review-btn:hover{background:var(--teal);color:white;}
+/* RECOMMEND BUTTON */
+.recommend-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.top-badge{font-size:10px;font-weight:700;color:#7AB648;background:#f0f9e8;border:1px solid #c5e8a0;padding:2px 8px;border-radius:12px;white-space:nowrap;}
+.recommend-btn{padding:7px 13px;border-radius:8px;border:1px solid #7AB648;background:transparent;color:#7AB648;font-size:12px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;transition:all 0.15s;white-space:nowrap;}
+.recommend-btn:hover:not(:disabled){background:#7AB648;color:white;}
+.recommend-btn.done{border-color:var(--border);color:var(--ink-faint);cursor:default;}
+/* CLINIC LINK ICON */
+.clinic-link-icon{font-size:10px;color:var(--teal);text-decoration:none;margin-left:2px;opacity:0.7;transition:opacity 0.12s;line-height:1;}
+.clinic-link-icon:hover{opacity:1;}
+/* LOGO IMAGE */
+.logo-img{height:36px;width:auto;object-fit:contain;}
+/* CLINIC URL INPUT */
+.clinic-row-group{display:flex;flex-direction:column;gap:4px;margin-bottom:6px;}
+.clinic-url-input{font-size:12px !important;color:var(--ink-light) !important;}
 .pending-badge{display:inline-block;background:var(--amber-light);color:var(--amber);font-size:11px;font-weight:600;padding:3px 9px;border-radius:12px;}
 
 /* MODAL */
@@ -275,8 +289,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 
 @media (max-width: 480px) {
   nav { padding: 0 0.75rem; height: 56px; }
-  .logo-wordmark { font-size: 16px; }
-  .logo-tagline { font-size: 13px; }
+  .logo-img { height: 28px; }
   .hero-badge { font-size: 11px; padding: 4px 12px; }
   .hero h1 { font-size: 1.5rem; }
   .hero-search { width: calc(100% - 1.5rem); }

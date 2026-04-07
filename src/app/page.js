@@ -23,19 +23,10 @@ export default async function HomePage() {
   const statCities = cities.length
   const statSpecs = allSpecs.length
 
-  const featured = docs
-    .map(d => {
-      const dr = revs.filter(r => r.doctor_id === d.id)
-      const rating = dr.length ? dr.reduce((s, r) => s + r.rating, 0) / dr.length : 0
-      return { d, rating, count: dr.length, reviews: dr }
-    })
-    .filter(x => x.count > 0)
-    .sort((a, b) => b.rating - a.rating || b.count - a.count)
+  const featured = [...docs]
+    .sort((a, b) => (b.recommendations_count || 0) - (a.recommendations_count || 0))
     .slice(0, 3)
-
-  const featuredDocs = featured.length > 0
-    ? featured
-    : docs.slice(0, 3).map(d => ({ d, rating: 0, count: 0, reviews: [] }))
+    .map(d => ({ d, reviews: revs.filter(r => r.doctor_id === d.id) }))
 
   return (
     <>
@@ -76,9 +67,9 @@ export default async function HomePage() {
       </div>
 
       <div style={{ maxWidth: 1100, margin: '2rem auto', padding: '0 2rem' }}>
-        <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: '1.25rem' }}>Cei mai bine evaluați</h2>
+        <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: '1.25rem' }}>Cei mai recomandați</h2>
         <div className="doctors-list">
-          {featuredDocs.map(({ d, reviews: dr }) => (
+          {featured.map(({ d, reviews: dr }) => (
             <DoctorCard key={d.id} doctor={d} reviews={dr} />
           ))}
         </div>

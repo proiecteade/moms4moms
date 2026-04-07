@@ -14,8 +14,7 @@ export default async function MediciPage({ searchParams }) {
   const q = (params.q || '').toLowerCase()
   const city = params.city || ''
   const spec = params.spec || ''
-  const minRating = parseFloat(params.rating || '0')
-  const sort = params.sort || 'name'
+  const sort = params.sort || 'recommended'
   const page = Math.max(1, parseInt(params.page || '1'))
 
   const supabase = await createClient()
@@ -30,10 +29,6 @@ export default async function MediciPage({ searchParams }) {
   const cities = [...new Set(docs.map(d => d.city))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))].sort()
 
-  function getRating(id) {
-    const r = revs.filter(r => r.doctor_id === id)
-    return r.length ? r.reduce((s, x) => s + x.rating, 0) / r.length : 0
-  }
   function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
 
   let filtered = docs
@@ -44,12 +39,12 @@ export default async function MediciPage({ searchParams }) {
   )
   if (city) filtered = filtered.filter(d => d.city === city)
   if (spec) filtered = filtered.filter(d => (d.specs || []).includes(spec))
-  if (minRating) filtered = filtered.filter(d => getRating(d.id) >= minRating)
 
   filtered.sort((a, b) => {
-    if (sort === 'rating') return getRating(b.id) - getRating(a.id)
     if (sort === 'reviews') return getReviews(b.id).length - getReviews(a.id).length
-    return (a.last_name + a.first_name).localeCompare(b.last_name + b.first_name, 'ro')
+    if (sort === 'name') return (a.last_name + a.first_name).localeCompare(b.last_name + b.first_name, 'ro')
+    // default: recommended
+    return (b.recommendations_count || 0) - (a.recommendations_count || 0)
   })
 
   const totalPages = Math.ceil(filtered.length / PER_PAGE)
@@ -65,7 +60,6 @@ export default async function MediciPage({ searchParams }) {
           currentCity={city}
           currentSpec={spec}
           currentQ={q}
-          currentRating={minRating}
           currentSort={sort}
         />
       </Suspense>
@@ -92,11 +86,11 @@ export default async function MediciPage({ searchParams }) {
         {totalPages > 1 && (
           <div className="pagination">
             {safePage > 1 ? (
-              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(minRating && { rating: minRating }), ...(sort !== 'name' && { sort }), page: safePage - 1 }).toString()}`} className="page-btn">← Înapoi</Link>
+              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(sort !== 'recommended' && { sort }), page: safePage - 1 }).toString()}`} className="page-btn">← Înapoi</Link>
             ) : <span className="page-btn disabled">← Înapoi</span>}
             <span className="page-info">Pagina {safePage} din {totalPages}</span>
             {safePage < totalPages ? (
-              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(minRating && { rating: minRating }), ...(sort !== 'name' && { sort }), page: safePage + 1 }).toString()}`} className="page-btn">Înainte →</Link>
+              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(sort !== 'recommended' && { sort }), page: safePage + 1 }).toString()}`} className="page-btn">Înainte →</Link>
             ) : <span className="page-btn disabled">Înainte →</span>}
           </div>
         )}

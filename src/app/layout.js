@@ -1,6 +1,8 @@
 import './globals.css'
 import Nav from '@/components/Nav'
 import FeedbackWidget from '@/components/FeedbackWidget'
+import Footer from '@/components/Footer'
+import { ToastProvider } from '@/components/Toast'
 
 export const metadata = {
   title: 'Moms4Moms — Recomandări Medici',
@@ -11,9 +13,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body>
-        <Nav />
-        {children}
-        <FeedbackWidget />
+        <ToastProvider>
+          <Nav />
+          {children}
+          <Footer />
+          <FeedbackWidget />
+        </ToastProvider>
       </body>
     </html>
   )

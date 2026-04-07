@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 import { SPECIALTIES } from '@/lib/constants'
 import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
+import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
 export default function AddDoctorModal({ onClose }) {
   const toast = useToast()
@@ -12,6 +13,7 @@ export default function AddDoctorModal({ onClose }) {
   const [city, setCity] = useState('')
   const [specs, setSpecs] = useState([])
   const [clinics, setClinics] = useState([''])
+  const [clinicUrls, setClinicUrls] = useState({})
   const [obs, setObs] = useState('')
   const [note, setNote] = useState('')
   const [loading, setLoading] = useState(false)
@@ -21,9 +23,32 @@ export default function AddDoctorModal({ onClose }) {
     if (val && !specs.includes(val)) setSpecs(s => [...s, val])
   }
   function removeSpec(s) { setSpecs(prev => prev.filter(x => x !== s)) }
-  function updateClinic(i, val) { setClinics(c => c.map((x, j) => j === i ? val : x)) }
+
+  function updateClinic(i, val) {
+    const oldName = clinics[i]
+    setClinics(c => c.map((x, j) => j === i ? val : x))
+    // Auto-fill URL if known clinic
+    setClinicUrls(prev => {
+      const next = { ...prev }
+      if (oldName && next[oldName] !== undefined) delete next[oldName]
+      if (val && KNOWN_CLINIC_URLS[val] !== undefined) {
+        next[val] = KNOWN_CLINIC_URLS[val] || ''
+      }
+      return next
+    })
+  }
+
+  function updateClinicUrl(clinicName, url) {
+    setClinicUrls(prev => ({ ...prev, [clinicName]: url }))
+  }
+
   function addClinic() { setClinics(c => [...c, '']) }
-  function removeClinic(i) { setClinics(c => c.filter((_, j) => j !== i)) }
+
+  function removeClinic(i) {
+    const name = clinics[i]
+    setClinics(c => c.filter((_, j) => j !== i))
+    if (name) setClinicUrls(prev => { const n = { ...prev }; delete n[name]; return n })
+  }
 
   async function submit() {
     if (!firstName.trim() || !lastName.trim() || !specs.length || !city.trim()) {
@@ -32,13 +57,20 @@ export default function AddDoctorModal({ onClose }) {
     }
     setLoading(true)
     const supabase = createClient()
+    const filteredClinics = clinics.filter(Boolean)
+    // Only keep URLs for clinics that are in the final list
+    const finalUrls = {}
+    filteredClinics.forEach(c => {
+      if (clinicUrls[c]) finalUrls[c] = clinicUrls[c]
+    })
     const { error } = await supabase.from('doctors').insert({
       id: uid(),
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       specs,
       city: city.trim(),
-      clinics: clinics.filter(Boolean),
+      clinics: filteredClinics,
+      clinic_urls: finalUrls,
       obs: obs.trim(),
       note: note.trim(),
       status: 'pending',
@@ -106,9 +138,24 @@ export default function AddDoctorModal({ onClose }) {
                 <label className="form-label">Spital / Clinică</label>
                 <div className="clinics-editor">
                   {clinics.map((c, i) => (
-                    <div key={i} className="clinic-row">
-                      <input className="form-input" placeholder="ex: Regina Maria" value={c} onChange={e => updateClinic(i, e.target.value)} />
-                      {i > 0 && <button className="btn-remove-clinic" type="button" onClick={() => removeClinic(i)}>×</button>}
+                    <div key={i} className="clinic-row-group">
+                      <div className="clinic-row">
+                        <input
+                          className="form-input"
+                          placeholder="ex: Regina Maria"
+                          value={c}
+                          onChange={e => updateClinic(i, e.target.value)}
+                        />
+                        {i > 0 && <button className="btn-remove-clinic" type="button" onClick={() => removeClinic(i)}>×</button>}
+                      </div>
+                      {c && (
+                        <input
+                          className="form-input clinic-url-input"
+                          placeholder="Website clinică (opțional, ex: https://reginamaria.ro)"
+                          value={clinicUrls[c] || ''}
+                          onChange={e => updateClinicUrl(c, e.target.value)}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

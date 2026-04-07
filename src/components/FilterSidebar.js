@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 
-export default function FilterSidebar({ cities, specs, currentCity, currentSpec, currentQ, currentRating, currentSort }) {
+export default function FilterSidebar({ cities, specs, currentCity, currentSpec, currentQ, currentSort }) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -24,19 +24,11 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
     router.push(pathname + '?' + params.toString())
   }
 
-  function setRating(r) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (r) params.set('rating', r)
-    else params.delete('rating')
-    params.delete('page')
-    router.push(pathname + '?' + params.toString())
-  }
-
   function clearAll() {
     router.push(pathname)
   }
 
-  const hasFilters = currentQ || currentCity || currentSpec || currentRating
+  const hasFilters = currentQ || currentCity || currentSpec
 
   return (
     <>
@@ -75,20 +67,6 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
               onClick={() => setSpec(s)}
             >
               {s}
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="filter-section">
-        <div className="filter-label">Rating minim</div>
-        <div className="filter-chip-group">
-          {[{ label: 'Toate', val: 0 }, { label: '4+ ⭐', val: 4 }, { label: '4.5+ ⭐', val: 4.5 }].map(r => (
-            <button
-              key={r.val}
-              className={`filter-chip${currentRating === r.val ? ' active' : ''}`}
-              onClick={() => setRating(r.val)}
-            >
-              {r.label}
             </button>
           ))}
         </div>

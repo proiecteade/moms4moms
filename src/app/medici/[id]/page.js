@@ -1,8 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import Stars from '@/components/Stars'
 import DetailActions from '@/components/DetailActions'
-import { avatarColor, initials, avgRating, formatDate } from '@/lib/helpers'
+import RecommendButton from '@/components/RecommendButton'
+import { avatarColor, initials, formatDate } from '@/lib/helpers'
 import { notFound } from 'next/navigation'
 
 export async function generateMetadata({ params }) {
@@ -28,7 +28,6 @@ export default async function DoctorDetailPage({ params }) {
   if (!doc) notFound()
 
   const revs = reviews || []
-  const rating = avgRating(revs)
   const count = revs.length
   const bg = avatarColor(doc.first_name + (doc.last_name || ''))
   const init = initials(doc.first_name, doc.last_name)
@@ -53,18 +52,26 @@ export default async function DoctorDetailPage({ params }) {
               </Link>
             ))}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-            <Stars rating={rating} size="16px" align="left" />
-            <span style={{ fontSize: 22, fontWeight: 700 }}>{rating ? rating.toFixed(1) : '—'}</span>
-            <span style={{ fontSize: 13, color: 'var(--ink-faint)' }}>({count} recenz{count === 1 ? 'ie' : 'ii'})</span>
+          <div style={{ marginBottom: 12 }}>
+            <RecommendButton doctor={doc} />
+            {count > 0 && (
+              <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 6 }}>
+                {count} recenz{count === 1 ? 'ie' : 'ii'}
+              </div>
+            )}
           </div>
           <div style={{ fontSize: 14, color: 'var(--ink-light)', marginBottom: 8 }}>📍 {doc.city}</div>
           {doc.clinics?.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
               {doc.clinics.map(c => (
-                <Link key={c} href={`/medici?q=${encodeURIComponent(c)}`} className="clinic-tag">
-                  🏥 {c}
-                </Link>
+                <span key={c} style={{ display: 'inline-flex', alignItems: 'center', gap: 3 }}>
+                  <Link href={`/medici?q=${encodeURIComponent(c)}`} className="clinic-tag">
+                    🏥 {c}
+                  </Link>
+                  {doc.clinic_urls?.[c] && (
+                    <a href={doc.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-link-icon">↗</a>
+                  )}
+                </span>
               ))}
             </div>
           )}
@@ -91,10 +98,7 @@ export default async function DoctorDetailPage({ params }) {
           ? revs.map(r => (
             <div key={r.id} className="review-card">
               <div className="review-header">
-                <div>
-                  <Stars rating={r.rating} size="13px" align="left" />
-                  <div className="reviewer-name">{r.reviewer || 'Anonim'}</div>
-                </div>
+                <div className="reviewer-name">{r.reviewer || 'Anonim'}</div>
                 <div className="review-date">{formatDate(r.date)}</div>
               </div>
               <div className="review-text">{r.text}</div>

@@ -13,10 +13,7 @@ export default function Nav() {
     <>
       <nav>
         <Link href="/" className="logo" onClick={closeMenu}>
-          <div className="logo-wordmark">
-            MOMS<span className="green">4</span>MOMS
-            <span className="logo-tagline"> recomandă medici</span>
-          </div>
+          <img src="/logo/logo.png" alt="Moms4Moms" className="logo-img" />
         </Link>
 
         {/* Desktop nav */}

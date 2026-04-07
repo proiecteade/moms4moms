@@ -1,13 +1,12 @@
 'use client'
 import Link from 'next/link'
-import Stars from './Stars'
-import { avatarColor, initials, avgRating } from '@/lib/helpers'
+import { avatarColor, initials } from '@/lib/helpers'
 import { useState } from 'react'
 import AddReviewModal from './AddReviewModal'
+import RecommendButton from './RecommendButton'
 
 export default function DoctorCard({ doctor, reviews = [] }) {
   const [showReview, setShowReview] = useState(false)
-  const rating = avgRating(reviews)
   const count = reviews.length
   const bg = avatarColor(doctor.first_name + (doctor.last_name || ''))
   const init = initials(doctor.first_name, doctor.last_name)
@@ -34,7 +33,18 @@ export default function DoctorCard({ doctor, reviews = [] }) {
           {doctor.clinics?.length > 0 && (
             <div className="tags-row">
               {doctor.clinics.map(c => (
-                <span key={c} className="clinic-tag">🏥 {c}</span>
+                <span key={c} className="clinic-tag">
+                  🏥 {c}
+                  {doctor.clinic_urls?.[c] && (
+                    <a
+                      href={doctor.clinic_urls[c]}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="clinic-link-icon"
+                      onClick={e => e.stopPropagation()}
+                    >↗</a>
+                  )}
+                </span>
               ))}
             </div>
           )}
@@ -45,9 +55,10 @@ export default function DoctorCard({ doctor, reviews = [] }) {
           )}
         </div>
         <div className="doctor-card-right">
-          <Stars rating={rating} />
-          <div className="rating-num">{rating ? rating.toFixed(1) : '—'}</div>
-          <div className="rating-count">{count} recenz{count === 1 ? 'ie' : 'ii'}</div>
+          <RecommendButton doctor={doctor} />
+          {count > 0 && (
+            <div className="rating-count">{count} recenz{count === 1 ? 'ie' : 'ii'}</div>
+          )}
           <button
             className="review-btn"
             onClick={e => { e.preventDefault(); setShowReview(true) }}
