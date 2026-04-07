@@ -44,10 +44,7 @@ export default async function HomePage() {
           style={{ objectFit: 'cover', objectPosition: 'center center', width: '100%', height: 300 }}
         />
         <div className="hero-overlay">
-          <div className="hero-logo-wrap">
-            <img src="/logo/m4m_logo_farafundal_negru.png" alt="Moms4Moms" className="hero-logo" />
-          </div>
-          <div className="hero-badge">💗 Recomandări verificate de mamele din comunitate</div>
+<div className="hero-badge">💗 Recomandări verificate de mamele din comunitate</div>
           <h1>Găsește un medic <em>de încredere</em></h1>
           <HeroSearch cities={cities} />
         </div>
