@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { avatarColor, initials } from '@/lib/helpers'
+import { avatarColor, initials, sortClinics } from '@/lib/helpers'
 import RecommendButton from './RecommendButton'
 
 export default function DoctorCard({ doctor, reviews = [], isTop = false }) {
@@ -31,7 +31,7 @@ export default function DoctorCard({ doctor, reviews = [], isTop = false }) {
           </div>
           {doctor.clinics?.length > 0 && (
             <div className="tags-row">
-              {doctor.clinics.map(c => (
+              {sortClinics(doctor.clinics).map(c => (
                 doctor.clinic_urls?.[c]
                   ? <a key={c} href={doctor.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link" onClick={e => e.stopPropagation()}>🏥 {c}</a>
                   : <span key={c} className="clinic-tag">🏥 {c}</span>

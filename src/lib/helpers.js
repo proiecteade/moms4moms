@@ -37,3 +37,42 @@ export function uid() {
 export function normalize(str) {
   return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
+
+const STATE_HOSPITALS = new Set([
+  'Spitalul Clinic de Urgență „Prof. Dr. Agrippa Ionescu"',
+  'Spitalul Clinic de Urgenta "Bagdasar-Arseni"',
+  'Spitalul Clinic de Urgențe Oftalmologice București',
+  'Spitalul Clinic Colentina',
+  'Spitalul Universitar de Urgență Elias',
+  'Spitalul Clinic de Obstetrica si Ginecologie Filantropia',
+  'Institutul Clinic Fundeni',
+  'Spitalul Clinic de Obstetrică-Ginecologie „Prof. Dr. Panait Sârbu" (Maternitatea Giulești)',
+  'Spitalul Clinic de Urgență pentru Copii Grigore Alexandrescu',
+  'Spitalul Clinic Malaxa',
+  'Spitalul Clinic de Urgență pentru Copii „Maria Skłodowska Curie"',
+  'Institutul de Pneumoftiziologie Marius Nasta',
+  'Spitalul Universitar de Urgenţă Militar Central "Dr. Carol Davila"',
+  'Spitalul Municipal Câmpina',
+  'Spitalul Nord',
+  'Spitalul Clinic de Psihiatrie "Prof. Dr. Alexandru Obregia"',
+  'Spitalul Clinic Polizu (Maternitatea Polizu)',
+  'Spitalul Clinic Prof. Dr. Th. Burghele',
+  'Spitalul Sf. Constantin Brașov',
+  'Spitalul Universitar de Urgență București',
+  'Spitalului Clinic de Copii "Dr. Victor Gomoiu"',
+  'Spitalul Clinic de Urgență pentru Copii Brașov',
+  'Institutul Național pentru Sănătatea Mamei și Copilului "Alessandrescu-Rusescu" București',
+  'Institutul Național de Endocrinologie C. I. Parhon',
+])
+
+const PRIORITY_PRIVATE = ['Regina Maria', 'Medicover', 'MedLife', 'Sanador']
+
+function clinicOrder(name) {
+  if (STATE_HOSPITALS.has(name)) return 0
+  const i = PRIORITY_PRIVATE.indexOf(name)
+  return i !== -1 ? i + 1 : PRIORITY_PRIVATE.length + 1
+}
+
+export function sortClinics(clinics) {
+  return [...(clinics || [])].sort((a, b) => clinicOrder(a) - clinicOrder(b))
+}

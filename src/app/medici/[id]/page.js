@@ -3,7 +3,7 @@ import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
 import ShareButtons from '@/components/ShareButtons'
-import { avatarColor, initials, formatDate } from '@/lib/helpers'
+import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
@@ -73,7 +73,7 @@ export default async function DoctorDetailPage({ params }) {
           </div>
           {docWithUrls.clinics?.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
-              {docWithUrls.clinics.map(c => (
+              {sortClinics(docWithUrls.clinics).map(c => (
                 docWithUrls.clinic_urls?.[c]
                   ? <a key={c} href={docWithUrls.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link">🏥 {c}</a>
                   : <span key={c} className="clinic-tag">🏥 {c}</span>
