@@ -32,7 +32,10 @@ export default async function MediciPage({ searchParams }) {
   const revs = reviews || []
 
   const cities = [...new Set(docs.flatMap(d => (d.city || '').split(',').map(c => c.trim()).filter(Boolean)))].sort()
-  const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))].sort()
+  const allSpecs = [...new Set(
+    docs.flatMap(d => d.specs || [])
+        .map(s => s === 'Endocrinologie' ? 'Endocrinologie adulți' : s)
+  )].sort()
 
   const suggestions = [
     ...allSpecs.map(s => ({ type: 'spec', label: s })),
@@ -58,7 +61,11 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
   if (city) filtered = filtered.filter(d =>
     (d.city || '').split(',').map(c => c.trim()).includes(city)
   )
-  if (spec) filtered = filtered.filter(d => (d.specs || []).includes(spec))
+  if (spec) filtered = filtered.filter(d =>
+    (d.specs || []).some(s =>
+      s === spec || (spec === 'Endocrinologie adulți' && s === 'Endocrinologie')
+    )
+  )
 
   filtered.sort((a, b) => {
     if (sort === 'reviews') return getReviews(b.id).length - getReviews(a.id).length
