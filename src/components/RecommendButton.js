@@ -12,30 +12,18 @@ export default function RecommendButton({ doctor }) {
     setDone(!!localStorage.getItem('rec_' + doctor.id))
   }, [doctor.id])
 
-  async function toggle(e) {
+  async function recommend(e) {
     e.preventDefault()
     e.stopPropagation()
-    if (loading) return
+    if (loading || done) return
     setLoading(true)
     const supabase = createClient()
-
-    if (done) {
-      const recId = localStorage.getItem('rec_' + doctor.id)
-      if (recId && recId !== '1') {
-        const { error } = await supabase.from('recommendations').delete().eq('id', recId)
-        if (error) { setLoading(false); return }
-      }
-      localStorage.removeItem('rec_' + doctor.id)
-      setDone(false)
-      setCount(c => Math.max(0, c - 1))
-    } else {
-      const recId = uid()
-      const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id })
-      if (!error) {
-        localStorage.setItem('rec_' + doctor.id, recId)
-        setDone(true)
-        setCount(c => c + 1)
-      }
+    const recId = uid()
+    const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id })
+    if (!error) {
+      localStorage.setItem('rec_' + doctor.id, recId)
+      setDone(true)
+      setCount(c => c + 1)
     }
     setLoading(false)
   }
@@ -45,8 +33,8 @@ export default function RecommendButton({ doctor }) {
       {count > 0 && <div className="recommend-count">{count} {count === 1 ? 'recomandare' : 'recomandări'}</div>}
       <button
         className={`recommend-btn${done ? ' done' : ''}`}
-        onClick={toggle}
-        disabled={loading}
+        onClick={recommend}
+        disabled={loading || done}
       >
         {loading ? '…' : done ? '✓ Recomandat' : 'Recomandă'}
       </button>
