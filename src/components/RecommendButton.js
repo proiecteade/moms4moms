@@ -32,7 +32,7 @@ export default function RecommendButton({ doctor }) {
 
   return (
     <div className="recommend-wrap">
-{count > 0 && <div className="recommend-count">{count} recomandări</div>}
+{count > 0 && <div className="recommend-count">{count} {count === 1 ? 'recomandare' : 'recomandări'}</div>}
       <button
         className={`recommend-btn${done ? ' done' : ''}`}
         onClick={recommend}
