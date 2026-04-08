@@ -16,6 +16,7 @@ export default async function MediciPage({ searchParams }) {
   const q = (params.q || '').toLowerCase()
   const city = params.city || ''
   const spec = params.spec || ''
+  const clinic = params.clinic || ''
   const sort = params.sort || 'recommended'
   const page = Math.max(1, parseInt(params.page || '1'))
 
@@ -36,6 +37,7 @@ export default async function MediciPage({ searchParams }) {
     docs.flatMap(d => d.specs || [])
         .map(s => s === 'Endocrinologie' ? 'Endocrinologie adulți' : s)
   )].sort()
+  const allClinics = [...new Set(docs.flatMap(d => d.clinics || []))].sort()
 
   const suggestions = [
     ...allSpecs.map(s => ({ type: 'spec', label: s })),
@@ -66,6 +68,7 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
       s === spec || (spec === 'Endocrinologie adulți' && s === 'Endocrinologie')
     )
   )
+  if (clinic) filtered = filtered.filter(d => (d.clinics || []).includes(clinic))
 
   filtered.sort((a, b) => {
     if (sort === 'reviews') return getReviews(b.id).length - getReviews(a.id).length
@@ -84,8 +87,10 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
         <FilterSidebar
           cities={cities}
           specs={allSpecs}
+          clinics={allClinics}
           currentCity={city}
           currentSpec={spec}
+          currentClinic={clinic}
           currentQ={q}
           suggestions={suggestions}
         />
@@ -114,11 +119,11 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
         {totalPages > 1 && (
           <div className="pagination">
             {safePage > 1 ? (
-              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(sort !== 'recommended' && { sort }), page: safePage - 1 }).toString()}`} className="page-btn">← Înapoi</Link>
+              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(sort !== 'recommended' && { sort }), ...(clinic && { clinic }), page: safePage - 1 }).toString()}`} className="page-btn">← Înapoi</Link>
             ) : <span className="page-btn disabled">← Înapoi</span>}
             <span className="page-info">Pagina {safePage} din {totalPages}</span>
             {safePage < totalPages ? (
-              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(sort !== 'recommended' && { sort }), page: safePage + 1 }).toString()}`} className="page-btn">Înainte →</Link>
+              <Link href={`?${new URLSearchParams({ ...(q && { q }), ...(city && { city }), ...(spec && { spec }), ...(sort !== 'recommended' && { sort }), ...(clinic && { clinic }), page: safePage + 1 }).toString()}`} className="page-btn">Înainte →</Link>
             ) : <span className="page-btn disabled">Înainte →</span>}
           </div>
         )}

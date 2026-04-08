@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { avatarColor, initials, sortClinics } from '@/lib/helpers'
 import RecommendButton from './RecommendButton'
 
-export default function DoctorCard({ doctor, reviews = [] }) {
-  const count = reviews.length
+export default function DoctorCard({ doctor }) {
   const bg = avatarColor(doctor.first_name + (doctor.last_name || ''))
   const init = initials(doctor.first_name, doctor.last_name)
 
@@ -48,9 +47,6 @@ export default function DoctorCard({ doctor, reviews = [] }) {
         </div>
         <div className="doctor-card-right">
           <RecommendButton doctor={doctor} />
-          {count > 0 && (
-            <div className="rating-count">{count} {count === 1 ? 'experiență' : 'experiențe'}</div>
-          )}
         </div>
       </Link>
     </>

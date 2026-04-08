@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import SearchInput from './SearchInput'
 
-export default function FilterSidebar({ cities, currentCity, currentSpec, currentQ, suggestions = [], specs = [] }) {
+export default function FilterSidebar({ cities, currentCity, currentSpec, currentQ, suggestions = [], specs = [], clinics = [], currentClinic = '' }) {
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState(currentQ || '')
   const router = useRouter()
@@ -32,7 +32,7 @@ export default function FilterSidebar({ cities, currentCity, currentSpec, curren
     router.push(pathname)
   }
 
-  const hasFilters = currentQ || currentCity || currentSpec
+  const hasFilters = currentQ || currentCity || currentSpec || currentClinic
 
   return (
     <>
@@ -68,6 +68,15 @@ export default function FilterSidebar({ cities, currentCity, currentSpec, curren
             <select className="filter-input" value={currentSpec} onChange={e => update('spec', e.target.value)}>
               <option value="">Toate specialitățile</option>
               {specs.map(s => <option key={s}>{s}</option>)}
+            </select>
+          </div>
+        )}
+        {clinics.length > 0 && (
+          <div className="filter-section">
+            <div className="filter-label">Unitate medicală</div>
+            <select className="filter-input" value={currentClinic} onChange={e => update('clinic', e.target.value)}>
+              <option value="">Toate unitățile</option>
+              {clinics.map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
         )}
