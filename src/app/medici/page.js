@@ -35,6 +35,11 @@ export default async function MediciPage({ searchParams }) {
   const cities = [...new Set(docs.flatMap(d => (d.city || '').split(',').map(c => c.trim()).filter(Boolean)))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))].sort()
 
+  const suggestions = [
+    ...allSpecs.map(s => ({ type: 'spec', label: s })),
+    ...docs.map(d => ({ type: 'doctor', label: `Dr. ${d.first_name}${d.last_name ? ' ' + d.last_name : ''}` })),
+  ]
+
   const topDocIds = new Set(
     [...docs]
       .sort((a, b) => (b.recommendations_count || 0) - (a.recommendations_count || 0))
@@ -83,6 +88,7 @@ export default async function MediciPage({ searchParams }) {
           currentCity={city}
           currentSpec={spec}
           currentQ={q}
+          suggestions={suggestions}
         />
       </Suspense>
       <div className="doctors-area">

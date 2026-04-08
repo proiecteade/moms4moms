@@ -253,6 +253,21 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .suggest-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border-strong);border-radius:8px;background:white;color:var(--ink-light);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
 .suggest-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-light);}
 
+/* SEARCH AUTOCOMPLETE */
+.search-input-wrap{position:relative;flex:1;min-width:0;}
+.search-input-wrap input{width:100%;border:none;outline:none;font-family:'Nunito',sans-serif;font-size:15px;color:var(--ink);background:transparent;padding:16px 0;}
+.search-input-wrap input::placeholder{color:var(--ink-faint);}
+.filter-section .search-input-wrap input{padding:9px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--warm);font-size:14px;transition:border-color 0.15s;}
+.filter-section .search-input-wrap input:focus{border-color:var(--teal);background:white;}
+.search-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1px solid var(--border-strong);border-radius:12px;box-shadow:var(--shadow-hover);z-index:300;overflow:hidden;max-height:320px;overflow-y:auto;}
+.search-dropdown-group-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);padding:8px 14px 4px;}
+.search-dropdown-item{padding:9px 14px;font-size:14px;color:var(--ink);cursor:pointer;display:flex;align-items:center;gap:8px;transition:background 0.1s;}
+.search-dropdown-item:hover,.search-dropdown-item.active{background:var(--teal-light);color:var(--teal);}
+.suggestion-spec-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);flex-shrink:0;}
+/* hero search input inside search-input-wrap */
+.hero-search-field .search-input-wrap{display:flex;align-items:center;}
+.hero-search-field .search-dropdown{top:calc(100% + 12px);left:-46px;}
+
 /* SPEC CHIPS BAR */
 .spec-chips-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
 

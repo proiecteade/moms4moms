@@ -2,17 +2,25 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AddDoctorModal from './AddDoctorModal'
+import SearchInput from './SearchInput'
 
-export default function HeroSearch({ cities }) {
+export default function HeroSearch({ cities, suggestions = [] }) {
   const [q, setQ] = useState('')
   const [city, setCity] = useState('')
   const [showModal, setShowModal] = useState(false)
   const router = useRouter()
 
-  function search() {
+  function search(query = q) {
     const params = new URLSearchParams()
-    if (q.trim()) params.set('q', q.trim())
+    if ((query || q).trim()) params.set('q', (query || q).trim())
     if (city) params.set('city', city)
+    router.push('/medici?' + params.toString())
+  }
+
+  function goSpec(spec) {
+    const params = new URLSearchParams()
+    if (city) params.set('city', city)
+    params.set('spec', spec)
     router.push('/medici?' + params.toString())
   }
 
@@ -24,12 +32,13 @@ export default function HeroSearch({ cities }) {
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
-            <input
-              type="text"
-              placeholder="Medic sau specialitate…"
+            <SearchInput
+              suggestions={suggestions}
               value={q}
-              onChange={e => setQ(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && search()}
+              onChange={setQ}
+              onSearch={search}
+              onSpecSelect={goSpec}
+              placeholder="Medic sau specialitate…"
             />
           </div>
           <div className="hero-search-sep" />
@@ -42,7 +51,7 @@ export default function HeroSearch({ cities }) {
               {cities.map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
-          <button onClick={search}>Caută</button>
+          <button onClick={() => search()}>Caută</button>
         </div>
         <div className="hero-or">sau</div>
         <button className="hero-recommend-btn" onClick={() => setShowModal(true)}>
