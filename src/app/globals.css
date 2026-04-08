@@ -341,9 +341,11 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 @media (max-width: 768px) {
   .main-layout { grid-template-columns: 1fr; padding: 1rem; }
   .doctors-area { padding-top: 1rem; padding-left: 0; }
-  .filters-toggle-btn { display: block; }
+  .filters-toggle-btn { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
   .filters-sidebar { display: none; position: static; }
-  .filters-sidebar.mobile-open { display: block; margin-bottom: 1rem; }
+  .filters-sidebar.mobile-open { display: block; margin-bottom: 1rem; width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
+  .filter-section { min-width: 0; }
+  .filter-input { width: 100%; min-width: 0; box-sizing: border-box; }
   .filter-chip { white-space: nowrap; flex-shrink: 0; }
   .filter-input { font-size: 16px; }
   .sort-select { font-size: 16px; }
