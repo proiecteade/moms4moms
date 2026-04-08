@@ -3,6 +3,7 @@ import { normalize } from '@/lib/helpers'
 import DoctorCard from '@/components/DoctorCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import SortSelect from '@/components/SortSelect'
+import AddDoctorButton from '@/components/AddDoctorButton'
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
@@ -100,13 +101,14 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
           <div className="results-count">
             {filtered.length} medic{filtered.length === 1 ? '' : 'i'} găs{filtered.length === 1 ? 'it' : 'iți'}
           </div>
-          <Suspense>
-            <SortSelect current={sort} />
-          </Suspense>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <Suspense><SortSelect current={sort} /></Suspense>
+            <AddDoctorButton />
+          </div>
         </div>
         <div className="doctors-list">
           {paginated.length > 0
-            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} />)
+            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviewCount={getReviews(d.id).length} />)
             : (
               <div className="empty-state">
                 <span className="empty-icon">🔍</span>

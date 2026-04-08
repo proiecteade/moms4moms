@@ -14,7 +14,9 @@ export default function AdminPage() {
 
   const [pendingDocs, setPendingDocs] = useState([])
   const [pendingReviews, setPendingReviews] = useState([])
+  const [approvedReviews, setApprovedReviews] = useState([])
   const [suggestions, setSuggestions] = useState([])
+  const [showArchivedSuggestions, setShowArchivedSuggestions] = useState(false)
   const [feedback, setFeedback] = useState([])
   const [allDocs, setAllDocs] = useState([])
   const [docSearch, setDocSearch] = useState('')
@@ -22,6 +24,7 @@ export default function AdminPage() {
   const [editDoc, setEditDoc] = useState(null)
   const [editSpecs, setEditSpecs] = useState([])
   const [editClinics, setEditClinics] = useState([''])
+  const [editReview, setEditReview] = useState(null) // { id, text }
 
   const supabase = createClient()
 
@@ -36,18 +39,20 @@ export default function AdminPage() {
   }, [])
 
   const loadData = useCallback(async () => {
-    const [a, b, c, d, e] = await Promise.all([
+    const [a, b, c, d, e, f] = await Promise.all([
       supabase.from('doctors').select('*').eq('status', 'pending'),
       supabase.from('reviews').select('*, doctors(first_name,last_name,specs)').eq('status', 'pending'),
-      supabase.from('suggestions').select('*').order('date', { ascending: false }),
+      supabase.from('reviews').select('*, doctors(first_name,last_name)').eq('status', 'approved').order('date', { ascending: false }),
+      supabase.from('suggestions').select('*, doctors(*)').order('date', { ascending: false }),
       supabase.from('site_feedback').select('*').order('date', { ascending: false }),
       supabase.from('doctors').select('*').order('last_name').order('first_name'),
     ])
     setPendingDocs(a.data || [])
     setPendingReviews(b.data || [])
-    setSuggestions(c.data || [])
-    setFeedback(d.data || [])
-    setAllDocs(e.data || [])
+    setApprovedReviews(c.data || [])
+    setSuggestions(d.data || [])
+    setFeedback(e.data || [])
+    setAllDocs(f.data || [])
   }, [])
 
   useEffect(() => { if (session) loadData() }, [session, loadData])
@@ -78,12 +83,27 @@ export default function AdminPage() {
     await supabase.from('reviews').delete().eq('id', id)
     loadData()
   }
-  async function dismissSuggestion(id) {
-    await supabase.from('suggestions').delete().eq('id', id)
+  async function archiveSuggestion(id) {
+    await supabase.from('suggestions').update({ archived: true }).eq('id', id)
     loadData()
   }
-  async function dismissFeedback(id) {
-    await supabase.from('site_feedback').delete().eq('id', id)
+  async function unarchiveSuggestion(id) {
+    await supabase.from('suggestions').update({ archived: false }).eq('id', id)
+    loadData()
+  }
+  async function setFeedbackStatus(id, status) {
+    await supabase.from('site_feedback').update({ status }).eq('id', id)
+    loadData()
+  }
+  async function deleteApprovedReview(id) {
+    if (!confirm('Ștergi această recenzie?')) return
+    await supabase.from('reviews').delete().eq('id', id)
+    loadData()
+  }
+  async function saveReviewEdit() {
+    if (!editReview) return
+    await supabase.from('reviews').update({ text: editReview.text }).eq('id', editReview.id)
+    setEditReview(null)
     loadData()
   }
   async function removeDoc(id) {
@@ -142,11 +162,16 @@ export default function AdminPage() {
     (d.specs || []).some(s => s.toLowerCase().includes(docSearch.toLowerCase()))
   )
 
+  const activeSuggestions = suggestions.filter(s => !s.archived)
+  const archivedSuggestions = suggestions.filter(s => s.archived)
+  const newFeedback = feedback.filter(f => !f.status)
+
   const TABS = [
     { id: 'pending-docs', label: 'Medici în așteptare', count: pendingDocs.length },
     { id: 'pending-reviews', label: 'Recenzii în așteptare', count: pendingReviews.length },
-    { id: 'suggestions', label: 'Sugestii modificare', count: suggestions.length },
-    { id: 'site-feedback', label: 'Feedback site', count: feedback.length },
+    { id: 'approved-reviews', label: 'Recenzii publicate', count: null },
+    { id: 'suggestions', label: 'Sugestii modificare', count: activeSuggestions.length },
+    { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'all-docs', label: 'Toți medicii', count: null },
   ]
 
@@ -216,11 +241,65 @@ export default function AdminPage() {
         </div>
       )}
 
+      {tab === 'approved-reviews' && (
+        <div>
+          {approvedReviews.length === 0
+            ? <EmptyState icon="💬" label="Nu există recenzii publicate" />
+            : approvedReviews.map(r => {
+              const doc = r.doctors
+              const isEditing = editReview?.id === r.id
+              return (
+                <div key={r.id} className="admin-card" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 8 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                    <div className="admin-card-info">
+                      <div className="admin-card-name">{doc ? `Dr. ${doc.first_name} ${doc.last_name || ''}` : '—'}</div>
+                      <div className="admin-card-sub">{r.reviewer || 'Anonim'} • {r.date} • {r.rating >= 4 ? '😊' : '😔'}</div>
+                      {!isEditing && <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 6 }}>{r.text || <em>fără text</em>}</div>}
+                    </div>
+                    <div className="admin-card-actions">
+                      <button className="btn-edit" onClick={() => setEditReview(isEditing ? null : { id: r.id, text: r.text || '' })}>
+                        {isEditing ? '✕ Anulează' : '✎ Editează'}
+                      </button>
+                      <button className="btn-reject" onClick={() => deleteApprovedReview(r.id)}>✕ Șterge</button>
+                    </div>
+                  </div>
+                  {isEditing && (
+                    <div>
+                      <textarea
+                        className="form-textarea"
+                        value={editReview.text}
+                        onChange={e => setEditReview(r => ({ ...r, text: e.target.value }))}
+                        style={{ marginBottom: 8 }}
+                      />
+                      <button className="btn-approve" onClick={saveReviewEdit}>✓ Salvează</button>
+                    </div>
+                  )}
+                </div>
+              )
+            })
+          }
+        </div>
+      )}
+
       {tab === 'suggestions' && (
         <div>
-          {suggestions.length === 0
-            ? <EmptyState icon="✅" label="Nu există sugestii" />
-            : suggestions.map(s => (
+          <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
+            <button
+              className={`admin-tab${!showArchivedSuggestions ? ' active' : ''}`}
+              onClick={() => setShowArchivedSuggestions(false)}
+            >
+              Active ({activeSuggestions.length})
+            </button>
+            <button
+              className={`admin-tab${showArchivedSuggestions ? ' active' : ''}`}
+              onClick={() => setShowArchivedSuggestions(true)}
+            >
+              Arhivă ({archivedSuggestions.length})
+            </button>
+          </div>
+          {(showArchivedSuggestions ? archivedSuggestions : activeSuggestions).length === 0
+            ? <EmptyState icon="✅" label={showArchivedSuggestions ? 'Arhiva e goală' : 'Nu există sugestii active'} />
+            : (showArchivedSuggestions ? archivedSuggestions : activeSuggestions).map(s => (
               <div key={s.id} className="admin-card">
                 <div className="admin-card-info">
                   <div className="admin-card-name">{s.doctor_name}</div>
@@ -228,7 +307,13 @@ export default function AdminPage() {
                   <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{s.text}</div>
                 </div>
                 <div className="admin-card-actions">
-                  <button className="btn-reject" onClick={() => dismissSuggestion(s.id)}>✕ Arhivează</button>
+                  {s.doctors && (
+                    <button className="btn-edit" onClick={() => openEdit(s.doctors)}>✎ Editează medic</button>
+                  )}
+                  {!showArchivedSuggestions
+                    ? <button className="btn-reject" onClick={() => archiveSuggestion(s.id)}>↓ Arhivează</button>
+                    : <button className="btn-approve" onClick={() => unarchiveSuggestion(s.id)}>↑ Dezarhivează</button>
+                  }
                 </div>
               </div>
             ))
@@ -240,18 +325,33 @@ export default function AdminPage() {
         <div>
           {feedback.length === 0
             ? <EmptyState icon="💬" label="Nu există feedback pentru site" />
-            : feedback.map(f => (
-              <div key={f.id} className="admin-card">
-                <div className="admin-card-info">
-                  <div className="admin-card-name">{f.rating ? '★'.repeat(f.rating)+'☆'.repeat(5-f.rating) : 'Fără rating'}</div>
-                  <div className="admin-card-sub">{f.date}</div>
-                  <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{f.text || '—'}</div>
+            : feedback.map(f => {
+              const statusBadge = f.status === 'implemented'
+                ? <span style={{ background: 'var(--teal-light)', color: 'var(--teal)', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10 }}>✓ Implementat</span>
+                : f.status === 'not_implemented'
+                  ? <span style={{ background: 'var(--rose-light)', color: 'var(--rose)', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10 }}>✗ Neimplementat</span>
+                  : <span style={{ background: 'var(--amber-light)', color: 'var(--amber)', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10 }}>Nou</span>
+              return (
+                <div key={f.id} className="admin-card">
+                  <div className="admin-card-info">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                      <div className="admin-card-name">{f.rating ? '★'.repeat(f.rating)+'☆'.repeat(5-f.rating) : 'Fără rating'}</div>
+                      {statusBadge}
+                    </div>
+                    <div className="admin-card-sub">{f.date}</div>
+                    <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{f.text || '—'}</div>
+                  </div>
+                  <div className="admin-card-actions">
+                    {f.status !== 'implemented' && (
+                      <button className="btn-approve" onClick={() => setFeedbackStatus(f.id, 'implemented')}>✓ Implementat</button>
+                    )}
+                    {f.status !== 'not_implemented' && (
+                      <button className="btn-reject" onClick={() => setFeedbackStatus(f.id, 'not_implemented')}>✗ Neimplementat</button>
+                    )}
+                  </div>
                 </div>
-                <div className="admin-card-actions">
-                  <button className="btn-reject" onClick={() => dismissFeedback(f.id)}>✕ Arhivează</button>
-                </div>
-              </div>
-            ))
+              )
+            })
           }
         </div>
       )}

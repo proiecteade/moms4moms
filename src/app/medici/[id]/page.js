@@ -50,8 +50,11 @@ export default async function DoctorDetailPage({ params }) {
             : <div className="detail-avatar" style={{ background: bg }}>{init}</div>
           }
           <div className="detail-hero-info">
-            <div className="detail-name">
-              Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
+            <div className="detail-hero-name-row">
+              <div className="detail-name">
+                Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
+              </div>
+              <RecommendButton doctor={docWithUrls} />
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {(doc.specs || []).map(s => (
@@ -65,15 +68,6 @@ export default async function DoctorDetailPage({ params }) {
 
         {/* BODY: recomandări, locație, clinici, acțiuni */}
         <div className="detail-body">
-          <div className="recommend-wrap">
-            <RecommendButton doctor={docWithUrls} />
-            {count > 0 && (
-              <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>
-                {count} recenz{count === 1 ? 'ie' : 'ii'}
-              </div>
-            )}
-          </div>
-
           {doc.obs && (
             <div style={{ padding: '0.5rem 1.75rem', display: 'flex', flexWrap: 'wrap', gap: 4 }}>
               {doc.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
@@ -110,7 +104,7 @@ export default async function DoctorDetailPage({ params }) {
 
       <div className="reviews-section">
         <div className="section-title">
-          Experiențe
+          Experiențele pacienților
           <WriteReviewLink doctor={doc} />
         </div>
         {revs.length > 0

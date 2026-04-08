@@ -6,6 +6,8 @@ import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
+const CLINIC_NAMES = Object.keys(KNOWN_CLINIC_URLS)
+
 export default function AddDoctorModal({ onClose }) {
   const toast = useToast()
   const [firstName, setFirstName] = useState('')
@@ -15,7 +17,8 @@ export default function AddDoctorModal({ onClose }) {
   const [clinics, setClinics] = useState([''])
   const [clinicUrls, setClinicUrls] = useState({})
   const [obs, setObs] = useState('')
-  const [note, setNote] = useState('')
+  const [sentiment, setSentiment] = useState(null)
+  const [expText, setExpText] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
@@ -27,7 +30,6 @@ export default function AddDoctorModal({ onClose }) {
   function updateClinic(i, val) {
     const oldName = clinics[i]
     setClinics(c => c.map((x, j) => j === i ? val : x))
-    // Auto-fill URL if known clinic
     setClinicUrls(prev => {
       const next = { ...prev }
       if (oldName && next[oldName] !== undefined) delete next[oldName]
@@ -58,11 +60,9 @@ export default function AddDoctorModal({ onClose }) {
     setLoading(true)
     const supabase = createClient()
     const filteredClinics = clinics.filter(Boolean)
-    // Only keep URLs for clinics that are in the final list
     const finalUrls = {}
-    filteredClinics.forEach(c => {
-      if (clinicUrls[c]) finalUrls[c] = clinicUrls[c]
-    })
+    filteredClinics.forEach(c => { if (clinicUrls[c]) finalUrls[c] = clinicUrls[c] })
+    const note = sentiment ? (expText.trim() ? `${sentiment}: ${expText.trim()}` : sentiment) : ''
     const { error } = await supabase.from('doctors').insert({
       id: uid(),
       first_name: firstName.trim(),
@@ -72,7 +72,7 @@ export default function AddDoctorModal({ onClose }) {
       clinics: filteredClinics,
       clinic_urls: finalUrls,
       obs: obs.trim(),
-      note: note.trim(),
+      note,
       status: 'pending',
       submitted_at: Date.now(),
     })
@@ -135,7 +135,7 @@ export default function AddDoctorModal({ onClose }) {
                 <input className="form-input" placeholder="ex: București" value={city} onChange={e => setCity(e.target.value)} />
               </div>
               <div className="form-group">
-                <label className="form-label">Spital / Clinică</label>
+                <label className="form-label">Unitate medicală</label>
                 <div className="clinics-editor">
                   {clinics.map((c, i) => (
                     <div key={i} className="clinic-row-group">
@@ -144,8 +144,12 @@ export default function AddDoctorModal({ onClose }) {
                           className="form-input"
                           placeholder="ex: Regina Maria"
                           value={c}
+                          list={`clinic-list-${i}`}
                           onChange={e => updateClinic(i, e.target.value)}
                         />
+                        <datalist id={`clinic-list-${i}`}>
+                          {CLINIC_NAMES.map(n => <option key={n} value={n} />)}
+                        </datalist>
                         {i > 0 && <button className="btn-remove-clinic" type="button" onClick={() => removeClinic(i)}>×</button>}
                       </div>
                       {c && (
@@ -159,15 +163,33 @@ export default function AddDoctorModal({ onClose }) {
                     </div>
                   ))}
                 </div>
-                <button className="btn-add-clinic" type="button" onClick={addClinic} style={{ marginTop: 8 }}>+ Adaugă altă clinică</button>
+                <button className="btn-add-clinic" type="button" onClick={addClinic} style={{ marginTop: 8 }}>+ Adaugă altă unitate</button>
               </div>
               <div className="form-group">
                 <label className="form-label">Observații utile (opțional)</label>
                 <input className="form-input" placeholder="ex: merge cu bilet de trimitere, vede copii peste 2 ani…" value={obs} onChange={e => setObs(e.target.value)} />
               </div>
               <div className="form-group">
-                <label className="form-label">De ce o/îl recomanzi? (opțional)</label>
-                <textarea className="form-textarea" placeholder="Scrie câteva cuvinte despre experiența ta…" value={note} onChange={e => setNote(e.target.value)} />
+                <label className="form-label">Cum a fost experiența ta? (opțional)</label>
+                <div className="sentiment-row">
+                  <button type="button" className={`sentiment-btn${sentiment === 'happy' ? ' selected happy' : ''}`} onClick={() => setSentiment(s => s === 'happy' ? null : 'happy')}>
+                    <span className="sentiment-emoji">😊</span>
+                    <span>Pozitivă</span>
+                  </button>
+                  <button type="button" className={`sentiment-btn${sentiment === 'sad' ? ' selected sad' : ''}`} onClick={() => setSentiment(s => s === 'sad' ? null : 'sad')}>
+                    <span className="sentiment-emoji">😔</span>
+                    <span>Negativă</span>
+                  </button>
+                </div>
+                {sentiment && (
+                  <textarea
+                    className="form-textarea"
+                    style={{ marginTop: 8 }}
+                    placeholder="Câteva cuvinte despre experiența ta… (opțional)"
+                    value={expText}
+                    onChange={e => setExpText(e.target.value)}
+                  />
+                )}
               </div>
               <button className="submit-btn" onClick={submit} disabled={loading}>
                 {loading ? 'Se trimite…' : 'Trimite recomandarea'}

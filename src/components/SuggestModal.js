@@ -38,7 +38,7 @@ export default function SuggestModal({ doctor, onClose }) {
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
               <div style={{ fontSize: 40, marginBottom: 12 }}>✅</div>
               <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 8 }}>Mulțumim!</div>
-              <div style={{ color: 'var(--ink-light)', fontSize: 14 }}>Sugestia a fost trimisă.</div>
+              <div style={{ color: 'var(--ink-light)', fontSize: 14 }}>Sugestia a fost trimisă și va fi verificată înainte de publicare.</div>
               <button className="submit-btn" style={{ marginTop: 20 }} onClick={onClose}>Închide</button>
             </div>
           ) : (
