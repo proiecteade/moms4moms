@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
-import ShareButtons from '@/components/ShareButtons'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
@@ -42,37 +41,60 @@ export default async function DoctorDetailPage({ params }) {
     <div className="doctor-detail">
       <Link href="/medici" className="back-btn">← Înapoi la lista de medici</Link>
 
-      <div className="detail-hero">
-        {doc.photo_url
-          ? <img src={doc.photo_url} className="detail-avatar" alt={`Dr. ${doc.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
-          : <div className="detail-avatar" style={{ background: bg }}>{init}</div>
-        }
-        <div style={{ flex: 1 }}>
-          <div className="detail-name">
-            Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
+      <div className="doctor-card-wrap">
+        {/* HERO: avatar + nume + specialitate */}
+        <div className="detail-hero">
+          {doc.photo_url
+            ? <img src={doc.photo_url} className="detail-avatar" alt={`Dr. ${doc.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
+            : <div className="detail-avatar" style={{ background: bg }}>{init}</div>
+          }
+          <div className="detail-hero-info">
+            <div className="detail-name">
+              Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+              {(doc.specs || []).map(s => (
+                <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="spec-badge">
+                  {s}
+                </Link>
+              ))}
+            </div>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 10 }}>
-            {(doc.specs || []).map(s => (
-              <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="spec-badge">
-                {s}
-              </Link>
-            ))}
-          </div>
-          <div style={{ marginBottom: 12 }}>
+        </div>
+
+        {/* BODY: recomandări, locație, clinici, acțiuni */}
+        <div className="detail-body">
+          <div className="recommend-wrap">
             <RecommendButton doctor={docWithUrls} />
             {count > 0 && (
-              <div style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 6 }}>
+              <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>
                 {count} recenz{count === 1 ? 'ie' : 'ii'}
               </div>
             )}
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
+
+          {doc.obs && (
+            <div style={{ padding: '0.5rem 1.75rem', display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {doc.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
+                <span key={i} className="obs-tag" style={{ fontSize: 13 }}>ℹ️ {o}</span>
+              ))}
+            </div>
+          )}
+
+          {doc.note && (
+            <div style={{ margin: '0 1.75rem 0.5rem', padding: 12, background: 'var(--teal-light)', borderRadius: 10, fontSize: 14, color: 'var(--teal)', fontStyle: 'italic' }}>
+              &ldquo;{doc.note}&rdquo;
+            </div>
+          )}
+
+          <div className="detail-location">
             {(doc.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
-              <span key={c} style={{ fontSize: 14, color: 'var(--ink-light)' }}>📍 {c}</span>
+              <span key={c}>📍 {c}</span>
             ))}
           </div>
+
           {docWithUrls.clinics?.length > 0 && (
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
+            <div className="detail-clinics">
               {sortClinics(docWithUrls.clinics).map(c => (
                 docWithUrls.clinic_urls?.[c]
                   ? <a key={c} href={docWithUrls.clinic_urls[c]} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link">🏥 {c}</a>
@@ -80,20 +102,8 @@ export default async function DoctorDetailPage({ params }) {
               ))}
             </div>
           )}
-          {doc.obs && (
-            <div style={{ marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
-              {doc.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
-                <span key={i} className="obs-tag" style={{ fontSize: 13 }}>ℹ️ {o}</span>
-              ))}
-            </div>
-          )}
-          {doc.note && (
-            <div style={{ marginTop: 10, padding: 12, background: 'var(--teal-light)', borderRadius: 10, fontSize: 14, color: 'var(--teal)', fontStyle: 'italic' }}>
-              &ldquo;{doc.note}&rdquo;
-            </div>
-          )}
+
           <DetailActions doctor={doc} />
-          <ShareButtons doctor={doc} />
         </div>
       </div>
 
