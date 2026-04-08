@@ -8,16 +8,12 @@ import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 export default async function HomePage() {
   const supabase = await createClient()
 
-  const [{ data: doctors }, { data: reviews }] = await Promise.all([
-    supabase.from('doctors').select('*').eq('status', 'approved'),
-    supabase.from('reviews').select('*').eq('status', 'approved'),
-  ])
+  const { data: doctors } = await supabase.from('doctors').select('*').eq('status', 'approved')
 
   const docs = (doctors || []).map(d => ({
     ...d,
     clinic_urls: Object.fromEntries((d.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
   }))
-  const revs = reviews || []
 
   const cities = [...new Set(docs.flatMap(d => (d.city || '').split(',').map(c => c.trim()).filter(Boolean)))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))]
@@ -34,7 +30,6 @@ export default async function HomePage() {
   const featured = [...docs]
     .sort((a, b) => (b.recommendations_count || 0) - (a.recommendations_count || 0))
     .slice(0, 3)
-    .map(d => ({ d, reviews: revs.filter(r => r.doctor_id === d.id) }))
 
   return (
     <>
@@ -70,11 +65,11 @@ export default async function HomePage() {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1100, margin: '2rem auto', padding: '0 2rem' }}>
+      <div className="home-section">
         <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: '1.25rem' }}>Cei mai recomandați</h2>
         <div className="doctors-list">
-          {featured.map(({ d, reviews: dr }) => (
-            <DoctorCard key={d.id} doctor={d} reviews={dr} />
+          {featured.map(d => (
+            <DoctorCard key={d.id} doctor={d} />
           ))}
         </div>
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
