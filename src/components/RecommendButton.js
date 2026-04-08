@@ -22,7 +22,8 @@ export default function RecommendButton({ doctor }) {
     if (done) {
       const recId = localStorage.getItem('rec_' + doctor.id)
       if (recId && recId !== '1') {
-        await supabase.from('recommendations').delete().eq('id', recId)
+        const { error } = await supabase.from('recommendations').delete().eq('id', recId)
+        if (error) { setLoading(false); return }
       }
       localStorage.removeItem('rec_' + doctor.id)
       setDone(false)
