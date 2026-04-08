@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
+import WriteReviewLink from '@/components/WriteReviewLink'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
@@ -108,7 +109,10 @@ export default async function DoctorDetailPage({ params }) {
       </div>
 
       <div className="reviews-section">
-        <div className="section-title">Experiențe</div>
+        <div className="section-title">
+          Experiențe
+          <WriteReviewLink doctor={doc} />
+        </div>
         {revs.length > 0
           ? revs.map(r => {
             const emoji = r.rating >= 4 ? '😊' : r.rating > 0 && r.rating < 3 ? '😔' : null
@@ -125,7 +129,7 @@ export default async function DoctorDetailPage({ params }) {
               </div>
             )
           })
-          : <div className="no-reviews">Fii prima care împărtășește experiența ta! 💗</div>
+          : <div className="no-reviews">Fii primul care împărtășește experiența ta! 💗</div>
         }
       </div>
     </div>

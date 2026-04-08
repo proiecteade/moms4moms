@@ -209,20 +209,21 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .recommend-btn.done{border-color:var(--border);color:var(--ink-faint);cursor:default;}
 .detail-location{padding:0.9rem 1.75rem 0.3rem;font-size:0.88rem;color:#777;font-weight:500;display:flex;flex-wrap:wrap;gap:8px;}
 .detail-clinics{padding:0.3rem 1.75rem 0.9rem;display:flex;flex-wrap:wrap;gap:0.45rem;}
-.detail-actions{border-top:1px solid #f0f3f2;display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;padding:1rem 1.5rem 1.5rem;}
+.detail-actions{border-top:1px solid #f0f3f2;display:flex;flex-direction:column;gap:0.6rem;padding:1rem 1.5rem 1.5rem;}
 .detail-actions button{border-radius:11px;padding:9px 10px;font-size:0.84rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.3rem;transition:all 0.18s;font-family:'Nunito',sans-serif;}
+.detail-actions .share-row{display:flex;gap:0.6rem;}
+.detail-actions .share-row button{flex:1;}
 .suggest-btn{background:#f5f6f4;color:#555;border:1.5px solid #dfe1db;}
 .suggest-btn:hover{background:#eceee9;border-color:#c8cac3;}
 .review-btn{background:linear-gradient(135deg,#3dbfa0,#2a8068);color:white;border:none;box-shadow:0 3px 10px rgba(45,138,114,0.3);}
 .review-btn:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(45,138,114,0.4);}
 .share-btn{background:#f5f6f4;color:#555;border:1.5px solid #dfe1db;}
 .share-btn:hover{background:#eceee9;border-color:#c8cac3;}
-.share-btn-wa{background:linear-gradient(135deg,#25d97a,#1aab5e);color:white;border:none;box-shadow:0 3px 10px rgba(37,211,102,0.22);}
-.share-btn-wa:hover{transform:translateY(-1px);box-shadow:0 5px 14px rgba(37,211,102,0.3);}
+.write-review-link{background:none;border:none;color:var(--teal);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;padding:0;white-space:nowrap;}
 
 /* REVIEWS SECTION */
 .reviews-section{border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,0.07);border:none;background:white;overflow:hidden;margin-bottom:1.25rem;}
-.section-title{font-size:1.05rem;font-weight:800;color:#132220;padding:1.3rem 1.75rem 1rem;margin:0;display:block;border-bottom:1px solid #f0f3f1;}
+.section-title{font-size:1.05rem;font-weight:800;color:#132220;padding:1.3rem 1.75rem 1rem;margin:0;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #f0f3f1;}
 .review-card{padding:1rem 1.75rem;border-bottom:1px solid var(--border);}
 .review-card:last-child{border-bottom:none;padding-bottom:1rem;}
 .review-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
@@ -349,7 +350,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .results-header { flex-wrap: wrap; gap: 8px; }
   .doctor-detail { padding: 1rem; }
   .detail-hero { padding: 1.25rem 1.25rem; gap: 1rem; }
-  .detail-actions { grid-template-columns: 1fr 1fr; padding: 0.85rem 1rem 1.25rem; gap: 0.5rem; }
+  .detail-actions { padding: 0.85rem 1rem 1.25rem; gap: 0.5rem; }
   .recommend-wrap { padding: 0.75rem 1.25rem; }
   .detail-location { padding: 0.75rem 1.25rem 0.25rem; }
   .detail-clinics { padding: 0.25rem 1.25rem 0.75rem; }
