@@ -46,7 +46,7 @@ export default function HeroSearch({ cities }) {
         </div>
         <div className="hero-or">sau</div>
         <button className="hero-recommend-btn" onClick={() => setShowModal(true)}>
-          + Recomandă un medic
+          + Adaugă un medic
         </button>
       </div>
       {showModal && <AddDoctorModal onClose={() => setShowModal(false)} />}

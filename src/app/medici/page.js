@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import DoctorCard from '@/components/DoctorCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import SortSelect from '@/components/SortSelect'
+import SpecChipsBar from '@/components/SpecChipsBar'
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
@@ -33,6 +34,14 @@ export default async function MediciPage({ searchParams }) {
   const cities = [...new Set(docs.map(d => d.city))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))].sort()
 
+  const topDocIds = new Set(
+    [...docs]
+      .sort((a, b) => (b.recommendations_count || 0) - (a.recommendations_count || 0))
+      .slice(0, 3)
+      .filter(d => (d.recommendations_count || 0) > 0)
+      .map(d => d.id)
+  )
+
   function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
 
   let filtered = docs
@@ -60,14 +69,15 @@ export default async function MediciPage({ searchParams }) {
       <Suspense>
         <FilterSidebar
           cities={cities}
-          specs={allSpecs}
           currentCity={city}
           currentSpec={spec}
           currentQ={q}
-          currentSort={sort}
         />
       </Suspense>
       <div className="doctors-area">
+        <Suspense>
+          <SpecChipsBar specs={allSpecs} currentSpec={spec} />
+        </Suspense>
         <div className="results-header">
           <div className="results-count">
             {filtered.length} medic{filtered.length === 1 ? '' : 'i'} găs{filtered.length === 1 ? 'it' : 'iți'}
@@ -78,11 +88,12 @@ export default async function MediciPage({ searchParams }) {
         </div>
         <div className="doctors-list">
           {paginated.length > 0
-            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} />)
+            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} isTop={topDocIds.has(d.id)} />)
             : (
               <div className="empty-state">
                 <span className="empty-icon">🔍</span>
-                <div className="empty-label">Nu există medici pentru filtrele selectate</div>
+                <div className="empty-label">Nu am găsit medici pentru filtrele selectate</div>
+                <Link href="/medici" className="empty-reset">Resetează filtrele</Link>
               </div>
             )
           }

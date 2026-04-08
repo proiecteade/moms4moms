@@ -69,7 +69,7 @@ export default async function HomePage() {
         <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: '1.25rem' }}>Cei mai recomandați</h2>
         <div className="doctors-list">
           {featured.map(({ d, reviews: dr }) => (
-            <DoctorCard key={d.id} doctor={d} reviews={dr} />
+            <DoctorCard key={d.id} doctor={d} reviews={dr} isTop={(d.recommendations_count || 0) > 0} />
           ))}
         </div>
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>

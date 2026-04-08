@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
+import ShareButtons from '@/components/ShareButtons'
 import { avatarColor, initials, formatDate } from '@/lib/helpers'
 import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
@@ -86,22 +87,29 @@ export default async function DoctorDetailPage({ params }) {
             </div>
           )}
           <DetailActions doctor={doc} />
+          <ShareButtons doctor={doc} />
         </div>
       </div>
 
       <div className="reviews-section">
-        <div className="section-title">Recenzii</div>
+        <div className="section-title">Experiențe</div>
         {revs.length > 0
-          ? revs.map(r => (
-            <div key={r.id} className="review-card">
-              <div className="review-header">
-                <div className="reviewer-name">{r.reviewer || 'Anonim'}</div>
-                <div className="review-date">{formatDate(r.date)}</div>
+          ? revs.map(r => {
+            const emoji = r.rating >= 4 ? '😊' : r.rating > 0 && r.rating < 3 ? '😔' : null
+            return (
+              <div key={r.id} className="review-card">
+                <div className="review-header">
+                  <div className="reviewer-name">
+                    {emoji && <span className="review-sentiment">{emoji}</span>}
+                    {r.reviewer || 'Anonim'}
+                  </div>
+                  <div className="review-date">{formatDate(r.date)}</div>
+                </div>
+                {r.text && <div className="review-text">{r.text}</div>}
               </div>
-              <div className="review-text">{r.text}</div>
-            </div>
-          ))
-          : <div className="no-reviews">Fii primul care lasă un feedback! 💗</div>
+            )
+          })
+          : <div className="no-reviews">Fii prima care împărtășește experiența ta! 💗</div>
         }
       </div>
     </div>

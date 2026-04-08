@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { uid } from '@/lib/helpers'
 
-export default function RecommendButton({ doctor }) {
+export default function RecommendButton({ doctor, isTop = false }) {
   const [count, setCount] = useState(doctor.recommendations_count || 0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -29,8 +29,6 @@ export default function RecommendButton({ doctor }) {
       setCount(c => c + 1)
     }
   }
-
-  const isTop = count >= 5
 
   return (
     <div className="recommend-wrap">

@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 
-export default function FilterSidebar({ cities, specs, currentCity, currentSpec, currentQ, currentSort }) {
+export default function FilterSidebar({ cities, currentCity, currentSpec, currentQ }) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -12,14 +12,6 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
     const params = new URLSearchParams(searchParams.toString())
     if (value) params.set(key, value)
     else params.delete(key)
-    params.delete('page')
-    router.push(pathname + '?' + params.toString())
-  }
-
-  function setSpec(s) {
-    const params = new URLSearchParams(searchParams.toString())
-    if (currentSpec === s) params.delete('spec')
-    else params.set('spec', s)
     params.delete('page')
     router.push(pathname + '?' + params.toString())
   }
@@ -56,20 +48,6 @@ export default function FilterSidebar({ cities, specs, currentCity, currentSpec,
           <option value="">Toate localitățile</option>
           {cities.map(c => <option key={c}>{c}</option>)}
         </select>
-      </div>
-      <div className="filter-section">
-        <div className="filter-label">Specialitate</div>
-        <div className="filter-chip-group">
-          {specs.map(s => (
-            <button
-              key={s}
-              className={`filter-chip${currentSpec === s ? ' active' : ''}`}
-              onClick={() => setSpec(s)}
-            >
-              {s}
-            </button>
-          ))}
-        </div>
       </div>
       <button className="clear-btn" onClick={clearAll}>✕ Resetează filtrele</button>
     </div>

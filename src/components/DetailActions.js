@@ -10,7 +10,7 @@ export default function DetailActions({ doctor, reviewOnly = false }) {
   if (reviewOnly) {
     return (
       <>
-        <button className="review-btn" onClick={() => setShowReview(true)}>+ Adaugă recenzie</button>
+        <button className="review-btn" onClick={() => setShowReview(true)}>💬 Scrie experiența ta</button>
         {showReview && <AddReviewModal doctor={doctor} onClose={() => setShowReview(false)} />}
       </>
     )
@@ -20,7 +20,7 @@ export default function DetailActions({ doctor, reviewOnly = false }) {
     <>
       <div style={{ marginTop: 14, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
         <button className="suggest-btn" onClick={() => setShowSuggest(true)}>✏️ Sugerează o modificare</button>
-        <button className="review-btn" onClick={() => setShowReview(true)}>+ Adaugă recenzie</button>
+        <button className="review-btn" onClick={() => setShowReview(true)}>💬 Scrie experiența ta</button>
       </div>
       {showReview && <AddReviewModal doctor={doctor} onClose={() => setShowReview(false)} />}
       {showSuggest && <SuggestModal doctor={doctor} onClose={() => setShowSuggest(false)} />}

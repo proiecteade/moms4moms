@@ -253,6 +253,31 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .suggest-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border:1px solid var(--border-strong);border-radius:8px;background:white;color:var(--ink-light);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
 .suggest-btn:hover{border-color:var(--amber);color:var(--amber);background:var(--amber-light);}
 
+/* SPEC CHIPS BAR */
+.spec-chips-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
+
+/* SHARE BUTTONS */
+.share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.share-btn{padding:7px 14px;border-radius:8px;border:1px solid var(--border-strong);background:white;color:var(--ink-light);font-family:'Nunito',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.share-btn:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-light);}
+.share-btn-wa{border-color:#25D366;color:#25D366;}
+.share-btn-wa:hover{background:#e8faf0;border-color:#1da851;color:#1da851;}
+
+/* SENTIMENT PICKER */
+.sentiment-row{display:flex;gap:10px;margin-top:4px;}
+.sentiment-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 10px;border-radius:12px;border:2px solid var(--border-strong);background:white;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);transition:all 0.15s;}
+.sentiment-btn:hover{border-color:var(--teal);color:var(--teal);}
+.sentiment-btn.selected.happy{border-color:#7AB648;background:#f0f9e8;color:#5a9030;}
+.sentiment-btn.selected.sad{border-color:var(--rose);background:var(--rose-light);color:var(--rose);}
+.sentiment-emoji{font-size:28px;line-height:1;}
+
+/* REVIEW SENTIMENT */
+.review-sentiment{margin-right:5px;}
+
+/* EMPTY STATE RESET */
+.empty-reset{display:inline-block;margin-top:1rem;padding:9px 20px;border-radius:9px;border:1px solid var(--border-strong);background:white;color:var(--teal);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;text-decoration:none;transition:all 0.15s;}
+.empty-reset:hover{background:var(--teal);color:white;border-color:var(--teal);}
+
 /* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
 .page-btn{padding:8px 18px;border-radius:9px;border:1px solid var(--border-strong);background:white;color:var(--ink);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:all 0.15s;}
@@ -279,6 +304,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .filters-toggle-btn { display: block; }
   .filters-sidebar { display: none; position: static; }
   .filters-sidebar.mobile-open { display: block; margin-bottom: 1rem; }
+  .spec-chips-bar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 4px; }
+  .spec-chips-bar::-webkit-scrollbar { display: none; }
+  .filter-chip { white-space: nowrap; flex-shrink: 0; }
   .doctor-card { grid-template-columns: 46px 1fr; }
   .doctor-card-right { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .detail-hero { flex-direction: column; }
