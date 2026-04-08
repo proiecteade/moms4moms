@@ -26,7 +26,7 @@ export default function Footer() {
     <footer style={{ background: 'white', borderTop: '1px solid var(--border)', padding: '2rem 1.5rem', marginTop: '3rem' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap' }}>
         <div>
-          <img src="/logo/logo2.png" alt="Moms4Moms" style={{ height: 100, width: 'auto', display: 'block', marginBottom: 8 }} />
+          <img src="/logo/m4m_logo_farafundal_negru.png" alt="Moms4Moms" style={{ height: 100, width: 'auto', display: 'block', marginBottom: 8 }} />
           <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>© Moms4Moms, 2026</div>
         </div>
         <div>

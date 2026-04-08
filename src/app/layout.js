@@ -1,6 +1,5 @@
 import './globals.css'
-import Nav from '@/components/Nav'
-import Footer from '@/components/Footer'
+import SiteShell from '@/components/SiteShell'
 import { ToastProvider } from '@/components/Toast'
 
 export const metadata = {
@@ -13,9 +12,9 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body>
         <ToastProvider>
-          <Nav />
-          {children}
-          <Footer />
+          <SiteShell>
+            {children}
+          </SiteShell>
         </ToastProvider>
       </body>
     </html>
