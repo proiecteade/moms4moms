@@ -40,15 +40,7 @@ export default async function MediciPage({ searchParams }) {
     ...docs.map(d => ({ type: 'doctor', label: `Dr. ${d.first_name}${d.last_name ? ' ' + d.last_name : ''}` })),
   ]
 
-  const topDocIds = new Set(
-    [...docs]
-      .sort((a, b) => (b.recommendations_count || 0) - (a.recommendations_count || 0))
-      .slice(0, 3)
-      .filter(d => (d.recommendations_count || 0) > 0)
-      .map(d => d.id)
-  )
-
-  function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
+function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
 
   const nq = normalize(q)
   let filtered = docs
@@ -105,7 +97,7 @@ export default async function MediciPage({ searchParams }) {
         </div>
         <div className="doctors-list">
           {paginated.length > 0
-            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} isTop={topDocIds.has(d.id)} />)
+            ? paginated.map(d => <DoctorCard key={d.id} doctor={d} reviews={getReviews(d.id)} />)
             : (
               <div className="empty-state">
                 <span className="empty-icon">🔍</span>

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { uid } from '@/lib/helpers'
 
-export default function RecommendButton({ doctor, isTop = false }) {
+export default function RecommendButton({ doctor }) {
   const [count, setCount] = useState(doctor.recommendations_count || 0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -32,8 +32,7 @@ export default function RecommendButton({ doctor, isTop = false }) {
 
   return (
     <div className="recommend-wrap">
-      {isTop && <div className="top-badge">⭐ Medic de top</div>}
-      {count > 0 && <div className="recommend-count">{count} recomandări</div>}
+{count > 0 && <div className="recommend-count">{count} recomandări</div>}
       <button
         className={`recommend-btn${done ? ' done' : ''}`}
         onClick={recommend}
