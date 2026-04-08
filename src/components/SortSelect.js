@@ -15,7 +15,6 @@ export default function SortSelect({ current }) {
   return (
     <select className="sort-select" value={current} onChange={onChange}>
       <option value="recommended">Cele mai multe recomandări</option>
-      <option value="reviews">Cele mai multe experiențe</option>
       <option value="name">Alfabetic (A–Z)</option>
     </select>
   )
