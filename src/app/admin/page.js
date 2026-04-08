@@ -84,15 +84,18 @@ export default function AdminPage() {
     loadData()
   }
   async function archiveSuggestion(id) {
-    await supabase.from('suggestions').update({ archived: true }).eq('id', id)
+    const { error } = await supabase.from('suggestions').update({ archived: true }).eq('id', id)
+    if (error) { toast('Eroare: ' + error.message, 'error'); return }
     loadData()
   }
   async function unarchiveSuggestion(id) {
-    await supabase.from('suggestions').update({ archived: false }).eq('id', id)
+    const { error } = await supabase.from('suggestions').update({ archived: false }).eq('id', id)
+    if (error) { toast('Eroare: ' + error.message, 'error'); return }
     loadData()
   }
   async function setFeedbackStatus(id, status) {
-    await supabase.from('site_feedback').update({ status }).eq('id', id)
+    const { error } = await supabase.from('site_feedback').update({ status }).eq('id', id)
+    if (error) { toast('Eroare: ' + error.message, 'error'); return }
     loadData()
   }
   async function deleteApprovedReview(id) {
