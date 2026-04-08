@@ -62,9 +62,9 @@ export default function AddDoctorModal({ onClose }) {
     const filteredClinics = clinics.filter(Boolean)
     const finalUrls = {}
     filteredClinics.forEach(c => { if (clinicUrls[c]) finalUrls[c] = clinicUrls[c] })
-    const note = sentiment ? (expText.trim() ? `${sentiment}: ${expText.trim()}` : sentiment) : ''
+    const doctorId = uid()
     const { error } = await supabase.from('doctors').insert({
-      id: uid(),
+      id: doctorId,
       first_name: firstName.trim(),
       last_name: lastName.trim(),
       specs,
@@ -72,12 +72,22 @@ export default function AddDoctorModal({ onClose }) {
       clinics: filteredClinics,
       clinic_urls: finalUrls,
       obs: obs.trim(),
-      note,
       status: 'pending',
       submitted_at: Date.now(),
     })
+    if (error) { setLoading(false); toast('Eroare. Încearcă din nou.', 'error'); return }
+    if (sentiment || expText.trim()) {
+      const rating = sentiment === 'happy' ? 5 : sentiment === 'sad' ? 1 : 0
+      await supabase.from('reviews').insert({
+        id: uid(),
+        doctor_id: doctorId,
+        rating,
+        text: expText.trim(),
+        date: todayISO(),
+        status: 'pending',
+      })
+    }
     setLoading(false)
-    if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
     setDone(true)
   }
 
