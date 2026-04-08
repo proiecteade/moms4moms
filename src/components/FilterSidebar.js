@@ -65,17 +65,10 @@ export default function FilterSidebar({ cities, currentCity, currentSpec, curren
         {specs.length > 0 && (
           <div className="filter-section">
             <div className="filter-label">Specialitate</div>
-            <div className="filter-chip-group">
-              {specs.map(s => (
-                <button
-                  key={s}
-                  className={`filter-chip${currentSpec === s ? ' active' : ''}`}
-                  onClick={() => update('spec', currentSpec === s ? '' : s)}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
+            <select className="filter-input" value={currentSpec} onChange={e => update('spec', e.target.value)}>
+              <option value="">Toate specialitățile</option>
+              {specs.map(s => <option key={s}>{s}</option>)}
+            </select>
           </div>
         )}
         <button className="clear-btn" onClick={clearAll}>✕ Resetează filtrele</button>
