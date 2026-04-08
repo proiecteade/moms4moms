@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { SPECIALTIES } from '@/lib/constants'
-import { doctorFullName } from '@/lib/helpers'
+import { doctorFullName, avatarColor, initials } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 
 export default function AdminPage() {
@@ -43,7 +43,7 @@ export default function AdminPage() {
       supabase.from('doctors').select('*').eq('status', 'pending'),
       supabase.from('reviews').select('*, doctors(first_name,last_name,specs)').eq('status', 'pending'),
       supabase.from('reviews').select('*, doctors(first_name,last_name)').eq('status', 'approved').order('date', { ascending: false }),
-      supabase.from('suggestions').select('*, doctors(*)').order('date', { ascending: false }),
+      supabase.from('suggestions').select('*').order('date', { ascending: false }),
       supabase.from('site_feedback').select('*').order('date', { ascending: false }),
       supabase.from('doctors').select('*').order('last_name').order('first_name'),
     ])
@@ -198,20 +198,46 @@ export default function AdminPage() {
         <div>
           {pendingDocs.length === 0
             ? <EmptyState icon="✅" label="Nu există medici în așteptare" />
-            : pendingDocs.map(d => (
-              <div key={d.id} className="admin-card">
-                <div className="admin-card-info">
-                  <div className="admin-card-name">{doctorFullName(d)}</div>
-                  <div className="admin-card-sub">{(d.specs || []).join(', ')} • {d.city}{d.clinics?.length ? ' • ' + d.clinics.join(', ') : ''}</div>
-                  {d.obs && <div style={{ fontSize: 12, color: 'var(--amber)', marginTop: 3 }}>ℹ️ {d.obs}</div>}
+            : pendingDocs.map(d => {
+              const bg = avatarColor(d.first_name + (d.last_name || ''))
+              const init = initials(d.first_name, d.last_name)
+              return (
+                <div key={d.id} className="doctor-card" style={{ cursor: 'default', marginBottom: 12 }}>
+                  {d.photo_url
+                    ? <img src={d.photo_url} className="doctor-avatar" alt="" style={{ objectFit: 'cover', objectPosition: 'top' }} />
+                    : <div className="doctor-avatar" style={{ background: bg }}>{init}</div>
+                  }
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="doctor-name">Dr. {d.first_name}{d.last_name ? ' ' + d.last_name : ''}</div>
+                    <div className="doctor-specs">
+                      {(d.specs || []).map(s => <span key={s} className="spec-badge">{s}</span>)}
+                    </div>
+                    <div className="doctor-meta">
+                      {(d.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                        <span key={c} className="meta-pill">📍 {c}</span>
+                      ))}
+                    </div>
+                    {d.clinics?.length > 0 && (
+                      <div className="tags-row">
+                        {d.clinics.map(c => <span key={c} className="clinic-tag">🏥 {c}</span>)}
+                      </div>
+                    )}
+                    {d.obs && (
+                      <div className="tags-row">
+                        {d.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
+                          <span key={i} className="obs-tag">ℹ️ {o}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="admin-card-actions" onClick={e => e.stopPropagation()}>
+                    <button className="btn-approve" onClick={() => approveDoc(d.id)}>✓ Aprobă</button>
+                    <button className="btn-edit" onClick={() => openEdit(d)}>✎ Editează</button>
+                    <button className="btn-reject" onClick={() => rejectDoc(d.id)}>✕ Respinge</button>
+                  </div>
                 </div>
-                <div className="admin-card-actions">
-                  <button className="btn-approve" onClick={() => approveDoc(d.id)}>✓ Aprobă</button>
-                  <button className="btn-edit" onClick={() => openEdit(d)}>✎ Editează</button>
-                  <button className="btn-reject" onClick={() => rejectDoc(d.id)}>✕ Respinge</button>
-                </div>
-              </div>
-            ))
+              )
+            })
           }
         </div>
       )}
@@ -299,24 +325,27 @@ export default function AdminPage() {
           </div>
           {(showArchivedSuggestions ? archivedSuggestions : activeSuggestions).length === 0
             ? <EmptyState icon="✅" label={showArchivedSuggestions ? 'Arhiva e goală' : 'Nu există sugestii active'} />
-            : (showArchivedSuggestions ? archivedSuggestions : activeSuggestions).map(s => (
-              <div key={s.id} className="admin-card">
-                <div className="admin-card-info">
-                  <div className="admin-card-name">{s.doctor_name}</div>
-                  <div className="admin-card-sub">{s.date}</div>
-                  <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{s.text}</div>
+            : (showArchivedSuggestions ? archivedSuggestions : activeSuggestions).map(s => {
+              const doc = allDocs.find(d => d.id === s.doctor_id)
+              return (
+                <div key={s.id} className="admin-card">
+                  <div className="admin-card-info">
+                    <div className="admin-card-name">{s.doctor_name}</div>
+                    <div className="admin-card-sub">{s.date}</div>
+                    <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{s.text}</div>
+                  </div>
+                  <div className="admin-card-actions">
+                    {doc && (
+                      <button className="btn-edit" onClick={() => openEdit(doc)}>✎ Editează medic</button>
+                    )}
+                    {!showArchivedSuggestions
+                      ? <button className="btn-reject" onClick={() => archiveSuggestion(s.id)}>↓ Arhivează</button>
+                      : <button className="btn-approve" onClick={() => unarchiveSuggestion(s.id)}>↑ Dezarhivează</button>
+                    }
+                  </div>
                 </div>
-                <div className="admin-card-actions">
-                  {s.doctors && (
-                    <button className="btn-edit" onClick={() => openEdit(s.doctors)}>✎ Editează medic</button>
-                  )}
-                  {!showArchivedSuggestions
-                    ? <button className="btn-reject" onClick={() => archiveSuggestion(s.id)}>↓ Arhivează</button>
-                    : <button className="btn-approve" onClick={() => unarchiveSuggestion(s.id)}>↑ Dezarhivează</button>
-                  }
-                </div>
-              </div>
-            ))
+              )
+            })
           }
         </div>
       )}
