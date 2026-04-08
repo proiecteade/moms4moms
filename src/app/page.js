@@ -48,7 +48,7 @@ export default async function HomePage() {
           height={300}
           className="hero-bg"
           priority
-          style={{ objectFit: 'cover', objectPosition: 'center center', width: '100%', height: 300 }}
+          style={{ objectFit: 'cover', objectPosition: 'center center', width: '100%' }}
         />
         <div className="hero-overlay">
 <div className="hero-badge">💗 Recomandări verificate de mamele din comunitate</div>

@@ -8,7 +8,7 @@
   --white:#FFFFFF; --shadow:0 2px 16px rgba(44,36,32,0.06); --shadow-hover:0 8px 32px rgba(44,36,32,0.11);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh;}
+body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
 
 /* NAV */
 nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100;}
@@ -364,8 +364,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .burger-btn { display: flex; }
   .mobile-menu { display: block; }
   .logo-tagline { font-size: 14px; }
-  .hero-bg { height: 240px; }
-  .hero-overlay { padding: 1.25rem 1rem; }
+  .hero { min-height: 380px; }
+  .hero-bg { height: 300px; min-height: 380px; object-fit: cover; }
+  .hero-overlay { padding: 1.25rem 1rem; justify-content: flex-start; padding-top: 2rem; }
   .hero h1 { font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 1rem; }
   .hero-search { border-radius: 12px; flex-direction: column; width: calc(100% - 2rem); }
   .hero-search-field input { font-size: 16px; }
@@ -373,11 +374,15 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .search-input-wrap input { font-size: 16px; }
   .hero-search-sep { width: 100%; height: 1px; margin: 0; }
   .hero-search button { border-radius: 0 0 12px 12px; width: 100%; padding: 14px 28px; }
+  .hero-search-field .search-dropdown { left: 0; }
+  .hero-recommend-btn { width: 100%; max-width: 680px; }
   .stats-row { gap: 1.5rem; padding: 1.25rem 1rem; }
   .feedback-float { bottom: 1.5rem; left: 1rem; }
   .feedback-box { width: calc(100vw - 2rem); left: 0; }
   .recommend-btn, .page-btn, .nav-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
-  .home-section { padding: 0 0; }
+  .home-section { padding: 1.5rem 1rem 0; }
+  .tags-row { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .clinic-tag { max-width: 240px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 }
 
 @media (max-width: 480px) {
