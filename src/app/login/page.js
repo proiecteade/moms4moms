@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage() {
   const [error, setError] = useState('')
@@ -13,27 +12,31 @@ export default function LoginPage() {
     e.preventDefault()
     setError('')
     setLoading(true)
-    const supabase = createClient()
-    const email = e.target.email.value
-    const password = e.target.password.value
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
-      setError('Email sau parolă incorectă.')
-      setLoading(false)
-    } else {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: e.target.username.value,
+        password: e.target.password.value,
+      }),
+    })
+    if (res.ok) {
       router.push('/')
       router.refresh()
+    } else {
+      setError('Credențiale incorecte.')
+      setLoading(false)
     }
   }
 
   return (
     <div className="admin-login">
       <div className="admin-login-title">Moms4Moms</div>
-      <div className="admin-login-sub">Introdu email și parola pentru a accesa site-ul.</div>
+      <div className="admin-login-sub">Introdu user și parola pentru a accesa site-ul.</div>
       <form onSubmit={handleLogin}>
         <div className="form-group">
-          <label className="form-label">Email</label>
-          <input className="form-input" name="email" type="email" placeholder="admin@moms4moms.ro" required />
+          <label className="form-label">User</label>
+          <input className="form-input" name="username" type="text" placeholder="admin" required />
         </div>
         <div className="form-group">
           <label className="form-label">Parolă</label>
