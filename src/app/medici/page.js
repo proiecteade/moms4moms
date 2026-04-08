@@ -47,12 +47,18 @@ export default async function MediciPage({ searchParams }) {
 
   const nq = normalize(q)
   let filtered = docs
-  if (q) filtered = filtered.filter(d =>
-    normalize(d.first_name + ' ' + d.last_name).includes(nq) ||
-    (d.specs || []).some(s => normalize(s).includes(nq)) ||
-    (d.clinics || []).some(c => normalize(c).includes(nq)) ||
-    normalize(d.city).includes(nq)
-  )
+  if (q) {
+    const queryTokens = nq.split(/\s+/).filter(Boolean)
+    filtered = filtered.filter(d => {
+      const tokens = [
+        ...normalize(d.first_name + ' ' + d.last_name).split(/[\s\-]+/),
+        ...(d.specs || []).flatMap(s => normalize(s).split(/[\s\/\-]+/)),
+        ...(d.clinics || []).flatMap(c => normalize(c).split(/[\s\-]+/)),
+        ...normalize(d.city).split(/[\s,\-]+/),
+      ].filter(Boolean)
+      return queryTokens.every(qt => tokens.some(t => t.includes(qt)))
+    })
+  }
   if (city) filtered = filtered.filter(d =>
     (d.city || '').split(',').map(c => c.trim()).includes(city)
   )
