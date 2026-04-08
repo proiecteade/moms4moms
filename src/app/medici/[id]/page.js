@@ -22,15 +22,17 @@ export default async function DoctorDetailPage({ params }) {
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: doc }, { data: reviews }] = await Promise.all([
+  const [{ data: doc }, { data: reviews }, { count: recCount }] = await Promise.all([
     supabase.from('doctors').select('*').eq('id', id).single(),
     supabase.from('reviews').select('*').eq('doctor_id', id).eq('status', 'approved'),
+    supabase.from('recommendations').select('*', { count: 'exact', head: true }).eq('doctor_id', id),
   ])
 
   if (!doc) notFound()
 
   const docWithUrls = {
     ...doc,
+    recommendations_count: recCount || 0,
     clinic_urls: Object.fromEntries((doc.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
   }
   const revs = reviews || []
