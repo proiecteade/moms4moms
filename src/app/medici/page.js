@@ -3,7 +3,6 @@ import { normalize } from '@/lib/helpers'
 import DoctorCard from '@/components/DoctorCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import SortSelect from '@/components/SortSelect'
-import SpecChipsBar from '@/components/SpecChipsBar'
 import { Suspense } from 'react'
 import Link from 'next/link'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
@@ -77,6 +76,7 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
       <Suspense>
         <FilterSidebar
           cities={cities}
+          specs={allSpecs}
           currentCity={city}
           currentSpec={spec}
           currentQ={q}
@@ -84,9 +84,6 @@ function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
         />
       </Suspense>
       <div className="doctors-area">
-        <Suspense>
-          <SpecChipsBar specs={allSpecs} currentSpec={spec} />
-        </Suspense>
         <div className="results-header">
           <div className="results-count">
             {filtered.length} medic{filtered.length === 1 ? '' : 'i'} găs{filtered.length === 1 ? 'it' : 'iți'}

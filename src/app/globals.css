@@ -267,8 +267,6 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .hero-search-field .search-input-wrap{display:flex;align-items:center;}
 .hero-search-field .search-dropdown{top:calc(100% + 12px);left:-46px;}
 
-/* SPEC CHIPS BAR */
-.spec-chips-bar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem;}
 
 /* SHARE BUTTONS */
 .share-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
@@ -318,8 +316,6 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .filters-toggle-btn { display: block; }
   .filters-sidebar { display: none; position: static; }
   .filters-sidebar.mobile-open { display: block; margin-bottom: 1rem; }
-  .spec-chips-bar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -ms-overflow-style: none; padding-bottom: 4px; }
-  .spec-chips-bar::-webkit-scrollbar { display: none; }
   .filter-chip { white-space: nowrap; flex-shrink: 0; }
   .doctor-card { grid-template-columns: 46px 1fr; }
   .doctor-card-right { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; }

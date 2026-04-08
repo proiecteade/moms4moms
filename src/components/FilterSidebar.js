@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import SearchInput from './SearchInput'
 
-export default function FilterSidebar({ cities, currentCity, currentSpec, currentQ, suggestions = [] }) {
+export default function FilterSidebar({ cities, currentCity, currentSpec, currentQ, suggestions = [], specs = [] }) {
   const [open, setOpen] = useState(false)
   const [q, setQ] = useState(currentQ || '')
   const router = useRouter()
@@ -62,6 +62,22 @@ export default function FilterSidebar({ cities, currentCity, currentSpec, curren
             {cities.map(c => <option key={c}>{c}</option>)}
           </select>
         </div>
+        {specs.length > 0 && (
+          <div className="filter-section">
+            <div className="filter-label">Specialitate</div>
+            <div className="filter-chip-group">
+              {specs.map(s => (
+                <button
+                  key={s}
+                  className={`filter-chip${currentSpec === s ? ' active' : ''}`}
+                  onClick={() => update('spec', currentSpec === s ? '' : s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <button className="clear-btn" onClick={clearAll}>✕ Resetează filtrele</button>
       </div>
     </>
