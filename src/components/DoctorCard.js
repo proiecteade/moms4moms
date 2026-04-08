@@ -25,7 +25,9 @@ export default function DoctorCard({ doctor, reviews = [], isTop = false }) {
             ))}
           </div>
           <div className="doctor-meta">
-            <span className="meta-pill">📍 {doctor.city}</span>
+            {(doctor.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
+              <span key={c} className="meta-pill">📍 {c}</span>
+            ))}
           </div>
           {doctor.clinics?.length > 0 && (
             <div className="tags-row">
@@ -38,7 +40,9 @@ export default function DoctorCard({ doctor, reviews = [], isTop = false }) {
           )}
           {doctor.obs && (
             <div className="tags-row">
-              <span className="obs-tag">ℹ️ {doctor.obs}</span>
+              {doctor.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
+                <span key={i} className="obs-tag">ℹ️ {o}</span>
+              ))}
             </div>
           )}
         </div>

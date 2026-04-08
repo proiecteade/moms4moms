@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { normalize } from '@/lib/helpers'
 import DoctorCard from '@/components/DoctorCard'
 import FilterSidebar from '@/components/FilterSidebar'
 import SortSelect from '@/components/SortSelect'
@@ -31,7 +32,7 @@ export default async function MediciPage({ searchParams }) {
   }))
   const revs = reviews || []
 
-  const cities = [...new Set(docs.map(d => d.city))].sort()
+  const cities = [...new Set(docs.flatMap(d => (d.city || '').split(',').map(c => c.trim()).filter(Boolean)))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))].sort()
 
   const topDocIds = new Set(
@@ -44,13 +45,17 @@ export default async function MediciPage({ searchParams }) {
 
   function getReviews(id) { return revs.filter(r => r.doctor_id === id) }
 
+  const nq = normalize(q)
   let filtered = docs
   if (q) filtered = filtered.filter(d =>
-    (d.first_name + ' ' + d.last_name).toLowerCase().includes(q) ||
-    (d.specs || []).some(s => s.toLowerCase().includes(q)) ||
-    (d.clinics || []).some(c => c.toLowerCase().includes(q))
+    normalize(d.first_name + ' ' + d.last_name).includes(nq) ||
+    (d.specs || []).some(s => normalize(s).includes(nq)) ||
+    (d.clinics || []).some(c => normalize(c).includes(nq)) ||
+    normalize(d.city).includes(nq)
   )
-  if (city) filtered = filtered.filter(d => d.city === city)
+  if (city) filtered = filtered.filter(d =>
+    (d.city || '').split(',').map(c => c.trim()).includes(city)
+  )
   if (spec) filtered = filtered.filter(d => (d.specs || []).includes(spec))
 
   filtered.sort((a, b) => {

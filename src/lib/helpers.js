@@ -33,3 +33,7 @@ export function todayISO() {
 export function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2)
 }
+
+export function normalize(str) {
+  return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}

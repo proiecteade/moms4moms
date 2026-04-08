@@ -66,7 +66,11 @@ export default async function DoctorDetailPage({ params }) {
               </div>
             )}
           </div>
-          <div style={{ fontSize: 14, color: 'var(--ink-light)', marginBottom: 8 }}>📍 {doc.city}</div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 8 }}>
+            {(doc.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
+              <span key={c} style={{ fontSize: 14, color: 'var(--ink-light)' }}>📍 {c}</span>
+            ))}
+          </div>
           {docWithUrls.clinics?.length > 0 && (
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, marginBottom: 8 }}>
               {docWithUrls.clinics.map(c => (
@@ -77,8 +81,10 @@ export default async function DoctorDetailPage({ params }) {
             </div>
           )}
           {doc.obs && (
-            <div style={{ marginBottom: 8 }}>
-              <span className="obs-tag" style={{ fontSize: 13 }}>ℹ️ {doc.obs}</span>
+            <div style={{ marginBottom: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {doc.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
+                <span key={i} className="obs-tag" style={{ fontSize: 13 }}>ℹ️ {o}</span>
+              ))}
             </div>
           )}
           {doc.note && (
