@@ -125,7 +125,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .doctors-list{display:flex;flex-direction:column;gap:.9rem;}
 
 .doctor-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.4rem;display:grid;grid-template-columns:54px 1fr;gap:1.1rem;align-items:start;transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;text-decoration:none;color:inherit;}
-.doctor-info{min-width:0;overflow:hidden;}
+.doctor-info{min-width:0;overflow:hidden;position:relative;}
+.card-share-btns{position:absolute;top:0;right:0;display:flex;gap:6px;}
+.card-share-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border-strong);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;color:var(--teal);}
+.card-share-btn:hover{border-color:var(--teal);background:var(--teal-light);}
+.card-share-btn-wa{color:#25D366;border-color:rgba(37,211,102,0.4);}
+.card-share-btn-wa:hover{border-color:#25D366;background:#f0fdf4;}
 .doctor-card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);}
 .doctor-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:white;flex-shrink:0;overflow:hidden;}
 .doctor-name{font-weight:700;font-size:15.5px;line-height:1.25;color:var(--ink);margin-bottom:1px;}
