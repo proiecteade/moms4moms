@@ -267,9 +267,13 @@ export default function AdminPage() {
                   <div className="admin-card-info">
                     <div className="admin-card-name">
                       {r.rating >= 4 ? '😊' : r.rating > 0 && r.rating <= 3 ? '😔' : '💬'} {r.reviewer || 'Anonim'}
+                      {r.is_anonymous && <span style={{ marginLeft: 6, fontSize: 11, color: 'var(--ink-faint)' }}>(anonim)</span>}
                       {r.parent_id && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, color: 'var(--teal)', background: 'var(--teal-light)', padding: '2px 8px', borderRadius: 10 }}>↩ reply</span>}
                     </div>
-                    <div className="admin-card-sub">{doc ? `Dr. ${doc.first_name} ${doc.last_name || ''} (${(doc.specs||[]).join(', ')})` : ''} • {r.date}</div>
+                    <div className="admin-card-sub">
+                      {doc ? `Dr. ${doc.first_name} ${doc.last_name || ''} (${(doc.specs||[]).join(', ')})` : ''} • {r.date}
+                      {r.user_email && <span style={{ marginLeft: 8, color: 'var(--teal)', fontWeight: 600 }}>👤 {r.user_email}</span>}
+                    </div>
                     {r.parent_id && parentReviewsMap[r.parent_id] && (
                       <div style={{ fontSize: 12, color: 'var(--ink-faint)', background: 'var(--cream)', padding: '6px 10px', borderRadius: 8, margin: '6px 0', borderLeft: '3px solid var(--teal)' }}>
                         La comentariul lui <strong>{parentReviewsMap[r.parent_id].reviewer || 'Anonim'}</strong>: „{(parentReviewsMap[r.parent_id].text || '').slice(0, 100)}{(parentReviewsMap[r.parent_id].text || '').length > 100 ? '…' : ''}"
@@ -300,7 +304,10 @@ export default function AdminPage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
                     <div className="admin-card-info">
                       <div className="admin-card-name">{doc ? `Dr. ${doc.first_name} ${doc.last_name || ''}` : '—'}</div>
-                      <div className="admin-card-sub">{r.reviewer || 'Anonim'} • {r.date} • {r.rating >= 4 ? '😊' : '😔'}</div>
+                      <div className="admin-card-sub">
+                        {r.reviewer || 'Anonim'}{r.is_anonymous ? ' (anonim)' : ''} • {r.date} • {r.rating >= 4 ? '😊' : '😔'}
+                        {r.user_email && <span style={{ marginLeft: 8, color: 'var(--teal)', fontWeight: 600 }}>👤 {r.user_email}</span>}
+                      </div>
                       {!isEditing && <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 6 }}>{r.text || <em>fără text</em>}</div>}
                     </div>
                     <div className="admin-card-actions">

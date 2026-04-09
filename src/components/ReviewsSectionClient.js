@@ -53,6 +53,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
       date: todayISO(),
       status: 'pending',
       user_id: user.id,
+      user_email: user.email,
       is_anonymous: isAnonymous,
     })
     setFormLoading(false)
