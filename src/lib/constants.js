@@ -1,6 +1,6 @@
 const SPEC_EMOJI_MAP = {
   'cardiologie':       '❤️',
-  'chirurgie':         '🩹',
+  'chirurgie':         '✂️',
   'neurochirurgie':    '🧠',
   'dermatologie':      '🫧',
   'diabetologie':      '🩸',
