@@ -6,7 +6,7 @@ const SPEC_EMOJI_MAP = {
   'diabetologie':      '🩸',
   'ecografie':         '🔊',
   'endocrinologie':    '🦋',
-  'gastroenterologie': '🫃',
+  'gastroenterologie': '💊',
   'obstetrică':        '🤰',
   'hematologie':       '🩸',
   'imagistică':        '🩻',
