@@ -103,10 +103,9 @@ export default async function DoctorDetailPage({ params }) {
               ))}
             </div>
           )}
+          {/* CHIPS: Recomandă + Comentează */}
+          <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
         </div>
-
-        {/* CHIPS: Recomandă + Comentează */}
-        <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
 
         {/* ACTIONS: Sugerează + Share — pe bej, jos */}
         <DetailActions doctor={doc} />

@@ -211,7 +211,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 
 /* DOCTOR CARD WRAP */
 .doctor-card-wrap{border-radius:20px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,0.09);margin-bottom:1.25rem;}
-.detail-footer-chips{padding:1rem 1.75rem;border-top:1px solid var(--border);border-bottom:none;margin:0;}
+.detail-footer-chips{padding:0.75rem 1.75rem 1rem;}
 
 /* HERO */
 .detail-hero{background:linear-gradient(150deg,#cff0e8 0%,#e8f7f4 45%,#fdf0ea 100%);padding:2rem 1.75rem;display:flex;flex-direction:row;align-items:center;gap:1.25rem;border-bottom:1px solid rgba(45,138,114,0.12);}
