@@ -360,11 +360,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .notif-dot{display:inline-block;width:8px;height:8px;background:var(--rose);border-radius:50%;margin-left:6px;vertical-align:middle;}
 
 @media (max-width: 768px) {
-  .main-layout { grid-template-columns: 1fr; padding: 1rem; }
+  .main-layout { grid-template-columns: minmax(0, 1fr); padding: 1rem; max-width: 100vw; }
   .doctors-area { padding-top: 1rem; padding-left: 0; }
   .filters-toggle-btn { display: block; width: 100%; min-width: 0; box-sizing: border-box; }
-  .filters-sidebar { display: none; position: static; }
-  .filters-sidebar.mobile-open { display: block; margin-bottom: 1rem; width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; }
+  .filters-sidebar { display: none; position: static; max-width: 100%; }
+  .filters-sidebar.mobile-open { display: block; margin-bottom: 1rem; width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; overflow: hidden; }
+  .filter-section .search-input-wrap { width: 100%; max-width: 100%; }
   .filter-section { min-width: 0; }
   .filter-input { width: 100%; min-width: 0; box-sizing: border-box; }
   .filter-chip { white-space: nowrap; flex-shrink: 0; }
