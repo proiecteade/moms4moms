@@ -110,7 +110,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .sort-select{padding:7px 12px;border:1px solid var(--border-strong);border-radius:8px;font-family:'Nunito',sans-serif;font-size:13px;color:var(--ink);background:white;outline:none;cursor:pointer;}
 .doctors-list{display:flex;flex-direction:column;gap:.9rem;}
 
-.doctor-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.4rem;display:grid;grid-template-columns:54px 1fr auto;gap:1.1rem;align-items:center;transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;text-decoration:none;color:inherit;}
+.doctor-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.4rem;display:grid;grid-template-columns:54px 1fr;gap:1.1rem;align-items:start;transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;text-decoration:none;color:inherit;}
 .doctor-info{min-width:0;overflow:hidden;}
 .doctor-card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);}
 .doctor-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:white;flex-shrink:0;overflow:hidden;}
@@ -126,7 +126,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .clinic-tag-link{border-color:var(--teal);color:var(--teal);}
 .clinic-tag-link:hover{background:var(--teal-light);}
 .obs-tag{font-size:11px;background:var(--amber-light);color:var(--amber);padding:2px 8px;border-radius:20px;border:1px solid rgba(192,123,42,0.2);font-weight:500;}
-.doctor-card-right{text-align:right;flex-shrink:0;min-width:90px;align-self:center;}
+.card-footer-bar{grid-column:1 / -1;display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;border-top:1px solid var(--border);padding-top:0.75rem;margin-top:0.2rem;}
+.footer-action-chip{display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:10px;padding:0.45rem 0.75rem;background:transparent;cursor:pointer;font-family:'Nunito',sans-serif;font-size:12px;font-weight:600;color:var(--ink-light);transition:all 0.15s;white-space:nowrap;overflow:hidden;}
+.footer-action-chip:hover:not(:disabled){border-color:var(--teal);color:var(--teal);background:var(--teal-light);}
+.footer-action-chip.done{color:var(--ink-faint);cursor:default;}
+.footer-chip-count{color:var(--teal);font-size:12px;}
+.footer-chip-divider{width:1px;height:14px;background:var(--border);margin:0 0.6rem;flex-shrink:0;}
+.footer-chip-label{color:inherit;}
 .stars-display{display:flex;gap:2px;justify-content:flex-end;margin-bottom:2px;}
 .star{font-size:12px;color:#DDD;}
 .star.filled{color:#E8A838;}
@@ -205,6 +211,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 
 /* DOCTOR CARD WRAP */
 .doctor-card-wrap{border-radius:20px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,0.09);margin-bottom:1.25rem;}
+.detail-footer-chips{margin:0 1.75rem 1.25rem;}
 
 /* HERO */
 .detail-hero{background:linear-gradient(150deg,#cff0e8 0%,#e8f7f4 45%,#fdf0ea 100%);padding:2rem 1.75rem;display:flex;flex-direction:row;align-items:center;gap:1.25rem;border-bottom:1px solid rgba(45,138,114,0.12);}
@@ -373,7 +380,6 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .filter-input { font-size: 16px; }
   .sort-select { font-size: 16px; }
   .doctor-card { grid-template-columns: 46px 1fr; padding: 0.85rem 1rem; }
-  .doctor-card-right { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
   .results-header { flex-wrap: wrap; gap: 8px; }
   .doctor-detail { padding: 1rem; }
   .detail-hero { padding: 1.25rem 1.25rem; gap: 1rem; align-items: flex-start; }

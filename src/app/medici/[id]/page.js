@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
-import RecommendButton from '@/components/RecommendButton'
+import DetailFooterChips from '@/components/DetailFooterChips'
 import WriteReviewLink from '@/components/WriteReviewLink'
 import CommentsSection from '@/components/CommentsSection'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
@@ -70,7 +70,6 @@ export default async function DoctorDetailPage({ params }) {
                 </Link>
               ))}
             </div>
-            <RecommendButton doctor={docWithUrls} />
           </div>
         </div>
 
@@ -108,9 +107,10 @@ export default async function DoctorDetailPage({ params }) {
 
           <DetailActions doctor={doc} />
         </div>
+        <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
       </div>
 
-      <div className="reviews-section">
+      <div id="comentarii" className="reviews-section">
         <div className="section-title">
           Comentarii
           <WriteReviewLink doctor={doc} />
