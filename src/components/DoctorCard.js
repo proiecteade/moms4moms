@@ -56,7 +56,7 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
       <div className="doctor-card-right" onClick={e => e.stopPropagation()}>
         <RecommendButton doctor={doctor} />
         {reviewCount > 0 && (
-          <div className="review-count-badge">{reviewCount} recenz{reviewCount === 1 ? 'ie' : 'ii'}</div>
+          <div className="review-count-badge">{reviewCount} comentari{reviewCount === 1 ? 'u' : 'i'}</div>
         )}
       </div>
     </div>
