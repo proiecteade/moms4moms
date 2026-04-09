@@ -129,7 +129,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .doctor-card{background:white;border:1px solid var(--border);border-radius:16px;padding:1.1rem 1.4rem;display:grid;grid-template-columns:54px 1fr;grid-template-rows:auto 1fr auto;gap:1.1rem;align-items:start;transition:box-shadow 0.15s,border-color 0.15s;cursor:pointer;text-decoration:none;color:inherit;}
 .card-footer-bar{align-self:end;}
 .doctor-info{min-width:0;overflow:hidden;}
-.doctor-name-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:1px;}
+.doctor-name-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:6px;}
 .card-share-btns{display:flex;gap:6px;flex-shrink:0;}
 .card-share-btn{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--border-strong);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.15s;color:var(--teal);}
 .card-share-btn:hover{border-color:var(--teal);background:var(--teal-light);}
