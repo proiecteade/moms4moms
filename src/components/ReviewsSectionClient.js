@@ -19,6 +19,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
   const [reviewer, setReviewer] = useState('')
   const [formLoading, setFormLoading] = useState(false)
   const [formDone, setFormDone] = useState(false)
+  const [submittedText, setSubmittedText] = useState('')
   const formRef = useRef(null)
   const textareaRef = useRef(null)
   const toast = useToast()
@@ -50,6 +51,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
     })
     setFormLoading(false)
     if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
+    setSubmittedText(text.trim())
     setFormDone(true)
   }
 
@@ -86,7 +88,8 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
       <div className="inline-review-form" ref={formRef}>
         {formDone ? (
           <div className="inline-review-done">
-            <span>💗</span> Mulțumim! Experiența ta va apărea după verificare.
+            <div>Mulțumim! Experiența ta va apărea după verificare.</div>
+            {submittedText && <div className="inline-review-submitted">— {submittedText}</div>}
           </div>
         ) : (
           <>

@@ -247,15 +247,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 
 /* INLINE REVIEW FORM */
 .inline-review-form{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);}
-.inline-review-done{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--teal);padding:0.5rem 0;}
+.inline-review-done{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600;color:var(--teal);padding:0.5rem 0;}
+.inline-review-submitted{font-size:13px;font-weight:400;color:var(--ink-light);font-style:italic;}
 .inline-sentiment-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:0.75rem;}
 .inline-sentiment-label{font-size:13px;font-weight:600;color:var(--ink-light);margin-right:2px;}
 .inline-sentiment-btn{background:transparent;border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--ink-light);transition:all 0.15s;}
 .inline-sentiment-btn:hover{border-color:var(--teal);color:var(--teal);}
 .inline-sentiment-btn.selected.happy{border-color:#7AB648;background:#f0f9e8;color:#5a9030;}
 .inline-sentiment-btn.selected.sad{border-color:var(--rose);background:var(--rose-light);color:var(--rose);}
-.inline-review-row{display:flex;gap:8px;margin-top:8px;}
-.inline-review-row .form-input{flex:1;}
+.inline-review-row{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+.inline-review-row .submit-btn{align-self:flex-end;}
 .comments-list{}
 
 /* REVIEWS SECTION */
