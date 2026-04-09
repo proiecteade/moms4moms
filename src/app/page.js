@@ -58,18 +58,18 @@ export default async function HomePage() {
       </div>
 
       <div className="stats-row">
-        <div className="stat-item">
+        <Link href="/medici" className="stat-item stat-item-link">
           <div className="stat-num">{statDoctors}</div>
           <div className="stat-label">Medici listați</div>
-        </div>
-        <div className="stat-item">
+        </Link>
+        <Link href="/medici?sort=name#filters" className="stat-item stat-item-link">
           <div className="stat-num">{statCities}</div>
           <div className="stat-label">{statCities === 1 ? 'Localitate' : 'Localități'}</div>
-        </div>
-        <div className="stat-item">
+        </Link>
+        <Link href="/medici#filters" className="stat-item stat-item-link">
           <div className="stat-num">{statSpecs}</div>
           <div className="stat-label">Specialități</div>
-        </div>
+        </Link>
       </div>
 
       <div className="home-section">

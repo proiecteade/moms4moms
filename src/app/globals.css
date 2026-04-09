@@ -71,7 +71,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 /* STATS */
 .stats-row{display:flex;justify-content:center;gap:3rem;padding:1.75rem 2rem;border-bottom:1px solid var(--border);background:white;flex-wrap:wrap;}
 .stat-item{text-align:center;}
-.stat-num{font-weight:300;font-size:2rem;color:var(--teal);line-height:1;}
+.stat-item-link{text-decoration:none;border-radius:12px;padding:0.5rem 1rem;margin:-0.5rem -1rem;transition:background 0.15s;}
+.stat-item-link:hover{background:var(--warm);}
+.stat-item-link:hover .stat-num{color:#2e7060;}
+.stat-num{font-weight:300;font-size:2rem;color:var(--teal);line-height:1;transition:color 0.15s;}
 .stat-label{font-size:11px;color:var(--ink-faint);margin-top:3px;text-transform:uppercase;letter-spacing:0.5px;}
 
 /* HOME SECTION */
