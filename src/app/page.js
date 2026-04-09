@@ -35,8 +35,12 @@ export default async function HomePage() {
   const statSpecs = allSpecs.length
 
   const featured = [...docs]
-    .sort((a, b) => (b.recommendations_count || 0) - (a.recommendations_count || 0))
-    .slice(0, 3)
+    .sort((a, b) => {
+      const diff = (b.recommendations_count || 0) - (a.recommendations_count || 0)
+      if (diff !== 0) return diff
+      return (a.last_name || '').localeCompare(b.last_name || '', 'ro')
+    })
+    .slice(0, 10)
 
   return (
     <>
