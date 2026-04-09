@@ -72,12 +72,14 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
         : <div className="doctor-avatar" style={{ background: bg }}>{init}</div>
       }
       <div className="doctor-info">
-        <div className="card-share-btns" onClick={e => e.stopPropagation()}>
-          <button className="card-share-btn" onClick={copyLink} title="Copiază link">🔗</button>
-          <button className="card-share-btn card-share-btn-wa" onClick={shareWhatsApp} title="Share WhatsApp"><WhatsAppIcon /></button>
-        </div>
-        <div className="doctor-name">
-          Dr. {doctor.first_name}{doctor.last_name ? ' ' + doctor.last_name : ''}
+        <div className="doctor-name-row">
+          <div className="doctor-name">
+            Dr. {doctor.first_name}{doctor.last_name ? ' ' + doctor.last_name : ''}
+          </div>
+          <div className="card-share-btns" onClick={e => e.stopPropagation()}>
+            <button className="card-share-btn" onClick={copyLink} title="Copiază link">🔗</button>
+            <button className="card-share-btn card-share-btn-wa" onClick={shareWhatsApp} title="Share WhatsApp"><WhatsAppIcon /></button>
+          </div>
         </div>
         <div className="doctor-specs">
           {(doctor.specs || []).map(s => (
