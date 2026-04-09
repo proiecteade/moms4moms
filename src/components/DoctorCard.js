@@ -22,7 +22,7 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
         ? <img src={doctor.photo_url} className="doctor-avatar" alt={`Dr. ${doctor.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
         : <div className="doctor-avatar" style={{ background: bg }}>{init}</div>
       }
-      <div>
+      <div className="doctor-info">
         <div className="doctor-name">
           Dr. {doctor.first_name}{doctor.last_name ? ' ' + doctor.last_name : ''}
         </div>
