@@ -21,6 +21,8 @@ export default function AdminPage() {
   const [allDocs, setAllDocs] = useState([])
   const [docSearch, setDocSearch] = useState('')
 
+  const [parentReviewsMap, setParentReviewsMap] = useState({})
+
   const [editDoc, setEditDoc] = useState(null)
   const [editSpecs, setEditSpecs] = useState([])
   const [editClinics, setEditClinics] = useState([''])
@@ -50,6 +52,15 @@ export default function AdminPage() {
     setPendingDocs(a.data || [])
     setPendingReviews(b.data || [])
     setApprovedReviews(c.data || [])
+    const parentIds = (b.data || []).filter(r => r.parent_id).map(r => r.parent_id)
+    if (parentIds.length > 0) {
+      const { data: parents } = await supabase.from('reviews').select('id, reviewer, text').in('id', parentIds)
+      const map = {}
+      ;(parents || []).forEach(p => { map[p.id] = p })
+      setParentReviewsMap(map)
+    } else {
+      setParentReviewsMap({})
+    }
     setSuggestions(d.data || [])
     setFeedback(e.data || [])
     setAllDocs(f.data || [])
@@ -254,10 +265,17 @@ export default function AdminPage() {
               return (
                 <div key={r.id} className="admin-card">
                   <div className="admin-card-info">
-                    <div className="admin-card-name">{'★'.repeat(r.rating)}{'☆'.repeat(5-r.rating)} — {r.reviewer}</div>
-                    <div className="admin-card-sub">{doc ? `Dr. ${doc.first_name} ${doc.last_name || ''} (${(doc.specs||[]).join(', ')})` : ''}</div>
-                    <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{r.text}</div>
-                    <div style={{ fontSize: 11, color: 'var(--ink-faint)', marginTop: 3 }}>{r.date}</div>
+                    <div className="admin-card-name">
+                      {r.rating >= 4 ? '😊' : r.rating > 0 && r.rating <= 3 ? '😔' : '💬'} {r.reviewer || 'Anonim'}
+                      {r.parent_id && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, color: 'var(--teal)', background: 'var(--teal-light)', padding: '2px 8px', borderRadius: 10 }}>↩ reply</span>}
+                    </div>
+                    <div className="admin-card-sub">{doc ? `Dr. ${doc.first_name} ${doc.last_name || ''} (${(doc.specs||[]).join(', ')})` : ''} • {r.date}</div>
+                    {r.parent_id && parentReviewsMap[r.parent_id] && (
+                      <div style={{ fontSize: 12, color: 'var(--ink-faint)', background: 'var(--cream)', padding: '6px 10px', borderRadius: 8, margin: '6px 0', borderLeft: '3px solid var(--teal)' }}>
+                        La comentariul lui <strong>{parentReviewsMap[r.parent_id].reviewer || 'Anonim'}</strong>: „{(parentReviewsMap[r.parent_id].text || '').slice(0, 100)}{(parentReviewsMap[r.parent_id].text || '').length > 100 ? '…' : ''}"
+                      </div>
+                    )}
+                    <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 4 }}>{r.text}</div>
                   </div>
                   <div className="admin-card-actions">
                     <button className="btn-approve" onClick={() => approveReview(r.id)}>✓ Aprobă</button>
