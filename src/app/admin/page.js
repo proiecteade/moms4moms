@@ -216,35 +216,37 @@ export default function AdminPage() {
               const bg = avatarColor(d.first_name + (d.last_name || ''))
               const init = initials(d.first_name, d.last_name)
               return (
-                <div key={d.id} className="doctor-card" style={{ cursor: 'default', marginBottom: 12 }}>
-                  {d.photo_url
-                    ? <img src={d.photo_url} className="doctor-avatar" alt="" style={{ objectFit: 'cover', objectPosition: 'top' }} />
-                    : <div className="doctor-avatar" style={{ background: bg }}>{init}</div>
-                  }
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="doctor-name">Dr. {d.first_name}{d.last_name ? ' ' + d.last_name : ''}</div>
-                    <div className="doctor-specs">
-                      {(d.specs || []).map(s => <span key={s} className="spec-badge">{s}</span>)}
-                    </div>
-                    <div className="doctor-meta">
-                      {(d.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
-                        <span key={c} className="meta-pill">📍 {c}</span>
-                      ))}
-                    </div>
-                    {d.clinics?.length > 0 && (
-                      <div className="tags-row">
-                        {d.clinics.map(c => <span key={c} className="clinic-tag">🏥 {c}</span>)}
+                <div key={d.id} className="admin-card" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
+                  <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 0 }}>
+                    {d.photo_url
+                      ? <img src={d.photo_url} className="doctor-avatar" alt="" style={{ objectFit: 'cover', objectPosition: 'top', flexShrink: 0 }} />
+                      : <div className="doctor-avatar" style={{ background: bg, flexShrink: 0 }}>{init}</div>
+                    }
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="doctor-name">Dr. {d.first_name}{d.last_name ? ' ' + d.last_name : ''}</div>
+                      <div className="doctor-specs">
+                        {(d.specs || []).map(s => <span key={s} className="spec-badge">{s}</span>)}
                       </div>
-                    )}
-                    {d.obs && (
-                      <div className="tags-row">
-                        {d.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
-                          <span key={i} className="obs-tag">ℹ️ {o}</span>
+                      <div className="doctor-meta">
+                        {(d.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                          <span key={c} className="meta-pill">📍 {c}</span>
                         ))}
                       </div>
-                    )}
+                      {d.clinics?.length > 0 && (
+                        <div className="tags-row">
+                          {d.clinics.map(c => <span key={c} className="clinic-tag">🏥 {c}</span>)}
+                        </div>
+                      )}
+                      {d.obs && (
+                        <div className="tags-row">
+                          {d.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
+                            <span key={i} className="obs-tag">ℹ️ {o}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="admin-card-actions" onClick={e => e.stopPropagation()}>
+                  <div className="admin-card-actions" onClick={e => e.stopPropagation()} style={{ flexShrink: 0 }}>
                     <button className="btn-approve" onClick={() => approveDoc(d.id)}>✓ Aprobă</button>
                     <button className="btn-edit" onClick={() => openEdit(d)}>✎ Editează</button>
                     <button className="btn-reject" onClick={() => rejectDoc(d.id)}>✕ Respinge</button>
