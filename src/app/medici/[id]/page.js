@@ -4,6 +4,7 @@ import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
 import WriteReviewLink from '@/components/WriteReviewLink'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
+import { specEmoji } from '@/lib/constants'
 import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
@@ -58,7 +59,7 @@ export default async function DoctorDetailPage({ params }) {
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {(doc.specs || []).map(s => (
                 <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="spec-badge">
-                  {s}
+                  {specEmoji(s)} {s}
                 </Link>
               ))}
             </div>

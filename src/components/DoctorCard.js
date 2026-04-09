@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { avatarColor, initials, sortClinics } from '@/lib/helpers'
+import { specEmoji } from '@/lib/constants'
 import RecommendButton from './RecommendButton'
 
 export default function DoctorCard({ doctor, reviewCount = 0 }) {
@@ -27,7 +28,7 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
         </div>
         <div className="doctor-specs">
           {(doctor.specs || []).map(s => (
-            <span key={s} className="spec-badge">{s}</span>
+            <span key={s} className="spec-badge">{specEmoji(s)} {s}</span>
           ))}
         </div>
         <div className="doctor-meta">
