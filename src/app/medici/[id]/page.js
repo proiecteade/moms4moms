@@ -72,9 +72,6 @@ export default async function DoctorDetailPage({ params }) {
           </div>
         </div>
 
-        {/* CHIPS: Recomandă + Comentează — pe alb, sus */}
-        <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
-
         {/* BODY: info medic */}
         <div className="detail-body">
           {doc.obs && (
@@ -107,6 +104,9 @@ export default async function DoctorDetailPage({ params }) {
             </div>
           )}
         </div>
+
+        {/* CHIPS: Recomandă + Comentează */}
+        <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
 
         {/* ACTIONS: Sugerează + Share — pe bej, jos */}
         <DetailActions doctor={doc} />
