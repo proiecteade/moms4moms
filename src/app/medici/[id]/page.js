@@ -52,11 +52,8 @@ export default async function DoctorDetailPage({ params }) {
             : <div className="detail-avatar" style={{ background: bg }}>{init}</div>
           }
           <div className="detail-hero-info">
-            <div className="detail-hero-name-row">
-              <div className="detail-name">
-                Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
-              </div>
-              <RecommendButton doctor={docWithUrls} />
+            <div className="detail-name">
+              Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {(doc.specs || []).map(s => (
@@ -65,6 +62,7 @@ export default async function DoctorDetailPage({ params }) {
                 </Link>
               ))}
             </div>
+            <RecommendButton doctor={docWithUrls} />
           </div>
         </div>
 
