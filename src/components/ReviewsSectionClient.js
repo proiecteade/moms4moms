@@ -20,19 +20,23 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
   const [formLoading, setFormLoading] = useState(false)
   const [formDone, setFormDone] = useState(false)
   const formRef = useRef(null)
+  const textareaRef = useRef(null)
   const toast = useToast()
 
   useEffect(() => {
     function handler() {
       setOpen(true)
-      setTimeout(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80)
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        textareaRef.current?.focus()
+      }, 80)
     }
     window.addEventListener('openComments', handler)
     return () => window.removeEventListener('openComments', handler)
   }, [])
 
   async function submitReview() {
-    if (!sentiment) return toast('Alege o reacție mai întâi', 'error')
+    if (!text.trim() && !sentiment) return toast('Scrie ceva sau alege o reacție', 'error')
     setFormLoading(true)
     const supabase = createClient()
     const { error } = await supabase.from('reviews').insert({
@@ -86,52 +90,44 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
           </div>
         ) : (
           <>
-            <div className="sentiment-row">
+            <div className="inline-sentiment-row">
+              <span className="inline-sentiment-label">Cum a fost experiența ta?</span>
               <button
                 type="button"
-                className={`sentiment-btn${sentiment === 'happy' ? ' selected happy' : ''}`}
-                onClick={() => setSentiment('happy')}
-              >
-                <span className="sentiment-emoji">😊</span>
-                <span>Pozitivă</span>
-              </button>
+                className={`inline-sentiment-btn${sentiment === 'happy' ? ' selected happy' : ''}`}
+                onClick={() => setSentiment(s => s === 'happy' ? null : 'happy')}
+              >😊 Pozitivă</button>
               <button
                 type="button"
-                className={`sentiment-btn${sentiment === 'sad' ? ' selected sad' : ''}`}
-                onClick={() => setSentiment('sad')}
+                className={`inline-sentiment-btn${sentiment === 'sad' ? ' selected sad' : ''}`}
+                onClick={() => setSentiment(s => s === 'sad' ? null : 'sad')}
+              >😔 Negativă</button>
+            </div>
+            <textarea
+              ref={textareaRef}
+              className="form-textarea"
+              placeholder="Scrie comentariul tău…"
+              value={text}
+              onChange={e => setText(e.target.value)}
+              rows={3}
+              style={{ resize: 'none' }}
+            />
+            <div className="inline-review-row">
+              <input
+                className="form-input"
+                placeholder="Numele tău (opțional)"
+                value={reviewer}
+                onChange={e => setReviewer(e.target.value)}
+              />
+              <button
+                className="submit-btn"
+                onClick={submitReview}
+                disabled={formLoading}
+                style={{ whiteSpace: 'nowrap' }}
               >
-                <span className="sentiment-emoji">😔</span>
-                <span>Negativă</span>
+                {formLoading ? 'Se trimite…' : 'Trimite'}
               </button>
             </div>
-            {sentiment && (
-              <>
-                <textarea
-                  className="form-textarea"
-                  placeholder="Spune-ne mai multe despre experiența ta… (opțional)"
-                  value={text}
-                  onChange={e => setText(e.target.value)}
-                  rows={3}
-                  style={{ resize: 'none' }}
-                />
-                <div className="inline-review-row">
-                  <input
-                    className="form-input"
-                    placeholder="Numele tău (opțional)"
-                    value={reviewer}
-                    onChange={e => setReviewer(e.target.value)}
-                  />
-                  <button
-                    className="submit-btn"
-                    onClick={submitReview}
-                    disabled={formLoading}
-                    style={{ whiteSpace: 'nowrap' }}
-                  >
-                    {formLoading ? 'Se trimite…' : 'Trimite'}
-                  </button>
-                </div>
-              </>
-            )}
           </>
         )}
       </div>
