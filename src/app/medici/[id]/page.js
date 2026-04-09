@@ -3,6 +3,7 @@ import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import RecommendButton from '@/components/RecommendButton'
 import WriteReviewLink from '@/components/WriteReviewLink'
+import CommentsSection from '@/components/CommentsSection'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { specEmoji } from '@/lib/constants'
 import { notFound } from 'next/navigation'
@@ -37,6 +38,12 @@ export default async function DoctorDetailPage({ params }) {
     clinic_urls: Object.fromEntries((doc.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
   }
   const revs = reviews || []
+  const topLevel = revs.filter(r => !r.parent_id)
+  const repliesByParentId = {}
+  revs.filter(r => r.parent_id).forEach(r => {
+    if (!repliesByParentId[r.parent_id]) repliesByParentId[r.parent_id] = []
+    repliesByParentId[r.parent_id].push(r)
+  })
   const count = revs.length
   const bg = avatarColor(doc.first_name + (doc.last_name || ''))
   const init = initials(doc.first_name, doc.last_name)
@@ -105,27 +112,14 @@ export default async function DoctorDetailPage({ params }) {
 
       <div className="reviews-section">
         <div className="section-title">
-          Experiențele pacienților
+          Comentarii
           <WriteReviewLink doctor={doc} />
         </div>
-        {revs.length > 0
-          ? revs.map(r => {
-            const emoji = r.rating >= 4 ? '😊' : r.rating > 0 && r.rating < 3 ? '😔' : null
-            return (
-              <div key={r.id} className="review-card">
-                <div className="review-header">
-                  <div className="reviewer-name">
-                    {emoji && <span className="review-sentiment">{emoji}</span>}
-                    {r.reviewer || 'Anonim'}
-                  </div>
-                  <div className="review-date">{formatDate(r.date)}</div>
-                </div>
-                {r.text && <div className="review-text">{r.text}</div>}
-              </div>
-            )
-          })
-          : <div className="no-reviews">Fii primul care împărtășește experiența ta! 💗</div>
-        }
+        <CommentsSection
+          topLevel={topLevel}
+          repliesByParentId={repliesByParentId}
+          doctorId={doc.id}
+        />
       </div>
     </div>
   )

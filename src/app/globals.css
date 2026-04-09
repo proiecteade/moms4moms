@@ -328,6 +328,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .empty-reset{display:inline-block;margin-top:1rem;padding:9px 20px;border-radius:9px;border:1px solid var(--border-strong);background:white;color:var(--teal);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;text-decoration:none;transition:all 0.15s;}
 .empty-reset:hover{background:var(--teal);color:white;border-color:var(--teal);}
 
+/* REPLY */
+.reply-card{margin:0.75rem 0 0 1.5rem;padding:0.6rem 0.75rem;background:var(--cream);border-radius:10px;border-left:3px solid var(--teal);}
+.reply-btn{background:none;border:none;color:var(--teal);font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;padding:4px 0;margin-top:6px;display:inline-block;}
+.reply-btn:hover{text-decoration:underline;}
+.reply-form{margin-top:0.75rem;display:flex;flex-direction:column;gap:8px;}
+.reply-form-actions{display:flex;gap:8px;}
+.reply-cancel-btn{padding:10px 16px;border:1px solid var(--border-strong);border-radius:10px;background:transparent;font-family:'Nunito',sans-serif;font-size:14px;cursor:pointer;color:var(--ink-light);white-space:nowrap;}
+.reply-cancel-btn:hover{background:var(--warm);}
+.reply-sent{font-size:13px;color:var(--teal);font-weight:600;margin-top:6px;}
+
 /* PAGINATION */
 .pagination{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);}
 .page-btn{padding:8px 18px;border-radius:9px;border:1px solid var(--border-strong);background:white;color:var(--ink);font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;transition:all 0.15s;}
