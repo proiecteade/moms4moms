@@ -62,11 +62,11 @@ export default async function HomePage() {
           <div className="stat-num">{statDoctors}</div>
           <div className="stat-label">Medici listați</div>
         </Link>
-        <Link href="/medici?sort=name#filters" className="stat-item stat-item-link">
+        <Link href="/localitati" className="stat-item stat-item-link">
           <div className="stat-num">{statCities}</div>
           <div className="stat-label">{statCities === 1 ? 'Localitate' : 'Localități'}</div>
         </Link>
-        <Link href="/medici#filters" className="stat-item stat-item-link">
+        <Link href="/specialitati" className="stat-item stat-item-link">
           <div className="stat-num">{statSpecs}</div>
           <div className="stat-label">Specialități</div>
         </Link>
