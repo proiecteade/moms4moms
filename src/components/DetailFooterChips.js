@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { uid } from '@/lib/helpers'
+import { useAuth } from './AuthProvider'
 
 export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
+  const { user } = useAuth() || {}
   const [count, setCount] = useState(doctor.recommendations_count || 0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -15,10 +17,11 @@ export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
   async function recommend(e) {
     e.preventDefault()
     if (loading || done) return
+    if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
     setLoading(true)
     const supabase = createClient()
     const recId = uid()
-    const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id })
+    const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id, user_id: user.id })
     if (!error) {
       localStorage.setItem('rec_' + doctor.id, recId)
       setDone(true)

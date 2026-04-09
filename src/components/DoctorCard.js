@@ -4,9 +4,11 @@ import { useRouter } from 'next/navigation'
 import { avatarColor, initials, sortClinics, uid } from '@/lib/helpers'
 import { specEmoji } from '@/lib/constants'
 import { createClient } from '@/lib/supabase/client'
+import { useAuth } from './AuthProvider'
 
 export default function DoctorCard({ doctor, reviewCount = 0 }) {
   const router = useRouter()
+  const { user } = useAuth() || {}
   const bg = avatarColor(doctor.first_name + (doctor.last_name || ''))
   const init = initials(doctor.first_name, doctor.last_name)
   const [count, setCount] = useState(doctor.recommendations_count || 0)
@@ -21,10 +23,11 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
     e.preventDefault()
     e.stopPropagation()
     if (loading || done) return
+    if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
     setLoading(true)
     const supabase = createClient()
     const recId = uid()
-    const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id })
+    const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id, user_id: user.id })
     if (!error) {
       localStorage.setItem('rec_' + doctor.id, recId)
       setDone(true)

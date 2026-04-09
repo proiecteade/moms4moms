@@ -27,6 +27,20 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .nav-btn-primary{background:var(--teal);color:white;font-weight:600;}
 .nav-btn-primary:hover{background:#2e7060;}
 
+/* AUTH */
+.nav-auth{display:flex;align-items:center;position:relative;}
+.nav-auth-btn{font-size:13px;}
+.user-avatar-btn{width:34px;height:34px;border-radius:50%;background:var(--teal);color:white;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:background 0.15s;}
+.user-avatar-btn:hover{background:#2e7060;}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(44,36,32,0.12);min-width:200px;overflow:hidden;z-index:100;}
+.user-dropdown-email{padding:10px 14px;font-size:12px;color:var(--ink-faint);border-bottom:1px solid var(--border);word-break:break-all;}
+.user-dropdown-signout{width:100%;padding:10px 14px;background:none;border:none;text-align:left;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);cursor:pointer;transition:background 0.15s;}
+.user-dropdown-signout:hover{background:var(--warm);}
+.auth-modal-google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;background:white;border:1.5px solid var(--border-strong);border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.15s;box-shadow:0 1px 4px rgba(44,36,32,0.06);}
+.auth-modal-google-btn:hover{box-shadow:0 2px 8px rgba(44,36,32,0.12);border-color:var(--teal);}
+.anonymous-toggle{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ink-light);cursor:pointer;flex:1;}
+.anonymous-toggle input{cursor:pointer;accent-color:var(--teal);}
+
 /* BURGER MENU */
 .burger-btn{display:none;background:none;border:none;cursor:pointer;padding:8px;border-radius:8px;flex-shrink:0;}
 .burger-btn:hover{background:var(--warm);}

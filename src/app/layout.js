@@ -1,6 +1,7 @@
 import './globals.css'
 import SiteShell from '@/components/SiteShell'
 import { ToastProvider } from '@/components/Toast'
+import { AuthProvider } from '@/components/AuthProvider'
 
 export const metadata = {
   metadataBase: new URL('https://moms4moms.ro'),
@@ -26,9 +27,11 @@ export default function RootLayout({ children }) {
     <html lang="ro">
       <body>
         <ToastProvider>
-          <SiteShell>
-            {children}
-          </SiteShell>
+          <AuthProvider>
+            <SiteShell>
+              {children}
+            </SiteShell>
+          </AuthProvider>
         </ToastProvider>
       </body>
     </html>

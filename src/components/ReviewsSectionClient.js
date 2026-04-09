@@ -3,8 +3,10 @@ import { useState, useEffect, useRef } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { uid, todayISO, formatDate } from '@/lib/helpers'
 import { useToast } from './Toast'
+import { useAuth } from './AuthProvider'
 
 export default function ReviewsSectionClient({ topLevel, repliesByParentId, doctorId, doctor }) {
+  const { user } = useAuth() || {}
   const hasComments = topLevel.length > 0
   const [open, setOpen] = useState(hasComments)
   const [replyingTo, setReplyingTo] = useState(null)
@@ -16,12 +18,14 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
   // inline new-review form state
   const [sentiment, setSentiment] = useState(null)
   const [text, setText] = useState('')
-  const [reviewer, setReviewer] = useState('')
+  const [isAnonymous, setIsAnonymous] = useState(false)
   const [formLoading, setFormLoading] = useState(false)
   const [formDone, setFormDone] = useState(false)
   const formRef = useRef(null)
   const textareaRef = useRef(null)
   const toast = useToast()
+
+  const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || ''
 
   useEffect(() => {
     function handler() {
@@ -36,17 +40,20 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
   }, [])
 
   async function submitReview() {
+    if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
     if (!text.trim() && !sentiment) return toast('Scrie ceva sau alege o reacție', 'error')
     setFormLoading(true)
     const supabase = createClient()
     const { error } = await supabase.from('reviews').insert({
       id: uid(),
       doctor_id: doctorId,
-      reviewer: reviewer.trim() || 'Anonim',
+      reviewer: isAnonymous ? 'Anonim' : (displayName || 'Anonim'),
       text: text.trim() || null,
-      rating: sentiment === 'happy' ? 5 : 1,
+      rating: sentiment === 'happy' ? 5 : sentiment === 'sad' ? 1 : null,
       date: todayISO(),
       status: 'pending',
+      user_id: user.id,
+      is_anonymous: isAnonymous,
     })
     setFormLoading(false)
     if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
@@ -113,12 +120,14 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
               style={{ resize: 'none' }}
             />
             <div className="inline-review-row">
-              <input
-                className="form-input"
-                placeholder="Numele tău (opțional)"
-                value={reviewer}
-                onChange={e => setReviewer(e.target.value)}
-              />
+              <label className="anonymous-toggle">
+                <input
+                  type="checkbox"
+                  checked={isAnonymous}
+                  onChange={e => setIsAnonymous(e.target.checked)}
+                />
+                Postează anonim
+              </label>
               <button
                 className="submit-btn"
                 onClick={submitReview}
