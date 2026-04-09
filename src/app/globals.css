@@ -8,6 +8,7 @@
   --white:#FFFFFF; --shadow:0 2px 16px rgba(44,36,32,0.06); --shadow-hover:0 8px 32px rgba(44,36,32,0.11);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
+html{overflow-x:hidden;}
 body{font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden;}
 
 /* NAV */
