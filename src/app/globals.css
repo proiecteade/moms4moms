@@ -211,7 +211,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 
 /* DOCTOR CARD WRAP */
 .doctor-card-wrap{border-radius:20px;overflow:hidden;box-shadow:0 6px 32px rgba(0,0,0,0.09);margin-bottom:1.25rem;}
-.detail-footer-chips{margin:0 1.75rem 1.25rem;}
+.detail-footer-chips{padding:1rem 1.75rem;border-bottom:1px solid var(--border);border-top:none;margin:0;}
 
 /* HERO */
 .detail-hero{background:linear-gradient(150deg,#cff0e8 0%,#e8f7f4 45%,#fdf0ea 100%);padding:2rem 1.75rem;display:flex;flex-direction:row;align-items:center;gap:1.25rem;border-bottom:1px solid rgba(45,138,114,0.12);}
@@ -230,7 +230,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .recommend-btn.done{border-color:var(--border);color:var(--ink-faint);cursor:default;}
 .detail-location{padding:0.9rem 1.75rem 0.3rem;font-size:0.88rem;color:#777;font-weight:500;display:flex;flex-wrap:wrap;gap:8px;}
 .detail-clinics{padding:0.3rem 1.75rem 0.9rem;display:flex;flex-wrap:wrap;gap:0.45rem;}
-.detail-actions{border-top:1px solid #f0f3f2;display:flex;flex-direction:column;gap:0.6rem;padding:1rem 1.5rem 1.5rem;}
+.detail-actions{background:var(--cream);border-top:1px solid var(--border);display:flex;flex-direction:column;gap:0.6rem;padding:1rem 1.5rem 1.5rem;}
 .detail-actions button{border-radius:11px;padding:9px 10px;font-size:0.84rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:0.3rem;transition:all 0.18s;font-family:'Nunito',sans-serif;}
 .detail-actions .share-row{display:flex;gap:0.6rem;}
 .detail-actions .share-row button{flex:1;}
@@ -241,6 +241,13 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .share-btn{background:#f5f6f4;color:#555;border:1.5px solid #dfe1db;}
 .share-btn:hover{background:#eceee9;border-color:#c8cac3;}
 .write-review-link{background:none;border:none;color:var(--teal);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;padding:0;white-space:nowrap;}
+
+/* INLINE REVIEW FORM */
+.inline-review-form{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);}
+.inline-review-done{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--teal);padding:0.5rem 0;}
+.inline-review-row{display:flex;gap:8px;margin-top:4px;}
+.inline-review-row .form-input{flex:1;}
+.comments-list{}
 
 /* REVIEWS SECTION */
 .reviews-section{border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,0.07);border:none;background:white;overflow:hidden;margin-bottom:1.25rem;}

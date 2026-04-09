@@ -29,7 +29,8 @@ export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
 
   function scrollToComments(e) {
     e.preventDefault()
-    document.getElementById('comentarii')?.scrollIntoView({ behavior: 'smooth' })
+    window.dispatchEvent(new CustomEvent('openComments'))
+    setTimeout(() => document.getElementById('comentarii')?.scrollIntoView({ behavior: 'smooth' }), 80)
   }
 
   return (

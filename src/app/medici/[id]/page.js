@@ -2,8 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import DetailFooterChips from '@/components/DetailFooterChips'
-import WriteReviewLink from '@/components/WriteReviewLink'
-import CommentsSection from '@/components/CommentsSection'
+import ReviewsSectionClient from '@/components/ReviewsSectionClient'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { specEmoji } from '@/lib/constants'
 import { notFound } from 'next/navigation'
@@ -73,7 +72,10 @@ export default async function DoctorDetailPage({ params }) {
           </div>
         </div>
 
-        {/* BODY: recomandări, locație, clinici, acțiuni */}
+        {/* CHIPS: Recomandă + Comentează — pe alb, sus */}
+        <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
+
+        {/* BODY: info medic */}
         <div className="detail-body">
           {doc.obs && (
             <div style={{ padding: '0.5rem 1.75rem', display: 'flex', flexWrap: 'wrap', gap: 4 }}>
@@ -104,23 +106,18 @@ export default async function DoctorDetailPage({ params }) {
               ))}
             </div>
           )}
-
-          <DetailActions doctor={doc} />
         </div>
-        <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
+
+        {/* ACTIONS: Sugerează + Share — pe bej, jos */}
+        <DetailActions doctor={doc} />
       </div>
 
-      <div id="comentarii" className="reviews-section">
-        <div className="section-title">
-          Comentarii
-          <WriteReviewLink doctor={doc} />
-        </div>
-        <CommentsSection
-          topLevel={topLevel}
-          repliesByParentId={repliesByParentId}
-          doctorId={doc.id}
-        />
-      </div>
+      <ReviewsSectionClient
+        topLevel={topLevel}
+        repliesByParentId={repliesByParentId}
+        doctorId={doc.id}
+        doctor={doc}
+      />
     </div>
   )
 }
