@@ -110,7 +110,7 @@ export default function AdminPage() {
     loadData()
   }
   async function deleteApprovedReview(id) {
-    if (!confirm('Ștergi această recenzie?')) return
+    if (!confirm('Ștergi această comentariu?')) return
     await supabase.from('reviews').delete().eq('id', id)
     loadData()
   }
@@ -182,8 +182,8 @@ export default function AdminPage() {
 
   const TABS = [
     { id: 'pending-docs', label: 'Medici în așteptare', count: pendingDocs.length },
-    { id: 'pending-reviews', label: 'Recenzii în așteptare', count: pendingReviews.length },
-    { id: 'approved-reviews', label: 'Recenzii publicate', count: null },
+    { id: 'pending-reviews', label: 'Comentarii în așteptare', count: pendingReviews.length },
+    { id: 'approved-reviews', label: 'Comentarii publicate', count: null },
     { id: 'suggestions', label: 'Sugestii modificare', count: activeSuggestions.length },
     { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'all-docs', label: 'Toți medicii', count: null },
@@ -261,7 +261,7 @@ export default function AdminPage() {
       {tab === 'pending-reviews' && (
         <div>
           {pendingReviews.length === 0
-            ? <EmptyState icon="✅" label="Nu există recenzii în așteptare" />
+            ? <EmptyState icon="✅" label="Nu există comentarii în așteptare" />
             : pendingReviews.map(r => {
               const doc = r.doctors
               return (
@@ -297,7 +297,7 @@ export default function AdminPage() {
       {tab === 'approved-reviews' && (
         <div>
           {approvedReviews.length === 0
-            ? <EmptyState icon="💬" label="Nu există recenzii publicate" />
+            ? <EmptyState icon="💬" label="Nu există comentarii publicate" />
             : approvedReviews.map(r => {
               const doc = r.doctors
               const isEditing = editReview?.id === r.id
