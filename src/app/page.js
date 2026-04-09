@@ -74,7 +74,7 @@ export default async function HomePage() {
 
       <div className="home-section">
         <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: '1.25rem' }}>Cei mai recomandați</h2>
-        <div className="doctors-list">
+        <div className="doctors-grid-home">
           {featured.map(d => (
             <DoctorCard key={d.id} doctor={d} />
           ))}
