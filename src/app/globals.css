@@ -407,8 +407,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .feedback-box { width: calc(100vw - 2rem); left: 0; }
   .recommend-btn, .page-btn, .nav-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
   .home-section { padding: 1.5rem 1rem 0; }
-  .tags-row { flex-direction: column; width: 100%; overflow: hidden; }
-  .clinic-tag { width: 100%; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; box-sizing: border-box; }
+  .tags-row { flex-direction: column; align-items: flex-start; width: 100%; overflow: hidden; }
+  .clinic-tag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; box-sizing: border-box; }
 }
 
 @media (max-width: 480px) {
