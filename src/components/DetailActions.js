@@ -1,6 +1,4 @@
 'use client'
-import { useState } from 'react'
-import SuggestModal from './SuggestModal'
 import { useToast } from './Toast'
 
 const WhatsAppIcon = () => (
@@ -10,7 +8,6 @@ const WhatsAppIcon = () => (
 )
 
 export default function DetailActions({ doctor }) {
-  const [showSuggest, setShowSuggest] = useState(false)
   const toast = useToast()
   const name = `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
 
@@ -25,15 +22,11 @@ export default function DetailActions({ doctor }) {
   }
 
   return (
-    <>
-      <div className="detail-actions">
-        <button className="suggest-btn" onClick={() => setShowSuggest(true)}>✏️ Sugerează o modificare</button>
-        <div className="share-row">
-          <button className="share-btn" onClick={copyLink}>🔗 Copiază link</button>
-          <button className="share-btn" onClick={shareWhatsApp}><WhatsAppIcon /> Share pe WhatsApp</button>
-        </div>
+    <div className="detail-actions">
+      <div className="share-row">
+        <button className="share-btn" onClick={copyLink}>🔗 Copiază link</button>
+        <button className="share-btn" onClick={shareWhatsApp}><WhatsAppIcon /> Share pe WhatsApp</button>
       </div>
-      {showSuggest && <SuggestModal doctor={doctor} onClose={() => setShowSuggest(false)} />}
-    </>
+    </div>
   )
 }

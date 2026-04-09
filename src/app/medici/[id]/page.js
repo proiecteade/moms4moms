@@ -3,6 +3,7 @@ import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import DetailFooterChips from '@/components/DetailFooterChips'
 import ReviewsSectionClient from '@/components/ReviewsSectionClient'
+import SuggestLink from '@/components/SuggestLink'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { specEmoji } from '@/lib/constants'
 import { notFound } from 'next/navigation'
@@ -107,9 +108,10 @@ export default async function DoctorDetailPage({ params }) {
           <DetailFooterChips doctor={docWithUrls} reviewCount={count} />
         </div>
 
-        {/* ACTIONS: Sugerează + Share — pe bej, jos */}
+        {/* ACTIONS: Share — pe bej, jos */}
         <DetailActions doctor={doc} />
       </div>
+      <SuggestLink doctor={doc} />
 
       <ReviewsSectionClient
         topLevel={topLevel}

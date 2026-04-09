@@ -241,6 +241,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .share-btn{background:#f5f6f4;color:#555;border:1.5px solid #dfe1db;}
 .share-btn:hover{background:#eceee9;border-color:#c8cac3;}
 .write-review-link{background:none;border:none;color:var(--teal);font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;cursor:pointer;padding:0;white-space:nowrap;}
+.suggest-link-row{display:flex;justify-content:flex-end;padding:0.4rem 0 0.75rem;}
+.suggest-link{background:none;border:none;color:var(--ink-faint);font-family:'Nunito',sans-serif;font-size:0.75rem;font-weight:500;cursor:pointer;padding:0;}
+.suggest-link:hover{color:var(--ink-light);text-decoration:underline;}
 
 /* INLINE REVIEW FORM */
 .inline-review-form{padding:1.25rem 1.75rem;border-bottom:1px solid var(--border);}
