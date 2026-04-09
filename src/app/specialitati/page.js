@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import { specEmoji } from '@/lib/constants'
 
 export const metadata = { title: 'Specialități — Moms4Moms' }
 
@@ -25,7 +26,7 @@ export default async function SpecialitatiPage() {
       <div className="browse-grid">
         {specs.map(([spec, count]) => (
           <Link key={spec} href={`/medici?spec=${encodeURIComponent(spec)}`} className="browse-card">
-            <div className="browse-card-name">{spec}</div>
+            <div className="browse-card-name">{specEmoji(spec)} {spec}</div>
             <div className="browse-card-count">{count} {count === 1 ? 'medic' : 'medici'}</div>
           </Link>
         ))}
