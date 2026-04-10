@@ -210,6 +210,7 @@ export default function AdminPage() {
         <button className="nav-btn nav-btn-ghost" onClick={logout}>Deconectare</button>
       </div>
 
+      <div className="admin-shell">
       <div className="admin-tabs">
         {TABS.map(t => (
           <button
@@ -222,6 +223,7 @@ export default function AdminPage() {
         ))}
       </div>
 
+      <div className="admin-content">
       {tab === 'pending-docs' && (
         <div>
           {pendingDocs.length === 0
@@ -494,6 +496,9 @@ export default function AdminPage() {
           )}
         </div>
       )}
+
+      </div>
+      </div>
 
       {editDoc && (
         <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && setEditDoc(null)}>
