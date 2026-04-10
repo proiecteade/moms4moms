@@ -28,8 +28,8 @@ export default function Nav() {
       <Link href="/" className="logo">
         <span className="logo-wordmark">MOMS<span className="green">4</span>MOMS recomandă <span className="logo-medici">medici</span></span>
       </Link>
-      <Link href="/contact" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Contact</Link>
       <div className="nav-auth" ref={dropdownRef}>
+        <Link href="/contact" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Contact</Link>
         {user ? (
           <>
             <button className="user-avatar-btn" onClick={() => setShowDropdown(d => !d)}>
