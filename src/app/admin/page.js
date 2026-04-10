@@ -10,7 +10,7 @@ export default function AdminPage() {
   const toast = useToast()
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [tab, setTab] = useState('pending-docs')
+  const [tab, setTab] = useState('all-docs')
 
   const [pendingDocs, setPendingDocs] = useState([])
   const [pendingReviews, setPendingReviews] = useState([])
@@ -194,12 +194,11 @@ export default function AdminPage() {
   const newFeedback = feedback.filter(f => !f.status)
 
   const TABS = [
-    { id: 'pending-docs', label: 'Medici în așteptare', count: pendingDocs.length },
-    { id: 'pending-reviews', label: 'Comentarii în așteptare', count: pendingReviews.length },
-    { id: 'approved-reviews', label: 'Comentarii publicate', count: null },
-    { id: 'suggestions', label: 'Sugestii modificare', count: activeSuggestions.length },
-    { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'all-docs', label: 'Toți medicii', count: null },
+    { id: 'pending-docs', label: 'Medici de aprobat', count: pendingDocs.length },
+    { id: 'pending-reviews', label: 'Comentarii de aprobat', count: pendingReviews.length },
+    { id: 'suggestions', label: 'Sugestii modificare medici', count: activeSuggestions.length },
+    { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'analytics', label: '📊 Analytics', count: null },
   ]
 
