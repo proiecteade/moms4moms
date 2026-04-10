@@ -9,19 +9,22 @@ export default function ContactPage() {
   const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   async function submit(e) {
     e.preventDefault()
     if (!message.trim()) return
     setLoading(true)
+    setError(null)
     const supabase = createClient()
-    await supabase.from('contact_messages').insert({
+    const { error } = await supabase.from('contact_messages').insert({
       id: uid(),
       name: name.trim() || null,
       email: email.trim() || null,
       message: message.trim(),
       date: todayISO(),
     })
+    if (error) { setError('A apărut o eroare. Încearcă din nou.'); setLoading(false); return }
     setSent(true)
     setLoading(false)
   }
@@ -63,6 +66,7 @@ export default function ContactPage() {
           <button className="submit-btn" type="submit" disabled={loading || !message.trim()}>
             {loading ? 'Se trimite…' : 'Trimite mesajul'}
           </button>
+          {error && <div style={{ color: 'var(--rose)', fontSize: 13, marginTop: 8 }}>{error}</div>}
         </form>
       )}
     </div>
