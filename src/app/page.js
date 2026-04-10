@@ -61,10 +61,6 @@ export default async function HomePage() {
         </div>
       </div>
 
-      <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-faint)', padding: '6px 1rem', background: 'var(--cream)' }}>
-        ℹ️ Recomandările aparțin comunității și nu reprezintă sfaturi medicale profesioniste.
-      </div>
-
       <div className="stats-row">
         <Link href="/medici" className="stat-item stat-item-link">
           <div className="stat-num">{statDoctors}</div>
@@ -92,6 +88,10 @@ export default async function HomePage() {
             Vezi toți medicii →
           </Link>
         </div>
+      </div>
+
+      <div style={{ textAlign: 'center', fontSize: 12, color: 'var(--ink-faint)', padding: '6px 1rem', background: 'var(--cream)' }}>
+        ℹ️ Recomandările aparțin comunității și nu reprezintă sfaturi medicale profesioniste.
       </div>
     </>
   )
