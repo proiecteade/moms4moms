@@ -31,6 +31,7 @@ export default function Footer() {
           <div style={{ marginTop: 8, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             <a href="/privacy" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Confidențialitate</a>
             <a href="/termeni" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Termeni</a>
+            <a href="/contact" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Contact</a>
           </div>
         </div>
         <div>

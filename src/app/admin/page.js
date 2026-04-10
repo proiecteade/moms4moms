@@ -21,6 +21,7 @@ export default function AdminPage() {
   const [allDocs, setAllDocs] = useState([])
   const [docSearch, setDocSearch] = useState('')
 
+  const [contactMessages, setContactMessages] = useState([])
   const [analytics, setAnalytics] = useState(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
@@ -44,17 +45,19 @@ export default function AdminPage() {
   }, [])
 
   const loadData = useCallback(async () => {
-    const [a, b, c, d, e, f] = await Promise.all([
+    const [a, b, c, d, e, f, g] = await Promise.all([
       supabase.from('doctors').select('*').eq('status', 'pending'),
       supabase.from('reviews').select('*, doctors(first_name,last_name,specs)').eq('status', 'pending'),
       supabase.from('reviews').select('*, doctors(first_name,last_name)').eq('status', 'approved').order('date', { ascending: false }),
       supabase.from('suggestions').select('*').order('date', { ascending: false }),
       supabase.from('site_feedback').select('*').order('date', { ascending: false }),
       supabase.from('doctors').select('*').order('last_name').order('first_name'),
+      supabase.from('contact_messages').select('*').order('date', { ascending: false }),
     ])
     setPendingDocs(a.data || [])
     setPendingReviews(b.data || [])
     setApprovedReviews(c.data || [])
+    setContactMessages(g.data || [])
     const parentIds = (b.data || []).filter(r => r.parent_id).map(r => r.parent_id)
     if (parentIds.length > 0) {
       const { data: parents } = await supabase.from('reviews').select('id, reviewer, text').in('id', parentIds)
@@ -117,6 +120,11 @@ export default function AdminPage() {
     if (error) { toast('Eroare: ' + error.message, 'error'); return }
     loadData()
   }
+  async function markContactRead(id) {
+    await supabase.from('contact_messages').update({ status: 'read' }).eq('id', id)
+    loadData()
+  }
+
   async function setFeedbackStatus(id, status) {
     const { error } = await supabase.from('site_feedback').update({ status }).eq('id', id)
     if (error) { toast('Eroare: ' + error.message, 'error'); return }
@@ -192,6 +200,7 @@ export default function AdminPage() {
   const activeSuggestions = suggestions.filter(s => !s.archived)
   const archivedSuggestions = suggestions.filter(s => s.archived)
   const newFeedback = feedback.filter(f => !f.status)
+  const newContactMessages = contactMessages.filter(m => m.status === 'new')
 
   const TABS = [
     { id: 'all-docs', label: 'Toți medicii', count: null },
@@ -200,6 +209,7 @@ export default function AdminPage() {
     { id: 'approved-reviews', label: 'Comentarii publicate', count: null },
     { id: 'suggestions', label: 'Sugestii modificare medici', count: activeSuggestions.length },
     { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
+    { id: 'contact', label: 'Mesaje contact', count: newContactMessages.length },
     { id: 'analytics', label: '📊 Analytics', count: null },
   ]
 
@@ -460,6 +470,34 @@ export default function AdminPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {tab === 'contact' && (
+        <div>
+          {contactMessages.length === 0
+            ? <EmptyState icon="✉️" label="Nu există mesaje de contact" />
+            : contactMessages.map(m => (
+              <div key={m.id} className="admin-card">
+                <div className="admin-card-info">
+                  <div className="admin-card-name">
+                    {m.name || 'Anonim'}
+                    {m.status === 'new' && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 700, color: 'var(--teal)', background: 'var(--teal-light)', padding: '2px 8px', borderRadius: 10 }}>Nou</span>}
+                  </div>
+                  <div className="admin-card-sub">
+                    {m.email && <span style={{ marginRight: 8 }}>✉️ {m.email}</span>}
+                    {m.date}
+                  </div>
+                  <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 6 }}>{m.message}</div>
+                </div>
+                {m.status === 'new' && (
+                  <div className="admin-card-actions">
+                    <button className="btn-approve" onClick={() => markContactRead(m.id)}>✓ Marcat citit</button>
+                  </div>
+                )}
+              </div>
+            ))
+          }
         </div>
       )}
 
