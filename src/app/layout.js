@@ -3,6 +3,7 @@ import Script from 'next/script'
 import SiteShell from '@/components/SiteShell'
 import { ToastProvider } from '@/components/Toast'
 import { AuthProvider } from '@/components/AuthProvider'
+import CookieBanner from '@/components/CookieBanner'
 
 export const metadata = {
   metadataBase: new URL('https://moms4moms.ro'),
@@ -41,6 +42,7 @@ export default function RootLayout({ children }) {
             </SiteShell>
           </AuthProvider>
         </ToastProvider>
+        <CookieBanner />
       </body>
     </html>
   )

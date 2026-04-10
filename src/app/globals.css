@@ -328,6 +328,12 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .edit-spec-tag button{background:none;border:none;cursor:pointer;color:var(--teal);font-size:14px;line-height:1;padding:0;}
 
 /* FEEDBACK WIDGET */
+.cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--ink);color:white;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;}
+.cookie-banner-text{flex:1;line-height:1.5;}
+.cookie-banner-link{color:var(--teal-light,#7ecdc5);text-decoration:underline;}
+.cookie-banner-btns{display:flex;gap:8px;flex-shrink:0;}
+.cookie-btn-accept{background:var(--teal);color:white;border:none;border-radius:8px;padding:7px 18px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.cookie-btn-decline{background:transparent;color:rgba(255,255,255,0.6);border:1px solid rgba(255,255,255,0.3);border-radius:8px;padding:7px 14px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;cursor:pointer;}
 .footer-feedback-btn{background:transparent;border:1px solid var(--border-strong);border-radius:24px;padding:8px 16px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);cursor:pointer;transition:all 0.15s;}
 .footer-feedback-btn:hover{background:var(--cream);color:var(--ink);}
 .footer-feedback-form{display:flex;flex-direction:column;gap:6px;}

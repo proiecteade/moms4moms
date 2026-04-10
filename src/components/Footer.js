@@ -28,6 +28,11 @@ export default function Footer() {
         <div>
           <img src="/logo/logo.png" alt="Moms4Moms" style={{ height: 100, width: 'auto', display: 'block', marginBottom: 8 }} />
           <div style={{ fontSize: 13, color: 'var(--ink-faint)' }}>© Moms4Moms, 2026</div>
+          <div style={{ marginTop: 8, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+            <a href="/privacy" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Confidențialitate</a>
+            <a href="/termeni" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Termeni</a>
+            <a href="https://anpc.ro" target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>ANPC</a>
+          </div>
         </div>
         <div>
           {!open ? (
