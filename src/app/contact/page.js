@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { uid, todayISO } from '@/lib/helpers'
+import { todayISO } from '@/lib/helpers'
 
 export default function ContactPage() {
   const [name, setName] = useState('')
@@ -18,7 +18,7 @@ export default function ContactPage() {
     setError(null)
     const supabase = createClient()
     const { error } = await supabase.from('contact_messages').insert({
-      id: uid(),
+      id: crypto.randomUUID(),
       name: name.trim() || null,
       email: email.trim() || null,
       message: message.trim(),
