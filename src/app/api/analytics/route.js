@@ -1,19 +1,40 @@
-import { GoogleAuth } from 'google-auth-library'
+import { createSign } from 'node:crypto'
 
 const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID
 
-function getAuth() {
+async function getAccessToken() {
   const raw = process.env.GOOGLE_ANALYTICS_CREDENTIALS
-  if (!raw || !propertyId) return null
-  try {
-    const credentials = JSON.parse(raw)
-    return new GoogleAuth({
-      credentials,
-      scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
-    })
-  } catch {
-    return null
-  }
+  if (!raw) throw new Error('Missing credentials')
+  const creds = JSON.parse(raw)
+
+  const now = Math.floor(Date.now() / 1000)
+  const header = Buffer.from(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).toString('base64url')
+  const payload = Buffer.from(JSON.stringify({
+    iss: creds.client_email,
+    scope: 'https://www.googleapis.com/auth/analytics.readonly',
+    aud: 'https://oauth2.googleapis.com/token',
+    iat: now,
+    exp: now + 3600,
+  })).toString('base64url')
+
+  const signingInput = `${header}.${payload}`
+  const privateKey = creds.private_key.replace(/\\n/g, '\n')
+  const sign = createSign('RSA-SHA256')
+  sign.update(signingInput)
+  const signature = sign.sign(privateKey, 'base64url')
+  const jwt = `${signingInput}.${signature}`
+
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      assertion: jwt,
+    }),
+  })
+  const tokenData = await tokenRes.json()
+  if (!tokenData.access_token) throw new Error(tokenData.error_description || 'Token error')
+  return tokenData.access_token
 }
 
 async function runReport(token, body) {
@@ -29,14 +50,12 @@ async function runReport(token, body) {
 }
 
 export async function GET() {
-  const auth = getAuth()
-  if (!auth) {
+  if (!propertyId || !process.env.GOOGLE_ANALYTICS_CREDENTIALS) {
     return Response.json({ error: 'Analytics indisponibil' }, { status: 503 })
   }
 
   try {
-    const client = await auth.getClient()
-    const { token } = await client.getAccessToken()
+    const token = await getAccessToken()
 
     const [overviewData, pagesData] = await Promise.all([
       runReport(token, {
