@@ -511,10 +511,10 @@ export default function AdminPage() {
                   </div>
                   {isExpanded && (
                     <div onClick={e => e.stopPropagation()}>
-                      <div style={{ fontSize: 14, color: 'var(--ink-light)', padding: '10px 0 10px', borderTop: '1px solid var(--border)', marginTop: 8 }}>{m.message}</div>
+                      <div style={{ fontSize: 14, color: 'var(--ink-light)', padding: '10px 0 10px', borderTop: '1px solid var(--border)', marginTop: 8, wordBreak: 'break-word', whiteSpace: 'pre-wrap' }}>{m.message}</div>
                       <div className="admin-card-actions" style={{ justifyContent: 'flex-start' }}>
                         {m.status === 'new' && (
-                          <button className="btn-approve" onClick={() => markContactReplied(m.id)}>✓ Marchează ca răspuns</button>
+                          <button className="btn-approve" onClick={() => markContactReplied(m.id)}>✓ Marchează ca citit</button>
                         )}
                         <button className="btn-reject" onClick={() => archiveContact(m.id)}>↓ Arhivează</button>
                       </div>
