@@ -22,6 +22,8 @@ export default function AdminPage() {
   const [docSearch, setDocSearch] = useState('')
 
   const [contactMessages, setContactMessages] = useState([])
+  const [expandedContact, setExpandedContact] = useState(null)
+  const [showRepliedContact, setShowRepliedContact] = useState(false)
   const [analytics, setAnalytics] = useState(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
@@ -120,8 +122,12 @@ export default function AdminPage() {
     if (error) { toast('Eroare: ' + error.message, 'error'); return }
     loadData()
   }
-  async function markContactRead(id) {
-    await supabase.from('contact_messages').update({ status: 'read' }).eq('id', id)
+  async function markContactReplied(id) {
+    await supabase.from('contact_messages').update({ status: 'replied' }).eq('id', id)
+    loadData()
+  }
+  async function archiveContact(id) {
+    await supabase.from('contact_messages').update({ status: 'archived' }).eq('id', id)
     loadData()
   }
 
@@ -475,28 +481,48 @@ export default function AdminPage() {
 
       {tab === 'contact' && (
         <div>
-          {contactMessages.length === 0
-            ? <EmptyState icon="✉️" label="Nu există mesaje de contact" />
-            : contactMessages.map(m => (
-              <div key={m.id} className="admin-card">
-                <div className="admin-card-info">
-                  <div className="admin-card-name">
-                    {m.name || 'Anonim'}
-                    {m.status === 'new' && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 700, color: 'var(--teal)', background: 'var(--teal-light)', padding: '2px 8px', borderRadius: 10 }}>Nou</span>}
+          <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
+            <button className={`admin-tab${!showRepliedContact ? ' active' : ''}`} onClick={() => setShowRepliedContact(false)}>
+              Noi ({contactMessages.filter(m => m.status === 'new').length})
+            </button>
+            <button className={`admin-tab${showRepliedContact ? ' active' : ''}`} onClick={() => setShowRepliedContact(true)}>
+              Răspunse ({contactMessages.filter(m => m.status === 'replied').length})
+            </button>
+          </div>
+          {contactMessages.filter(m => showRepliedContact ? m.status === 'replied' : m.status === 'new').length === 0
+            ? <EmptyState icon="✉️" label={showRepliedContact ? 'Nu există mesaje răspunse' : 'Nu există mesaje noi'} />
+            : contactMessages.filter(m => showRepliedContact ? m.status === 'replied' : m.status === 'new').map(m => {
+              const isExpanded = expandedContact === m.id
+              return (
+                <div key={m.id} className="admin-card" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 0, cursor: 'pointer' }}
+                  onClick={() => setExpandedContact(isExpanded ? null : m.id)}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div className="admin-card-info" style={{ flex: 1 }}>
+                      <div className="admin-card-name" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                        {m.subject || '(fără subiect)'}
+                        {m.status === 'new' && <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--teal)', background: 'var(--teal-light)', padding: '2px 8px', borderRadius: 10 }}>Nou</span>}
+                      </div>
+                      <div className="admin-card-sub">
+                        {m.email && <span style={{ marginRight: 8 }}>✉️ {m.email}</span>}
+                        {m.date}
+                      </div>
+                    </div>
+                    <span style={{ fontSize: 12, color: 'var(--ink-faint)', padding: '0 8px' }}>{isExpanded ? '▲' : '▼'}</span>
                   </div>
-                  <div className="admin-card-sub">
-                    {m.email && <span style={{ marginRight: 8 }}>✉️ {m.email}</span>}
-                    {m.date}
-                  </div>
-                  <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 6 }}>{m.message}</div>
+                  {isExpanded && (
+                    <div onClick={e => e.stopPropagation()}>
+                      <div style={{ fontSize: 14, color: 'var(--ink-light)', padding: '10px 0 10px', borderTop: '1px solid var(--border)', marginTop: 8 }}>{m.message}</div>
+                      <div className="admin-card-actions" style={{ justifyContent: 'flex-start' }}>
+                        {m.status === 'new' && (
+                          <button className="btn-approve" onClick={() => markContactReplied(m.id)}>✓ Marchează ca răspuns</button>
+                        )}
+                        <button className="btn-reject" onClick={() => archiveContact(m.id)}>↓ Arhivează</button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {m.status === 'new' && (
-                  <div className="admin-card-actions">
-                    <button className="btn-approve" onClick={() => markContactRead(m.id)}>✓ Marcat citit</button>
-                  </div>
-                )}
-              </div>
-            ))
+              )
+            })
           }
         </div>
       )}

@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 import { todayISO } from '@/lib/helpers'
 
 export default function ContactPage() {
-  const [name, setName] = useState('')
+  const [subject, setSubject] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [sent, setSent] = useState(false)
@@ -19,7 +19,7 @@ export default function ContactPage() {
     const supabase = createClient()
     const { error } = await supabase.from('contact_messages').insert({
       id: crypto.randomUUID(),
-      name: name.trim() || null,
+      subject: subject.trim() || null,
       email: email.trim() || null,
       message: message.trim(),
       date: todayISO(),
@@ -42,15 +42,13 @@ export default function ContactPage() {
         </div>
       ) : (
         <form onSubmit={submit}>
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">Nume <span style={{ color: 'var(--ink-faint)', fontWeight: 400 }}>(opțional)</span></label>
-              <input className="form-input" value={name} onChange={e => setName(e.target.value)} placeholder="Numele tău" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Email <span style={{ color: 'var(--ink-faint)', fontWeight: 400 }}>(pentru răspuns)</span></label>
-              <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@exemplu.ro" />
-            </div>
+          <div className="form-group">
+            <label className="form-label">Subiect</label>
+            <input className="form-input" value={subject} onChange={e => setSubject(e.target.value)} placeholder="Despre ce vrei să ne scrii?" required />
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email <span style={{ color: 'var(--ink-faint)', fontWeight: 400 }}>(pentru răspuns)</span></label>
+            <input className="form-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="email@exemplu.ro" />
           </div>
           <div className="form-group">
             <label className="form-label">Mesaj</label>
