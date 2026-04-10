@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       <p style={{ color: 'var(--ink-light)', fontSize: 13, marginBottom: '2rem' }}>Ultima actualizare: aprilie 2026</p>
 
       <Section title="1. Cine suntem">
-        <p>Moms4Moms (<strong>moms4moms.ro</strong>) este o platformă de recomandări de medici creată de și pentru mamele din România. Operatorul datelor cu caracter personal este accesibil la adresa <strong>luca.adelina.maria@gmail.com</strong>.</p>
+        <p>Moms4Moms (<strong>moms4moms.ro</strong>) este o platformă de recomandări de medici creată de și pentru mamele din România. Operatorul datelor cu caracter personal este accesibil la adresa <strong>sabina_cornovac@yahoo.com</strong>.</p>
       </Section>
 
       <Section title="2. Ce date colectăm">
@@ -50,7 +50,7 @@ export default function PrivacyPage() {
           <li>Soliciți corectarea datelor incorecte.</li>
           <li>Te opui prelucrării datelor în scopuri de marketing.</li>
         </ul>
-        <p>Pentru orice solicitare, contactează-ne la <strong>luca.adelina.maria@gmail.com</strong>.</p>
+        <p>Pentru orice solicitare, contactează-ne la <strong>sabina_cornovac@yahoo.com</strong>.</p>
       </Section>
 
       <Section title="8. Retenția datelor">
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="9. Contact">
-        <p>Pentru întrebări legate de confidențialitate: <strong>luca.adelina.maria@gmail.com</strong></p>
+        <p>Pentru întrebări legate de confidențialitate: <strong>sabina_cornovac@yahoo.com</strong></p>
       </Section>
     </div>
   )
