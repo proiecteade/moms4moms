@@ -27,12 +27,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body>
-        <Script src="https://www.googletagmanager.com/gtag/js?id=G-8JF22F9RP5" strategy="afterInteractive" />
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-5QHY2HXTJR" strategy="afterInteractive" />
         <Script id="ga-init" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', 'G-8JF22F9RP5');
+          gtag('config', 'G-5QHY2HXTJR');
         `}</Script>
         <ToastProvider>
           <AuthProvider>
