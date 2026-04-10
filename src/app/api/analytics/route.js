@@ -1,28 +1,45 @@
-import { BetaAnalyticsDataClient } from '@google-analytics/data'
+import { GoogleAuth } from 'google-auth-library'
 
 const propertyId = process.env.GOOGLE_ANALYTICS_PROPERTY_ID
 
-function getClient() {
+function getAuth() {
   const raw = process.env.GOOGLE_ANALYTICS_CREDENTIALS
   if (!raw || !propertyId) return null
   try {
     const credentials = JSON.parse(raw)
-    return new BetaAnalyticsDataClient({ credentials })
+    return new GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
+    })
   } catch {
     return null
   }
 }
 
+async function runReport(token, body) {
+  const res = await fetch(
+    `https://analyticsdata.googleapis.com/v1beta/properties/${propertyId}:runReport`,
+    {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }
+  )
+  return res.json()
+}
+
 export async function GET() {
-  const client = getClient()
-  if (!client) {
+  const auth = getAuth()
+  if (!auth) {
     return Response.json({ error: 'Analytics indisponibil' }, { status: 503 })
   }
 
   try {
-    const [overviewResp, pagesResp] = await Promise.all([
-      client.runReport({
-        property: `properties/${propertyId}`,
+    const client = await auth.getClient()
+    const { token } = await client.getAccessToken()
+
+    const [overviewData, pagesData] = await Promise.all([
+      runReport(token, {
         dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
         metrics: [
           { name: 'activeUsers' },
@@ -30,8 +47,7 @@ export async function GET() {
           { name: 'screenPageViews' },
         ],
       }),
-      client.runReport({
-        property: `properties/${propertyId}`,
+      runReport(token, {
         dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
         dimensions: [{ name: 'pagePath' }],
         metrics: [{ name: 'screenPageViews' }],
@@ -40,14 +56,14 @@ export async function GET() {
       }),
     ])
 
-    const row = overviewResp[0]?.rows?.[0]?.metricValues || []
+    const row = overviewData.rows?.[0]?.metricValues || []
     const overview = {
       users: row[0]?.value || '0',
       sessions: row[1]?.value || '0',
       pageviews: row[2]?.value || '0',
     }
 
-    const pages = (pagesResp[0]?.rows || []).map(r => ({
+    const pages = (pagesData.rows || []).map(r => ({
       path: r.dimensionValues[0]?.value,
       views: r.metricValues[0]?.value,
     }))
