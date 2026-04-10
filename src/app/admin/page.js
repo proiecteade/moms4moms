@@ -71,6 +71,16 @@ export default function AdminPage() {
 
   useEffect(() => { if (session) loadData() }, [session, loadData])
 
+  useEffect(() => {
+    if (tab === 'analytics' && !analytics && !analyticsLoading) {
+      setAnalyticsLoading(true)
+      fetch('/api/analytics').then(r => r.json()).then(data => {
+        setAnalytics(data)
+        setAnalyticsLoading(false)
+      }).catch(() => setAnalyticsLoading(false))
+    }
+  }, [tab])
+
   async function login(e) {
     e.preventDefault()
     const email = e.target.email.value
@@ -180,16 +190,6 @@ export default function AdminPage() {
   )
 
   const activeSuggestions = suggestions.filter(s => !s.archived)
-  useEffect(() => {
-    if (tab === 'analytics' && !analytics && !analyticsLoading) {
-      setAnalyticsLoading(true)
-      fetch('/api/analytics').then(r => r.json()).then(data => {
-        setAnalytics(data)
-        setAnalyticsLoading(false)
-      }).catch(() => setAnalyticsLoading(false))
-    }
-  }, [tab])
-
   const archivedSuggestions = suggestions.filter(s => s.archived)
   const newFeedback = feedback.filter(f => !f.status)
 
