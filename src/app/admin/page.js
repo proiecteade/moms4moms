@@ -197,6 +197,7 @@ export default function AdminPage() {
     { id: 'all-docs', label: 'Toți medicii', count: null },
     { id: 'pending-docs', label: 'Medici de aprobat', count: pendingDocs.length },
     { id: 'pending-reviews', label: 'Comentarii de aprobat', count: pendingReviews.length },
+    { id: 'approved-reviews', label: 'Comentarii publicate', count: null },
     { id: 'suggestions', label: 'Sugestii modificare medici', count: activeSuggestions.length },
     { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'analytics', label: '📊 Analytics', count: null },
