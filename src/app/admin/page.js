@@ -21,6 +21,9 @@ export default function AdminPage() {
   const [allDocs, setAllDocs] = useState([])
   const [docSearch, setDocSearch] = useState('')
 
+  const [analytics, setAnalytics] = useState(null)
+  const [analyticsLoading, setAnalyticsLoading] = useState(false)
+
   const [parentReviewsMap, setParentReviewsMap] = useState({})
 
   const [editDoc, setEditDoc] = useState(null)
@@ -177,6 +180,16 @@ export default function AdminPage() {
   )
 
   const activeSuggestions = suggestions.filter(s => !s.archived)
+  useEffect(() => {
+    if (tab === 'analytics' && !analytics && !analyticsLoading) {
+      setAnalyticsLoading(true)
+      fetch('/api/analytics').then(r => r.json()).then(data => {
+        setAnalytics(data)
+        setAnalyticsLoading(false)
+      }).catch(() => setAnalyticsLoading(false))
+    }
+  }, [tab])
+
   const archivedSuggestions = suggestions.filter(s => s.archived)
   const newFeedback = feedback.filter(f => !f.status)
 
@@ -187,6 +200,7 @@ export default function AdminPage() {
     { id: 'suggestions', label: 'Sugestii modificare', count: activeSuggestions.length },
     { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'all-docs', label: 'Toți medicii', count: null },
+    { id: 'analytics', label: '📊 Analytics', count: null },
   ]
 
   return (
@@ -444,6 +458,40 @@ export default function AdminPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {tab === 'analytics' && (
+        <div>
+          {analyticsLoading && <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ink-light)' }}>Se încarcă datele…</div>}
+          {!analyticsLoading && analytics?.error && (
+            <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ink-light)' }}>⚠️ {analytics.error}</div>
+          )}
+          {!analyticsLoading && analytics?.overview && (
+            <>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
+                {[
+                  { label: 'Utilizatori unici', value: analytics.overview.users },
+                  { label: 'Sesiuni', value: analytics.overview.sessions },
+                  { label: 'Afișări pagini', value: analytics.overview.pageviews },
+                ].map(s => (
+                  <div key={s.label} style={{ background: 'var(--cream)', borderRadius: 12, padding: '1.25rem', textAlign: 'center' }}>
+                    <div style={{ fontSize: 28, fontWeight: 700, color: 'var(--teal)' }}>{Number(s.value).toLocaleString('ro-RO')}</div>
+                    <div style={{ fontSize: 12, color: 'var(--ink-light)', marginTop: 4 }}>{s.label} (30 zile)</div>
+                  </div>
+                ))}
+              </div>
+              <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 10 }}>Top 10 pagini vizitate</div>
+              <div style={{ background: 'white', border: '1.5px solid var(--border)', borderRadius: 12, overflow: 'hidden' }}>
+                {analytics.pages.map((p, i) => (
+                  <div key={p.path} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 16px', borderBottom: i < analytics.pages.length - 1 ? '1px solid var(--border)' : 'none' }}>
+                    <span style={{ fontSize: 13, color: 'var(--ink)', fontFamily: 'monospace' }}>{p.path}</span>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--teal)' }}>{Number(p.views).toLocaleString('ro-RO')}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
