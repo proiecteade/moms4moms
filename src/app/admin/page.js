@@ -23,7 +23,7 @@ export default function AdminPage() {
 
   const [contactMessages, setContactMessages] = useState([])
   const [expandedContact, setExpandedContact] = useState(null)
-  const [showRepliedContact, setShowRepliedContact] = useState(false)
+  const [contactView, setContactView] = useState('new')
   const [analytics, setAnalytics] = useState(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
@@ -482,16 +482,19 @@ export default function AdminPage() {
       {tab === 'contact' && (
         <div>
           <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
-            <button className={`admin-tab${!showRepliedContact ? ' active' : ''}`} onClick={() => setShowRepliedContact(false)}>
+            <button className={`admin-tab${contactView === 'new' ? ' active' : ''}`} onClick={() => setContactView('new')}>
               Noi ({contactMessages.filter(m => m.status === 'new').length})
             </button>
-            <button className={`admin-tab${showRepliedContact ? ' active' : ''}`} onClick={() => setShowRepliedContact(true)}>
+            <button className={`admin-tab${contactView === 'replied' ? ' active' : ''}`} onClick={() => setContactView('replied')}>
               Răspunse ({contactMessages.filter(m => m.status === 'replied').length})
             </button>
+            <button className={`admin-tab${contactView === 'archived' ? ' active' : ''}`} onClick={() => setContactView('archived')}>
+              Arhivate ({contactMessages.filter(m => m.status === 'archived').length})
+            </button>
           </div>
-          {contactMessages.filter(m => showRepliedContact ? m.status === 'replied' : m.status === 'new').length === 0
-            ? <EmptyState icon="✉️" label={showRepliedContact ? 'Nu există mesaje răspunse' : 'Nu există mesaje noi'} />
-            : contactMessages.filter(m => showRepliedContact ? m.status === 'replied' : m.status === 'new').map(m => {
+          {contactMessages.filter(m => m.status === contactView).length === 0
+            ? <EmptyState icon="✉️" label={contactView === 'new' ? 'Nu există mesaje noi' : contactView === 'replied' ? 'Nu există mesaje răspunse' : 'Nu există mesaje arhivate'} />
+            : contactMessages.filter(m => m.status === contactView).map(m => {
               const isExpanded = expandedContact === m.id
               return (
                 <div key={m.id} className="admin-card" style={{ flexDirection: 'column', alignItems: 'stretch', gap: 0, cursor: 'pointer' }}
