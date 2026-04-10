@@ -3,7 +3,7 @@ export const dynamic = 'force-dynamic'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { SPECIALTIES } from '@/lib/constants'
-import { doctorFullName, avatarColor, initials } from '@/lib/helpers'
+import { doctorFullName, avatarColor, initials, generateSlug } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 
 export default function AdminPage() {
@@ -97,7 +97,15 @@ export default function AdminPage() {
   async function logout() { await supabase.auth.signOut() }
 
   async function approveDoc(id) {
-    await supabase.from('doctors').update({ status: 'approved' }).eq('id', id)
+    const doc = [...pendingDocs, ...allDocs].find(d => d.id === id)
+    const updates = { status: 'approved' }
+    if (doc && !doc.slug) {
+      let slug = generateSlug(doc.first_name, doc.last_name)
+      const { data: existing } = await supabase.from('doctors').select('id').eq('slug', slug).maybeSingle()
+      if (existing) slug = slug + '_2'
+      updates.slug = slug
+    }
+    await supabase.from('doctors').update(updates).eq('id', id)
     loadData()
   }
   async function rejectDoc(id) {

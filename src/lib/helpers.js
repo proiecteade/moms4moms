@@ -38,6 +38,14 @@ export function normalize(str) {
   return (str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
+export function generateSlug(firstName, lastName) {
+  return ((firstName || '') + (lastName ? '_' + lastName : ''))
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+}
+
 const STATE_HOSPITALS = new Set([
   'Spitalul Clinic de Urgență „Prof. Dr. Agrippa Ionescu"',
   'Spitalul Clinic de Urgenta "Bagdasar-Arseni"',

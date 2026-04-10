@@ -10,27 +10,32 @@ import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
 export async function generateMetadata({ params }) {
-  const { id } = await params
+  const { slug } = await params
   const supabase = await createClient()
-  const { data: doc } = await supabase.from('doctors').select('*').eq('id', id).single()
+  const { data: doc } = await supabase.from('doctors').select('*').or(`slug.eq.${slug},id.eq.${slug}`).maybeSingle()
   if (!doc) return { title: 'Medic — Moms4Moms' }
   return {
     title: `Dr. ${doc.first_name} ${doc.last_name || ''} — Moms4Moms`,
     description: `Recenzii și informații despre Dr. ${doc.first_name} ${doc.last_name || ''}, ${(doc.specs || []).join(', ')}, ${doc.city}`,
+    openGraph: {
+      title: `Dr. ${doc.first_name} ${doc.last_name || ''} — Moms4Moms`,
+      description: `Recenzii și informații despre Dr. ${doc.first_name} ${doc.last_name || ''}, ${(doc.specs || []).join(', ')}, ${doc.city}`,
+      images: doc.photo_url ? [{ url: doc.photo_url }] : [{ url: '/og-image.png' }],
+    },
   }
 }
 
 export default async function DoctorDetailPage({ params }) {
-  const { id } = await params
+  const { slug } = await params
   const supabase = await createClient()
 
-  const [{ data: doc }, { data: reviews }, { count: recCount }] = await Promise.all([
-    supabase.from('doctors').select('*').eq('id', id).single(),
-    supabase.from('reviews').select('*').eq('doctor_id', id).eq('status', 'approved'),
-    supabase.from('recommendations').select('*', { count: 'exact', head: true }).eq('doctor_id', id),
-  ])
-
+  const { data: doc } = await supabase.from('doctors').select('*').or(`slug.eq.${slug},id.eq.${slug}`).maybeSingle()
   if (!doc) notFound()
+
+  const [{ data: reviews }, { count: recCount }] = await Promise.all([
+    supabase.from('reviews').select('*').eq('doctor_id', doc.id).eq('status', 'approved'),
+    supabase.from('recommendations').select('*', { count: 'exact', head: true }).eq('doctor_id', doc.id),
+  ])
 
   const docWithUrls = {
     ...doc,

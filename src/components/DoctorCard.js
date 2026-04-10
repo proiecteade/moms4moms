@@ -44,7 +44,7 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
     setLoading(false)
   }
 
-  const profileUrl = `https://moms4moms.ro/medici/${doctor.id}`
+  const profileUrl = `https://moms4moms.ro/medici/${doctor.slug || doctor.id}`
   const doctorName = `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
 
   function copyLink(e) {
@@ -61,10 +61,10 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
   return (
     <div
       className="doctor-card"
-      onClick={() => router.push(`/medici/${doctor.id}`)}
+      onClick={() => router.push(`/medici/${doctor.slug || doctor.id}`)}
       role="link"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && router.push(`/medici/${doctor.id}`)}
+      onKeyDown={e => e.key === 'Enter' && router.push(`/medici/${doctor.slug || doctor.id}`)}
       style={{ cursor: 'pointer' }}
     >
       {doctor.photo_url
@@ -120,7 +120,7 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
         </button>
         <button
           className="footer-action-chip"
-          onClick={e => { e.stopPropagation(); router.push(`/medici/${doctor.id}#comentarii`) }}
+          onClick={e => { e.stopPropagation(); router.push(`/medici/${doctor.slug || doctor.id}#comentarii`) }}
         >
           <span className="footer-chip-count">💬 <strong>{reviewCount}</strong></span>
           <span className="footer-chip-divider" />
