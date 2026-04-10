@@ -1,4 +1,5 @@
 import './globals.css'
+import Script from 'next/script'
 import SiteShell from '@/components/SiteShell'
 import { ToastProvider } from '@/components/Toast'
 import { AuthProvider } from '@/components/AuthProvider'
@@ -26,6 +27,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ro">
       <body>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-8JF22F9RP5" strategy="afterInteractive" />
+        <Script id="ga-init" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-8JF22F9RP5');
+        `}</Script>
         <ToastProvider>
           <AuthProvider>
             <SiteShell>
