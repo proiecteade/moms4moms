@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createClient as createDirectClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import DetailFooterChips from '@/components/DetailFooterChips'
@@ -8,6 +9,26 @@ import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
 import { specEmoji } from '@/lib/constants'
 import { notFound } from 'next/navigation'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
+
+// Re-renderează paginile de doctor în fundal la fiecare oră
+export const revalidate = 3600
+
+// Pre-renderează toți doctorii aprobați la build time
+export async function generateStaticParams() {
+  try {
+    const supabase = createDirectClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    )
+    const { data: doctors } = await supabase
+      .from('doctors')
+      .select('slug, id')
+      .eq('status', 'approved')
+    return (doctors || []).map(d => ({ slug: d.slug || d.id }))
+  } catch {
+    return []
+  }
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
