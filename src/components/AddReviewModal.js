@@ -1,11 +1,33 @@
 'use client'
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect, useRef } from 'react'
 import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 
 export default function AddReviewModal({ doctor, onClose }) {
   const toast = useToast()
+  const modalRef = useRef(null)
+  const titleId = 'add-review-modal-title'
+
+  useEffect(() => {
+    const modal = modalRef.current
+    if (!modal) return
+    const focusable = modal.querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    first?.focus()
+    function onKeyDown(e) {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last?.focus() }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first?.focus() }
+      }
+    }
+    modal.addEventListener('keydown', onKeyDown)
+    return () => modal.removeEventListener('keydown', onKeyDown)
+  }, [onClose])
+
   const [reviewer, setReviewer] = useState('')
   const [text, setText] = useState('')
   const [sentiment, setSentiment] = useState(null) // 'happy' | 'sad'
@@ -17,27 +39,32 @@ export default function AddReviewModal({ doctor, onClose }) {
   async function submit() {
     if (!sentiment) return toast('Alege o reacție mai întâi', 'error')
     setLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase.from('reviews').insert({
-      id: uid(),
-      doctor_id: doctor.id,
-      reviewer: reviewer.trim() || 'Anonim',
-      text: text.trim() || null,
-      rating: sentiment === 'happy' ? 5 : 1,
-      date: todayISO(),
-      status: 'pending',
+    const res = await fetch('/api/reviews', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        doctor_id: doctor.id,
+        reviewer: reviewer.trim() || 'Anonim',
+        text: text.trim() || null,
+        rating: sentiment === 'happy' ? 5 : 1,
+        date: todayISO(),
+      }),
     })
     setLoading(false)
-    if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      toast(data.error || 'Eroare. Încearcă din nou.', 'error')
+      return
+    }
     setDone(true)
   }
 
   return (
     <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby={titleId} ref={modalRef}>
         <div className="modal-header">
-          <div className="modal-title">Experiența ta</div>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <div className="modal-title" id={titleId}>Experiența ta</div>
+          <button className="modal-close" onClick={onClose} aria-label="Închide">×</button>
         </div>
         <div className="modal-body">
           {done ? (

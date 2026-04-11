@@ -24,8 +24,24 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    setDone(!!localStorage.getItem('rec_' + doctor.id))
-  }, [doctor.id])
+    const localDone = !!localStorage.getItem('rec_' + doctor.id)
+    if (localDone) { setDone(true); return }
+    if (!user) return
+    const supabase = createClient()
+    if (!supabase) return
+    supabase
+      .from('recommendations')
+      .select('id')
+      .eq('doctor_id', doctor.id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          localStorage.setItem('rec_' + doctor.id, data.id)
+          setDone(true)
+        }
+      })
+  }, [doctor.id, user])
 
   async function recommend(e) {
     e.preventDefault()
@@ -34,6 +50,19 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
     if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
     setLoading(true)
     const supabase = createClient()
+    // Verificăm server-side dacă recomandarea există deja
+    const { data: existing } = await supabase
+      .from('recommendations')
+      .select('id')
+      .eq('doctor_id', doctor.id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+    if (existing) {
+      localStorage.setItem('rec_' + doctor.id, existing.id)
+      setDone(true)
+      setLoading(false)
+      return
+    }
     const recId = uid()
     const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id, user_id: user.id })
     if (!error) {

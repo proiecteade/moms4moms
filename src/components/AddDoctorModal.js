@@ -1,6 +1,5 @@
 'use client'
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect, useRef } from 'react'
 import { SPECIALTIES } from '@/lib/constants'
 import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
@@ -11,6 +10,29 @@ const CLINIC_NAMES = Object.keys(KNOWN_CLINIC_URLS)
 
 export default function AddDoctorModal({ onClose }) {
   const toast = useToast()
+  const modalRef = useRef(null)
+  const titleId = 'add-doctor-modal-title'
+
+  useEffect(() => {
+    const modal = modalRef.current
+    if (!modal) return
+    const focusable = modal.querySelectorAll('button, input, select, textarea, [tabindex]:not([tabindex="-1"])')
+    const first = focusable[0]
+    const last = focusable[focusable.length - 1]
+    first?.focus()
+    function onKeyDown(e) {
+      if (e.key === 'Escape') { onClose(); return }
+      if (e.key !== 'Tab') return
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last?.focus() }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first?.focus() }
+      }
+    }
+    modal.addEventListener('keydown', onKeyDown)
+    return () => modal.removeEventListener('keydown', onKeyDown)
+  }, [onClose])
+
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [city, setCity] = useState('')
@@ -59,45 +81,55 @@ export default function AddDoctorModal({ onClose }) {
       return
     }
     setLoading(true)
-    const supabase = createClient()
     const filteredClinics = clinics.filter(Boolean)
     const finalUrls = {}
     filteredClinics.forEach(c => { if (clinicUrls[c]) finalUrls[c] = clinicUrls[c] })
     const doctorId = uid()
-    const { error } = await supabase.from('doctors').insert({
-      id: doctorId,
-      first_name: firstName.trim(),
-      last_name: lastName.trim(),
-      specs,
-      city: city.trim(),
-      clinics: filteredClinics,
-      clinic_urls: finalUrls,
-      obs: obs.trim(),
-      status: 'pending',
-      submitted_at: Date.now(),
-    })
-    if (error) { setLoading(false); toast('Eroare. Încearcă din nou.', 'error'); return }
+
+    const body = {
+      doctor: {
+        id: doctorId,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        specs,
+        city: city.trim(),
+        clinics: filteredClinics,
+        clinic_urls: finalUrls,
+        obs: obs.trim(),
+        submitted_at: Date.now(),
+      },
+    }
+
     if (sentiment || expText.trim()) {
-      const rating = sentiment === 'happy' ? 5 : sentiment === 'sad' ? 1 : 0
-      await supabase.from('reviews').insert({
+      body.review = {
         id: uid(),
         doctor_id: doctorId,
-        rating,
+        rating: sentiment === 'happy' ? 5 : sentiment === 'sad' ? 1 : 0,
         text: expText.trim(),
         date: todayISO(),
-        status: 'pending',
-      })
+      }
     }
+
+    const res = await fetch('/api/doctors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
     setLoading(false)
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      toast(data.error || 'Eroare. Încearcă din nou.', 'error')
+      return
+    }
     setDone(true)
   }
 
   return (
     <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && onClose()}>
-      <div className="modal">
+      <div className="modal" role="dialog" aria-modal="true" aria-labelledby={titleId} ref={modalRef}>
         <div className="modal-header">
-          <div className="modal-title">Recomandă un medic</div>
-          <button className="modal-close" onClick={onClose}>×</button>
+          <div className="modal-title" id={titleId}>Recomandă un medic</div>
+          <button className="modal-close" onClick={onClose} aria-label="Închide">×</button>
         </div>
         <div className="modal-body">
           {done ? (

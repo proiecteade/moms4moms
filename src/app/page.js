@@ -8,15 +8,22 @@ import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 export default async function HomePage() {
   const supabase = await createClient()
 
-  const [{ data: doctors }, { data: recs }] = await Promise.all([
-    supabase.from('doctors').select('*').eq('status', 'approved'),
-    supabase.from('recommendations').select('doctor_id'),
-  ])
+  let doctors = [], recs = []
+  try {
+    const [{ data: d }, { data: r }] = await Promise.all([
+      supabase.from('doctors').select('*').eq('status', 'approved'),
+      supabase.from('recommendations').select('doctor_id'),
+    ])
+    doctors = d || []
+    recs = r || []
+  } catch {
+    // Baza de date indisponibilă — redăm pagina cu date goale
+  }
 
   const recCountMap = {}
-  ;(recs || []).forEach(r => { recCountMap[r.doctor_id] = (recCountMap[r.doctor_id] || 0) + 1 })
+  recs.forEach(r => { recCountMap[r.doctor_id] = (recCountMap[r.doctor_id] || 0) + 1 })
 
-  const docs = (doctors || []).map(d => ({
+  const docs = doctors.map(d => ({
     ...d,
     recommendations_count: recCountMap[d.id] || 0,
     clinic_urls: Object.fromEntries((d.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))

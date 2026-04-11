@@ -22,21 +22,29 @@ export default async function MediciPage({ searchParams }) {
   const page = Math.max(1, parseInt(params.page || '1'))
 
   const supabase = await createClient()
-  const [{ data: doctors }, { data: reviews }, { data: recs }] = await Promise.all([
-    supabase.from('doctors').select('*').eq('status', 'approved'),
-    supabase.from('reviews').select('*').eq('status', 'approved'),
-    supabase.from('recommendations').select('doctor_id'),
-  ])
+  let doctors = [], reviews = [], recs = []
+  try {
+    const [{ data: d }, { data: rv }, { data: r }] = await Promise.all([
+      supabase.from('doctors').select('*').eq('status', 'approved'),
+      supabase.from('reviews').select('*').eq('status', 'approved'),
+      supabase.from('recommendations').select('doctor_id'),
+    ])
+    doctors = d || []
+    reviews = rv || []
+    recs = r || []
+  } catch {
+    // Baza de date indisponibilă — redăm pagina cu date goale
+  }
 
   const recCountMap = {}
-  ;(recs || []).forEach(r => { recCountMap[r.doctor_id] = (recCountMap[r.doctor_id] || 0) + 1 })
+  recs.forEach(r => { recCountMap[r.doctor_id] = (recCountMap[r.doctor_id] || 0) + 1 })
 
-  const docs = (doctors || []).map(d => ({
+  const docs = doctors.map(d => ({
     ...d,
     recommendations_count: recCountMap[d.id] || 0,
     clinic_urls: Object.fromEntries((d.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null]))
   }))
-  const revs = reviews || []
+  const revs = reviews
 
   const cities = [...new Set(docs.flatMap(d => (d.city || '').split(',').map(c => c.trim()).filter(Boolean)))].sort()
   const allSpecs = [...new Set(
