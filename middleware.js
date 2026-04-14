@@ -2,14 +2,14 @@ import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request) {
-  // Strat 1: cookie site_session — acces general la site (closed beta)
-  const session = request.cookies.get('site_session')
-  if (!session) {
-    const loginUrl = new URL('/login', request.url)
-    return NextResponse.redirect(loginUrl)
-  }
+  // LOGIN WALL DEZACTIVAT TEMPORAR — de reactivat după App Review Facebook
+  // const session = request.cookies.get('site_session')
+  // if (!session) {
+  //   const loginUrl = new URL('/login', request.url)
+  //   return NextResponse.redirect(loginUrl)
+  // }
 
-  // Strat 2: Supabase Auth — protecție suplimentară pentru /admin
+  // Supabase Auth — protecție pentru /admin
   if (request.nextUrl.pathname.startsWith('/admin')) {
     let response = NextResponse.next({ request })
 
@@ -31,9 +31,6 @@ export async function middleware(request) {
     )
 
     const { data: { user } } = await supabase.auth.getUser()
-
-    // Dacă nu e autentificat cu Supabase Auth, lasă pagina să afișeze formularul de login
-    // (AdminPage gestionează asta client-side cu UI dedicat)
     return response
   }
 
