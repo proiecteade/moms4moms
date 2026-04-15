@@ -18,6 +18,9 @@ export const metadata = {
     type: 'website',
     images: [{ url: '/logo/m4m_logo_fundal_alb_v2.png', width: 1200, height: 630, alt: 'Moms4Moms' }],
   },
+  other: {
+    'fb:app_id': '1619002152734509',
+  },
   twitter: {
     card: 'summary_large_image',
     title: 'Moms4Moms — Recomandări Medici',
