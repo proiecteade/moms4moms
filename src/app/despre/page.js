@@ -15,11 +15,13 @@ export default function DesprePage() {
           Despre Moms4Moms
         </h1>
         <p style={{ fontSize: 16, lineHeight: 1.8, color: 'var(--ink-light)' }}>
-          Moms4Moms România <em>(powered by Sabina Cornovac)</em> este mai mult decât un grup de mame — e o comunitate de femei care se susțin una pe alta.
+          Moms4Moms România <em>(powered by Sabina Cornovac)</em> este mai mult decât un grup de mame — e o comunitate de femei care se susțin una pe alta, online și offline, la bine și la greu.
         </p>
         <p style={{ fontSize: 16, lineHeight: 1.8, color: 'var(--ink-light)', marginTop: '1rem' }}>
-          Vorbim despre maternitate și copii, dar și despre noi ca femei și identitatea de dincolo de rolul de mamă.
-          Ne bucurăm împreună, ne îngrijorăm împreună și ne ajutăm să găsim oamenii de încredere de care avem nevoie — așa s-a născut această pagină, din nevoia de a accesa rapid recomandările mamelor din comunitate, recomandări pe care ne bazăm și cu ochii închiși.
+          Vorbim despre maternitate și copii, dar și despre noi ca femei, cu identitatea și nevoile de dincolo de rolul de mamă. Ne bucurăm împreună, ne îngrijorăm împreună și suntem aproape oricând avem momente frumoase ce merită sărbătorite sau momente mai grele, unde e nevoie de suport.
+        </p>
+        <p style={{ fontSize: 16, lineHeight: 1.8, color: 'var(--ink-light)', marginTop: '1rem' }}>
+          În orice situație ne ajutăm să găsim recomandări de încredere — așa s-a născut această pagină, din nevoia de a centraliza mulțimea de recomandări curatoriate primite de la mamele din comunitate de-a lungul timpului și de a le face accesibile și celor care nu sunt (încă) parte din comunitate.
         </p>
       </div>
 
