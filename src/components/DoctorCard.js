@@ -24,8 +24,6 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const localDone = !!localStorage.getItem('rec_' + doctor.id)
-    if (localDone) { setDone(true); return }
     if (!user) return
     const supabase = createClient()
     if (!supabase) return
@@ -39,6 +37,9 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
         if (data) {
           localStorage.setItem('rec_' + doctor.id, data.id)
           setDone(true)
+        } else {
+          localStorage.removeItem('rec_' + doctor.id)
+          setDone(false)
         }
       })
   }, [doctor.id, user])
