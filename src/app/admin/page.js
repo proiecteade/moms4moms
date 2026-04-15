@@ -24,6 +24,7 @@ export default function AdminPage() {
   const [contactMessages, setContactMessages] = useState([])
   const [expandedContact, setExpandedContact] = useState(null)
   const [contactView, setContactView] = useState('new')
+  const [feedbackView, setFeedbackView] = useState('new')
   const [analytics, setAnalytics] = useState(null)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
 
@@ -32,6 +33,7 @@ export default function AdminPage() {
   const [editDoc, setEditDoc] = useState(null)
   const [editSpecs, setEditSpecs] = useState([])
   const [editClinics, setEditClinics] = useState([''])
+  const [editClinicUrls, setEditClinicUrls] = useState({})
   const [editReview, setEditReview] = useState(null) // { id, text }
 
   const supabase = createClient()
@@ -144,6 +146,16 @@ export default function AdminPage() {
     if (error) { toast('Eroare: ' + error.message, 'error'); return }
     loadData()
   }
+  async function deleteFeedback(id) {
+    if (!confirm('Ștergi acest feedback?')) return
+    await supabase.from('site_feedback').delete().eq('id', id)
+    loadData()
+  }
+  async function deleteContact(id) {
+    if (!confirm('Ștergi acest mesaj?')) return
+    await supabase.from('contact_messages').delete().eq('id', id)
+    loadData()
+  }
   async function deleteApprovedReview(id) {
     if (!confirm('Ștergi această comentariu?')) return
     await supabase.from('reviews').delete().eq('id', id)
@@ -165,16 +177,21 @@ export default function AdminPage() {
     setEditDoc({ ...doc })
     setEditSpecs([...(doc.specs || [])])
     setEditClinics(doc.clinics?.length ? [...doc.clinics] : [''])
+    setEditClinicUrls(doc.clinic_urls || {})
   }
 
   async function saveEdit() {
     if (!editDoc) return
+    const filteredClinics = editClinics.filter(Boolean)
+    const filteredUrls = {}
+    filteredClinics.forEach(c => { if (editClinicUrls[c]) filteredUrls[c] = editClinicUrls[c] })
     await supabase.from('doctors').update({
       first_name: editDoc.first_name,
       last_name: editDoc.last_name,
       city: editDoc.city,
       specs: editSpecs,
-      clinics: editClinics.filter(Boolean),
+      clinics: filteredClinics,
+      clinic_urls: filteredUrls,
       obs: editDoc.obs,
       note: editDoc.note,
       photo_url: editDoc.photo_url || '',
@@ -422,9 +439,20 @@ export default function AdminPage() {
 
       {tab === 'site-feedback' && (
         <div>
-          {feedback.length === 0
-            ? <EmptyState icon="💬" label="Nu există feedback pentru site" />
-            : feedback.map(f => {
+          <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
+            <button className={`admin-tab${feedbackView === 'new' ? ' active' : ''}`} onClick={() => setFeedbackView('new')}>
+              Noi ({feedback.filter(f => !f.status).length})
+            </button>
+            <button className={`admin-tab${feedbackView === 'implemented' ? ' active' : ''}`} onClick={() => setFeedbackView('implemented')}>
+              Implementate ({feedback.filter(f => f.status === 'implemented').length})
+            </button>
+            <button className={`admin-tab${feedbackView === 'not_implemented' ? ' active' : ''}`} onClick={() => setFeedbackView('not_implemented')}>
+              Neimplementate ({feedback.filter(f => f.status === 'not_implemented').length})
+            </button>
+          </div>
+          {feedback.filter(f => feedbackView === 'new' ? !f.status : f.status === feedbackView).length === 0
+            ? <EmptyState icon="💬" label="Nu există feedback în această categorie" />
+            : feedback.filter(f => feedbackView === 'new' ? !f.status : f.status === feedbackView).map(f => {
               const statusBadge = f.status === 'implemented'
                 ? <span style={{ background: 'var(--teal-light)', color: 'var(--teal)', fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 10 }}>✓ Implementat</span>
                 : f.status === 'not_implemented'
@@ -447,6 +475,7 @@ export default function AdminPage() {
                     {f.status !== 'not_implemented' && (
                       <button className="btn-reject" onClick={() => setFeedbackStatus(f.id, 'not_implemented')}>✗ Neimplementat</button>
                     )}
+                    <button className="btn-reject" onClick={() => deleteFeedback(f.id)}>✕ Șterge</button>
                   </div>
                 </div>
               )
@@ -528,6 +557,7 @@ export default function AdminPage() {
                           <button className="btn-approve" onClick={() => markContactReplied(m.id)}>✓ Marchează ca citit</button>
                         )}
                         <button className="btn-reject" onClick={() => archiveContact(m.id)}>↓ Arhivează</button>
+                        <button className="btn-reject" onClick={() => deleteContact(m.id)}>✕ Șterge</button>
                       </div>
                     </div>
                   )}
@@ -616,9 +646,28 @@ export default function AdminPage() {
                 <label className="form-label">Clinici</label>
                 <div className="clinics-editor">
                   {editClinics.map((c, i) => (
-                    <div key={i} className="clinic-row">
-                      <input className="form-input" value={c} onChange={e => setEditClinics(cl => cl.map((x, j) => j === i ? e.target.value : x))} />
-                      {i > 0 && <button className="btn-remove-clinic" onClick={() => setEditClinics(cl => cl.filter((_, j) => j !== i))}>×</button>}
+                    <div key={i} style={{ marginBottom: 6 }}>
+                      <div className="clinic-row">
+                        <input className="form-input" value={c} onChange={e => {
+                          const newName = e.target.value
+                          const oldName = c
+                          setEditClinics(cl => cl.map((x, j) => j === i ? newName : x))
+                          if (oldName && editClinicUrls[oldName]) {
+                            setEditClinicUrls(u => { const n = { ...u }; n[newName] = n[oldName]; delete n[oldName]; return n })
+                          }
+                        }} />
+                        {i > 0 && <button className="btn-remove-clinic" onClick={() => {
+                          setEditClinics(cl => cl.filter((_, j) => j !== i))
+                          setEditClinicUrls(u => { const n = { ...u }; delete n[c]; return n })
+                        }}>×</button>}
+                      </div>
+                      {c && <input
+                        className="form-input"
+                        style={{ marginTop: 4, fontSize: 13 }}
+                        placeholder="URL clinică (opțional)"
+                        value={editClinicUrls[c] || ''}
+                        onChange={e => setEditClinicUrls(u => ({ ...u, [c]: e.target.value }))}
+                      />}
                     </div>
                   ))}
                 </div>
