@@ -39,6 +39,16 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
     return () => window.removeEventListener('openComments', handler)
   }, [])
 
+  useEffect(() => {
+    if (window.location.hash === '#comentarii') {
+      setOpen(true)
+      setTimeout(() => {
+        formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        textareaRef.current?.focus()
+      }, 80)
+    }
+  }, [])
+
   async function submitReview() {
     if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
     if (!text.trim() && !sentiment) return toast('Scrie ceva sau alege o reacție', 'error')
