@@ -8,17 +8,22 @@ import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 export default async function HomePage() {
   const supabase = await createClient()
 
-  let doctors = [], recs = []
+  let doctors = [], recs = [], reviews = []
   try {
-    const [{ data: d }, { data: r }] = await Promise.all([
+    const [{ data: d }, { data: r }, { data: rv }] = await Promise.all([
       supabase.from('doctors').select('*').eq('status', 'approved'),
       supabase.from('recommendations').select('doctor_id'),
+      supabase.from('reviews').select('doctor_id').eq('status', 'approved'),
     ])
     doctors = d || []
     recs = r || []
+    reviews = rv || []
   } catch {
     // Baza de date indisponibilă — redăm pagina cu date goale
   }
+
+  const reviewCountMap = {}
+  reviews.forEach(r => { reviewCountMap[r.doctor_id] = (reviewCountMap[r.doctor_id] || 0) + 1 })
 
   const recCountMap = {}
   recs.forEach(r => { recCountMap[r.doctor_id] = (recCountMap[r.doctor_id] || 0) + 1 })
@@ -87,7 +92,7 @@ export default async function HomePage() {
         <h2 style={{ fontWeight: 700, fontSize: 20, marginBottom: '1.25rem' }}>Cei mai recomandați</h2>
         <div className="doctors-grid-home">
           {featured.map(d => (
-            <DoctorCard key={d.id} doctor={d} />
+            <DoctorCard key={d.id} doctor={d} reviewCount={reviewCountMap[d.id] || 0} />
           ))}
         </div>
         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
