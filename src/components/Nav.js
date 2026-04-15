@@ -29,6 +29,7 @@ export default function Nav() {
         <span className="logo-wordmark">MOMS<span className="green">4</span>MOMS recomandă <span className="logo-medici">medici</span></span>
       </Link>
       <div className="nav-auth" ref={dropdownRef}>
+        <Link href="/despre" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Despre</Link>
         <Link href="/contact" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Contact</Link>
         {user ? (
           <>
