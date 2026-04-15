@@ -28,7 +28,10 @@ export default function AuthModal({ onClose }) {
 
   async function signInWithFacebook() {
     const supabase = createClient()
-    await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo } })
+    await supabase.auth.signInWithOAuth({
+      provider: 'facebook',
+      options: { redirectTo, scopes: 'email,public_profile,user_link' },
+    })
   }
 
   return (

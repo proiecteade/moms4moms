@@ -44,10 +44,19 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
     if (!text.trim() && !sentiment) return toast('Scrie ceva sau alege o reacție', 'error')
     setFormLoading(true)
     const supabase = createClient()
-    const fbIdentity = user.identities?.find(i => i.provider === 'facebook')
-    const reviewerUrl = (!isAnonymous && fbIdentity)
-      ? `https://www.facebook.com/profile.php?id=${fbIdentity.id}`
-      : null
+    let reviewerUrl = null
+    if (!isAnonymous && user.identities?.some(i => i.provider === 'facebook')) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.provider_token) {
+          const res = await fetch(`https://graph.facebook.com/me?fields=link&access_token=${session.provider_token}`)
+          const fb = await res.json()
+          if (fb.link) reviewerUrl = fb.link
+        }
+      } catch {
+        // Nu am putut obține linkul — continuăm fără el
+      }
+    }
     const { error } = await supabase.from('reviews').insert({
       id: uid(),
       doctor_id: doctorId,
