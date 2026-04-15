@@ -18,9 +18,6 @@ export const metadata = {
     type: 'website',
     images: [{ url: '/logo/m4m_logo_fundal_alb_v2.png', width: 1200, height: 630, alt: 'Moms4Moms' }],
   },
-  other: {
-    'fb:app_id': '1619002152734509',
-  },
   twitter: {
     card: 'summary_large_image',
     title: 'Moms4Moms — Recomandări Medici',
@@ -32,6 +29,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="ro">
+      <head>
+        <meta property="fb:app_id" content="1619002152734509" />
+      </head>
       <body>
         <Script src="https://www.googletagmanager.com/gtag/js?id=G-5QHY2HXTJR" strategy="afterInteractive" />
         <Script id="ga-init" strategy="afterInteractive">{`
