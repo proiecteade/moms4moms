@@ -21,29 +21,21 @@ export function AuthProvider({ children }) {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
-      if (event === 'SIGNED_IN') {
-        const provider = session?.user?.app_metadata?.provider
-        const hasToken = !!session?.provider_token
-        const alreadyHasUrl = !!session?.user?.user_metadata?.fb_profile_url
-        console.log('[Auth] SIGNED_IN provider:', provider, '| has provider_token:', hasToken, '| already has fb_profile_url:', alreadyHasUrl)
-
-        if (provider === 'facebook' && hasToken && !alreadyHasUrl) {
-          // First try identity_data (no extra API call needed)
-          const fbIdentity = session.user?.identities?.find(i => i.provider === 'facebook')
-          const identityLink = fbIdentity?.identity_data?.link
-          console.log('[Auth] identity_data.link:', identityLink)
-
+      if (event === 'SIGNED_IN' && !session?.user?.user_metadata?.fb_profile_url) {
+        const fbIdentity = session?.user?.identities?.find(i => i.provider === 'facebook')
+        if (fbIdentity) {
+          // Try identity_data first (stored by Supabase from OAuth response, no extra call)
+          const identityLink = fbIdentity.identity_data?.link
           if (identityLink) {
             supabase.auth.updateUser({ data: { fb_profile_url: identityLink } })
-          } else {
-            // Fall back to Graph API
-            fetch(`https://graph.facebook.com/me?fields=link,id,name&access_token=${session.provider_token}`)
+          } else if (session.provider_token) {
+            // Fallback: Graph API (works when user just signed in via Facebook)
+            fetch(`https://graph.facebook.com/me?fields=link&access_token=${session.provider_token}`)
               .then(r => r.json())
               .then(fb => {
-                console.log('[Auth] Graph API response:', fb)
                 if (fb.link) supabase.auth.updateUser({ data: { fb_profile_url: fb.link } })
               })
-              .catch(err => console.error('[Auth] Graph API error:', err))
+              .catch(() => {})
           }
         }
       }
