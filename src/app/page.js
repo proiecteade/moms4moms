@@ -37,11 +37,6 @@ export default async function HomePage() {
   const cities = [...new Set(docs.flatMap(d => (d.city || '').split(',').map(c => c.trim()).filter(Boolean)))].sort()
   const allSpecs = [...new Set(docs.flatMap(d => d.specs || []))]
 
-  const suggestions = [
-    ...allSpecs.sort().map(s => ({ type: 'spec', label: s })),
-    ...docs.map(d => ({ type: 'doctor', label: `Dr. ${d.first_name}${d.last_name ? ' ' + d.last_name : ''}` })),
-  ]
-
   const statDoctors = docs.length
   const statCities = cities.length
   const statSpecs = allSpecs.length
@@ -69,7 +64,7 @@ export default async function HomePage() {
         <div className="hero-overlay">
 <div className="hero-badge">💗 Recomandări verificate de mamele din comunitate</div>
           <h1>Găsește un medic <em>de încredere</em></h1>
-          <HeroSearch cities={cities} suggestions={suggestions} />
+          <HeroSearch cities={cities} specs={allSpecs.sort()} />
         </div>
       </div>
 

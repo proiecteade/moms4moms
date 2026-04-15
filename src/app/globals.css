@@ -74,12 +74,16 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .hero-or{color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;letter-spacing:0.5px;}
 .hero-recommend-btn{background:var(--teal);border:none;color:white;padding:12px 28px;border-radius:12px;font-family:'Nunito',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s;box-shadow:0 4px 16px rgba(61,139,122,0.4);}
 .hero-recommend-btn:hover{background:#2e7060;}
-.hero-search{display:flex;max-width:680px;width:100%;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.25);}
+.hero-search{display:flex;max-width:860px;width:100%;margin:0 auto;background:white;border-radius:14px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.25);}
 .hero-search-field{display:flex;flex:2;align-items:center;padding:0 18px;gap:10px;min-width:0;}
 .hero-search-field svg{flex-shrink:0;opacity:0.4;}
 .hero-search-field input{border:none;outline:none;font-family:'Nunito',sans-serif;font-size:15px;color:var(--ink);background:transparent;width:100%;padding:16px 0;}
 .hero-search-field input::placeholder{color:var(--ink-faint);}
 .hero-search-sep{width:1px;background:var(--border);align-self:stretch;margin:10px 0;flex-shrink:0;}
+.hero-search-spec{display:flex;flex:1.5;align-items:center;padding:0 14px;gap:8px;min-width:0;}
+.hero-search-spec svg{flex-shrink:0;opacity:0.35;}
+.hero-search-spec select{border:none;outline:none;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);background:transparent;width:100%;padding:16px 0;cursor:pointer;min-width:0;}
+.hero-search-spec select option:first-child{color:var(--ink-faint);}
 .hero-search-city{display:flex;flex:1;align-items:center;padding:0 14px;gap:8px;min-width:0;}
 .hero-search-city svg{flex-shrink:0;opacity:0.35;}
 .hero-search-city select{border:none;outline:none;font-family:'Nunito',sans-serif;font-size:14px;color:var(--ink);background:transparent;width:100%;padding:16px 0;cursor:pointer;min-width:0;}
@@ -467,6 +471,7 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .hero h1 { font-size: clamp(1.5rem, 6vw, 2rem); margin-bottom: 1rem; }
   .hero-search { border-radius: 12px; flex-direction: column; width: calc(100% - 2rem); }
   .hero-search-field input { font-size: 16px; }
+  .hero-search-spec select { font-size: 16px; }
   .hero-search-city select { font-size: 16px; }
   .search-input-wrap input { font-size: 16px; }
   .hero-search-sep { width: 100%; height: 1px; margin: 0; }
