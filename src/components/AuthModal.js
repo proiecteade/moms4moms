@@ -42,14 +42,14 @@ export default function AuthModal({ onClose }) {
           <p style={{ fontSize: 14, color: 'var(--ink-light)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
             Ai nevoie de un cont pentru a recomanda medici și a lăsa comentarii.
           </p>
-          <button className="auth-modal-google-btn" onClick={signInWithGoogle}>
-            <GoogleIcon />
-            Continuă cu Google
-          </button>
-          <div className="auth-modal-divider"><span>sau</span></div>
           <button className="auth-modal-facebook-btn" onClick={signInWithFacebook}>
             <FacebookIcon />
             Continuă cu Facebook
+          </button>
+          <div className="auth-modal-divider"><span>sau</span></div>
+          <button className="auth-modal-google-btn" onClick={signInWithGoogle}>
+            <GoogleIcon />
+            Continuă cu Google
           </button>
         </div>
       </div>
