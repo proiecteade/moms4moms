@@ -16,11 +16,13 @@ export const metadata = {
     siteName: 'Moms4Moms',
     locale: 'ro_RO',
     type: 'website',
+    images: [{ url: '/logo/m4m_logo_fundal_alb_v2.png', width: 1200, height: 630, alt: 'Moms4Moms' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Moms4Moms — Recomandări Medici',
     description: 'Recomandări de medici verificate de mame, pentru mame. Găsește un medic de încredere în orașul tău.',
+    images: ['/logo/m4m_logo_fundal_alb_v2.png'],
   },
 }
 
