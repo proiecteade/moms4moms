@@ -31,7 +31,7 @@ export default function PrivacyPage() {
       </Section>
 
       <Section title="4. Comentarii anonime">
-        <p>Poți posta comentarii ca „Anonim" bifând opțiunea disponibilă în formular. În acest caz, numele tău nu va fi afișat public. Adresa de email rămâne stocată intern exclusiv pentru moderare și prevenirea abuzurilor.</p>
+        <p>Poți posta comentarii fără să îți introduci numele — câmpul este opțional și, dacă este lăsat gol, comentariul apare ca „Anonim". Nu colectăm adresa de email a utilizatorilor care postează comentarii.</p>
       </Section>
 
       <Section title="5. Cookies și analytics">
