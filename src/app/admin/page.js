@@ -301,6 +301,11 @@ export default function AdminPage() {
                           ))}
                         </div>
                       )}
+                      {(d.submitter_name || d.submitter_email) && (
+                        <div style={{ fontSize: 12, color: 'var(--ink-faint)', marginTop: 6 }}>
+                          👤 Trimis de: {[d.submitter_name, d.submitter_email].filter(Boolean).join(' · ')}
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="admin-card-actions" onClick={e => e.stopPropagation()} style={{ flexShrink: 0 }}>
@@ -418,7 +423,10 @@ export default function AdminPage() {
                 <div key={s.id} className="admin-card">
                   <div className="admin-card-info">
                     <div className="admin-card-name">{s.doctor_name}</div>
-                    <div className="admin-card-sub">{s.date}</div>
+                    <div className="admin-card-sub">
+                      {s.date}
+                      {(s.submitter_name || s.submitter_email) && <span style={{ marginLeft: 8 }}>· 👤 {[s.submitter_name, s.submitter_email].filter(Boolean).join(' · ')}</span>}
+                    </div>
                     <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{s.text}</div>
                   </div>
                   <div className="admin-card-actions">
@@ -465,7 +473,10 @@ export default function AdminPage() {
                       <div className="admin-card-name">{f.rating ? '★'.repeat(f.rating)+'☆'.repeat(5-f.rating) : 'Fără rating'}</div>
                       {statusBadge}
                     </div>
-                    <div className="admin-card-sub">{f.date}</div>
+                    <div className="admin-card-sub">
+                      {f.date}
+                      {f.submitter_email && <span style={{ marginLeft: 8 }}>· 👤 {f.submitter_email}</span>}
+                    </div>
                     <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 7 }}>{f.text || '—'}</div>
                   </div>
                   <div className="admin-card-actions">
