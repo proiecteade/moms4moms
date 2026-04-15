@@ -42,8 +42,6 @@ export default function AddDoctorModal({ onClose }) {
   const [obs, setObs] = useState('')
   const [sentiment, setSentiment] = useState(null)
   const [expText, setExpText] = useState('')
-  const [submitterName, setSubmitterName] = useState('')
-  const [submitterEmail, setSubmitterEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
@@ -99,8 +97,6 @@ export default function AddDoctorModal({ onClose }) {
         clinic_urls: finalUrls,
         obs: obs.trim(),
         submitted_at: Date.now(),
-        submitter_name: submitterName.trim() || null,
-        submitter_email: submitterEmail.trim() || null,
       },
     }
 
@@ -240,16 +236,6 @@ export default function AddDoctorModal({ onClose }) {
                     onChange={e => setExpText(e.target.value)}
                   />
                 )}
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Numele tău (opțional)</label>
-                  <input className="form-input" placeholder="ex: Ana M." value={submitterName} onChange={e => setSubmitterName(e.target.value)} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Email (opțional)</label>
-                  <input className="form-input" type="email" placeholder="pentru contact" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} />
-                </div>
               </div>
               <button className="submit-btn" onClick={submit} disabled={loading}>
                 {loading ? 'Se trimite…' : 'Trimite recomandarea'}

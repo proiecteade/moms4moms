@@ -7,8 +7,6 @@ import { useToast } from '@/components/Toast'
 export default function SuggestModal({ doctor, onClose }) {
   const toast = useToast()
   const [text, setText] = useState('')
-  const [submitterName, setSubmitterName] = useState('')
-  const [submitterEmail, setSubmitterEmail] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
 
@@ -22,8 +20,6 @@ export default function SuggestModal({ doctor, onClose }) {
       doctor_name: doctorFullName(doctor),
       text: text.trim(),
       date: todayISO(),
-      submitter_name: submitterName.trim() || null,
-      submitter_email: submitterEmail.trim() || null,
     })
     setLoading(false)
     if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
@@ -58,16 +54,6 @@ export default function SuggestModal({ doctor, onClose }) {
                   value={text}
                   onChange={e => setText(e.target.value)}
                 />
-              </div>
-              <div className="form-row">
-                <div className="form-group">
-                  <label className="form-label">Numele tău (opțional)</label>
-                  <input className="form-input" placeholder="ex: Ana M." value={submitterName} onChange={e => setSubmitterName(e.target.value)} />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Email (opțional)</label>
-                  <input className="form-input" type="email" placeholder="pentru contact" value={submitterEmail} onChange={e => setSubmitterEmail(e.target.value)} />
-                </div>
               </div>
               <button className="submit-btn" onClick={submit} disabled={loading}>
                 {loading ? 'Se trimite…' : 'Trimite sugestia'}

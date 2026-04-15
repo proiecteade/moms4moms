@@ -7,7 +7,6 @@ export default function FeedbackWidget() {
   const [open, setOpen] = useState(false)
   const [star, setStar] = useState(0)
   const [text, setText] = useState('')
-  const [email, setEmail] = useState('')
   const [sent, setSent] = useState(false)
 
   async function submit() {
@@ -17,7 +16,6 @@ export default function FeedbackWidget() {
       id: uid(),
       rating: star || null,
       text: text.trim() || null,
-      submitter_email: email.trim() || null,
       date: todayISO(),
     })
     setSent(true)
@@ -47,14 +45,6 @@ export default function FeedbackWidget() {
                 placeholder="Ce îți place? Ce am putea îmbunătăți?"
                 value={text}
                 onChange={e => setText(e.target.value)}
-              />
-              <input
-                type="email"
-                className="form-input"
-                style={{ fontSize: 13, marginBottom: 6 }}
-                placeholder="Email (opțional, pentru răspuns)"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
               />
               <button className="feedback-submit" onClick={submit}>Trimite feedback</button>
             </>

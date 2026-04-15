@@ -29,7 +29,6 @@ export default function AddReviewModal({ doctor, onClose }) {
   }, [onClose])
 
   const [reviewer, setReviewer] = useState('')
-  const [reviewerEmail, setReviewerEmail] = useState('')
   const [text, setText] = useState('')
   const [sentiment, setSentiment] = useState(null) // 'happy' | 'sad'
   const [loading, setLoading] = useState(false)
@@ -46,7 +45,6 @@ export default function AddReviewModal({ doctor, onClose }) {
       body: JSON.stringify({
         doctor_id: doctor.id,
         reviewer: reviewer.trim() || 'Anonim',
-        user_email: reviewerEmail.trim() || null,
         text: text.trim() || null,
         rating: sentiment === 'happy' ? 5 : 1,
         date: todayISO(),
@@ -115,26 +113,14 @@ export default function AddReviewModal({ doctor, onClose }) {
                       onChange={e => setText(e.target.value)}
                     />
                   </div>
-                  <div className="form-row">
-                    <div className="form-group">
-                      <label className="form-label">Numele tău (opțional)</label>
-                      <input
-                        className="form-input"
-                        placeholder="ex: A.M. sau lasă gol pentru anonim"
-                        value={reviewer}
-                        onChange={e => setReviewer(e.target.value)}
-                      />
-                    </div>
-                    <div className="form-group">
-                      <label className="form-label">Email (opțional)</label>
-                      <input
-                        className="form-input"
-                        type="email"
-                        placeholder="pentru contact"
-                        value={reviewerEmail}
-                        onChange={e => setReviewerEmail(e.target.value)}
-                      />
-                    </div>
+                  <div className="form-group">
+                    <label className="form-label">Numele tău (opțional)</label>
+                    <input
+                      className="form-input"
+                      placeholder="ex: A.M. sau lasă gol pentru anonim"
+                      value={reviewer}
+                      onChange={e => setReviewer(e.target.value)}
+                    />
                   </div>
                 </>
               )}
