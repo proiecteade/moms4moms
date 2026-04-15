@@ -163,7 +163,7 @@ export default function AdminPage() {
   }
   async function saveReviewEdit() {
     if (!editReview) return
-    await supabase.from('reviews').update({ text: editReview.text }).eq('id', editReview.id)
+    await supabase.from('reviews').update({ text: editReview.text, rating: editReview.rating }).eq('id', editReview.id)
     setEditReview(null)
     loadData()
   }
@@ -370,7 +370,7 @@ export default function AdminPage() {
                       {!isEditing && <div style={{ fontSize: 14, color: 'var(--ink-light)', marginTop: 6 }}>{r.text || <em>fără text</em>}</div>}
                     </div>
                     <div className="admin-card-actions">
-                      <button className="btn-edit" onClick={() => setEditReview(isEditing ? null : { id: r.id, text: r.text || '' })}>
+                      <button className="btn-edit" onClick={() => setEditReview(isEditing ? null : { id: r.id, text: r.text || '', rating: r.rating })}>
                         {isEditing ? '✕ Anulează' : '✎ Editează'}
                       </button>
                       <button className="btn-reject" onClick={() => deleteApprovedReview(r.id)}>✕ Șterge</button>
@@ -378,6 +378,18 @@ export default function AdminPage() {
                   </div>
                   {isEditing && (
                     <div>
+                      <div style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
+                        <button
+                          className={`btn-edit${editReview.rating >= 4 ? ' active' : ''}`}
+                          style={{ background: editReview.rating >= 4 ? 'var(--teal-light)' : undefined }}
+                          onClick={() => setEditReview(r => ({ ...r, rating: r.rating >= 4 ? null : 5 }))}
+                        >😊 Pozitivă</button>
+                        <button
+                          className={`btn-edit${editReview.rating > 0 && editReview.rating < 4 ? ' active' : ''}`}
+                          style={{ background: editReview.rating > 0 && editReview.rating < 4 ? 'var(--rose-light)' : undefined }}
+                          onClick={() => setEditReview(r => ({ ...r, rating: r.rating > 0 && r.rating < 4 ? null : 1 }))}
+                        >😔 Negativă</button>
+                      </div>
                       <textarea
                         className="form-textarea"
                         value={editReview.text}
