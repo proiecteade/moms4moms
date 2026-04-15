@@ -19,8 +19,19 @@ export function AuthProvider({ children }) {
       setLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
+      if (event === 'SIGNED_IN' && session?.provider_token) {
+        const provider = session.user?.app_metadata?.provider
+        if (provider === 'facebook' && !session.user?.user_metadata?.fb_profile_url) {
+          fetch(`https://graph.facebook.com/me?fields=link&access_token=${session.provider_token}`)
+            .then(r => r.json())
+            .then(fb => {
+              if (fb.link) supabase.auth.updateUser({ data: { fb_profile_url: fb.link } })
+            })
+            .catch(() => {})
+        }
+      }
     })
 
     const openHandler = () => setShowModal(true)
