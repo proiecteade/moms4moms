@@ -633,7 +633,7 @@ export default function AdminPage() {
                     </span>
                   ))}
                 </div>
-                <select className="form-select" onChange={e => { if (e.target.value && !editSpecs.includes(e.target.value)) setEditSpecs(s => [...s, e.target.value]); e.target.value = '' }}>
+                <select className="form-select" onChange={e => { const val = e.target.value; if (val && !editSpecs.includes(val)) setEditSpecs(s => [...s, val]); e.target.value = '' }}>
                   <option value="">+ Adaugă specialitate…</option>
                   {SPECIALTIES.map(s => <option key={s}>{s}</option>)}
                 </select>
