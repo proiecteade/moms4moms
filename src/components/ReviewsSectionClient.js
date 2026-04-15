@@ -44,6 +44,10 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
     if (!text.trim() && !sentiment) return toast('Scrie ceva sau alege o reacție', 'error')
     setFormLoading(true)
     const supabase = createClient()
+    const fbIdentity = user.identities?.find(i => i.provider === 'facebook')
+    const reviewerUrl = (!isAnonymous && fbIdentity)
+      ? `https://www.facebook.com/profile.php?id=${fbIdentity.id}`
+      : null
     const { error } = await supabase.from('reviews').insert({
       id: uid(),
       doctor_id: doctorId,
@@ -55,6 +59,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
       user_id: user.id,
       user_email: user.email,
       is_anonymous: isAnonymous,
+      reviewer_url: reviewerUrl,
     })
     setFormLoading(false)
     if (error) { toast('Eroare. Încearcă din nou.', 'error'); return }
@@ -153,7 +158,10 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
                 <div className="review-header">
                   <div className="reviewer-name">
                     {emoji && <span className="review-sentiment">{emoji}</span>}
-                    {r.reviewer || 'Anonim'}
+                    {r.reviewer_url && !r.is_anonymous
+                      ? <a href={r.reviewer_url} target="_blank" rel="noopener noreferrer" className="reviewer-link">{r.reviewer || 'Anonim'}</a>
+                      : (r.reviewer || 'Anonim')
+                    }
                   </div>
                   <div className="review-date">{formatDate(r.date)}</div>
                 </div>
