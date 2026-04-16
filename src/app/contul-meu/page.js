@@ -101,7 +101,7 @@ export default function ContulMeuPage() {
 
       {/* Medici Favoriti */}
       <section className="contul-meu-section">
-        <h2 className="contul-meu-section-title">Medici Favoriți</h2>
+        <h2 className="contul-meu-section-title">Medici favoriți</h2>
         {favorites === null ? (
           <p className="contul-meu-empty">Se încarcă…</p>
         ) : favorites.length === 0 ? (
@@ -135,7 +135,7 @@ export default function ContulMeuPage() {
 
       {/* Recomandarile Mele */}
       <section className="contul-meu-section">
-        <h2 className="contul-meu-section-title">Recomandările Mele</h2>
+        <h2 className="contul-meu-section-title">Recomandările mele</h2>
         {recommendations === null ? (
           <p className="contul-meu-empty">Se încarcă…</p>
         ) : recommendations.length === 0 ? (
@@ -166,7 +166,7 @@ export default function ContulMeuPage() {
 
       {/* Comentariile Mele */}
       <section className="contul-meu-section">
-        <h2 className="contul-meu-section-title">Comentariile Mele</h2>
+        <h2 className="contul-meu-section-title">Comentariile mele</h2>
         {reviews === null ? (
           <p className="contul-meu-empty">Se încarcă…</p>
         ) : reviews.length === 0 ? (
@@ -198,7 +198,7 @@ export default function ContulMeuPage() {
 
       {/* Zona Periculoasa */}
       <section className="contul-meu-section contul-meu-danger-zone">
-        <h2 className="contul-meu-section-title contul-meu-danger-title">Zona periculoasă</h2>
+        <h2 className="contul-meu-section-title contul-meu-danger-title">Șterge informațiile mele</h2>
 
         {deleteConfirm === null ? (
           <div className="contul-meu-danger-btns">
