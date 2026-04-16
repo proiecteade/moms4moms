@@ -3,14 +3,15 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from './AuthProvider'
 
-export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
+export default function DetailFooterChips({ doctor, reviewCount = 0, entityType = 'doctor' }) {
   const { user } = useAuth() || {}
   const [count, setCount] = useState(doctor.recommendations_count || 0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
+  const lsKey = entityType === 'restaurant' ? 'rec_restaurant_' + doctor.id : 'rec_' + doctor.id
   useEffect(() => {
-    setDone(!!localStorage.getItem('rec_' + doctor.id))
-  }, [doctor.id])
+    setDone(!!localStorage.getItem(lsKey))
+  }, [doctor.id, lsKey])
 
   async function recommend(e) {
     e.preventDefault()
@@ -19,9 +20,10 @@ export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
     setLoading(true)
     const supabase = createClient()
     const recId = uid()
-    const { error } = await supabase.from('recommendations').insert({ id: recId, doctor_id: doctor.id, user_id: user.id })
+    const idField = entityType === 'restaurant' ? 'restaurant_id' : 'doctor_id'
+    const { error } = await supabase.from('recommendations').insert({ id: recId, [idField]: doctor.id, user_id: user.id })
     if (!error) {
-      localStorage.setItem('rec_' + doctor.id, recId)
+      localStorage.setItem(lsKey, recId)
       setDone(true)
       setCount(c => c + 1)
     }

@@ -7,9 +7,9 @@ const WhatsAppIcon = () => (
   </svg>
 )
 
-export default function DetailActions({ doctor }) {
+export default function DetailActions({ doctor, entityName }) {
   const toast = useToast()
-  const name = `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
+  const name = entityName || `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
 
   async function copyLink() {
     await navigator.clipboard.writeText(window.location.href)

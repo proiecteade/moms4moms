@@ -33,6 +33,8 @@ export default function Footer() {
             <a href="/termeni" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Termeni</a>
             <a href="/despre" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Despre</a>
             <a href="/contact" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Contact</a>
+            <a href="/medici" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Medici</a>
+            <a href="/unde-iesim" style={{ fontSize: 12, color: 'var(--ink-faint)', textDecoration: 'none' }} onMouseOver={e => e.target.style.color='var(--teal)'} onMouseOut={e => e.target.style.color='var(--ink-faint)'}>Unde ieșim</a>
           </div>
         </div>
         <div>

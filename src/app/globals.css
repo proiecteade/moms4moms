@@ -94,6 +94,23 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .hero-search button:hover{background:#2e7060;}
 
 /* STATS */
+/* Category hub cards */
+.category-hub{display:flex;gap:1.25rem;padding:2rem 2rem 0;max-width:900px;margin:0 auto;}
+.category-card{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:2rem 1.5rem;border-radius:18px;text-decoration:none;transition:transform 0.15s,box-shadow 0.15s;border:2px solid transparent;}
+.category-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.08);}
+.category-card-teal{background:var(--teal-light);border-color:rgba(61,139,122,0.15);}
+.category-card-teal:hover{border-color:var(--teal);}
+.category-card-rose{background:var(--rose-light);border-color:rgba(196,75,75,0.15);}
+.category-card-rose:hover{border-color:var(--rose);}
+.category-emoji{font-size:2.5rem;margin-bottom:0.5rem;}
+.category-title{font-size:1.25rem;font-weight:800;color:var(--ink);margin-bottom:0.25rem;}
+.category-desc{font-size:0.85rem;color:var(--ink-light);margin-bottom:0.75rem;}
+.category-stat{font-size:0.75rem;color:var(--ink-faint);margin-bottom:0.75rem;}
+.category-cta{font-size:0.85rem;font-weight:700;}
+.category-card-teal .category-cta{color:var(--teal);}
+.category-card-rose .category-cta{color:var(--rose);}
+@media(max-width:600px){.category-hub{flex-direction:column;padding:1.5rem 1rem 0;}}
+
 .stats-row{display:flex;justify-content:center;gap:3rem;padding:1.75rem 2rem;border-bottom:1px solid var(--border);background:white;flex-wrap:wrap;}
 .stat-item{text-align:center;}
 .stat-item-link{text-decoration:none;border-radius:12px;padding:0.5rem 1rem;margin:-0.5rem -1rem;transition:background 0.15s;}
@@ -155,6 +172,9 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .doctor-specs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
 .spec-badge{display:inline-block;background:rgba(45,138,114,0.13);color:#267a65;border:1.5px solid rgba(45,138,114,0.22);border-radius:20px;padding:3px 12px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background 0.12s;}
 .spec-badge:hover{background:rgba(45,138,114,0.22);}
+.tip-badge{display:inline-block;background:rgba(196,75,75,0.10);color:var(--rose);border:1.5px solid rgba(196,75,75,0.22);border-radius:20px;padding:3px 12px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background 0.12s;}
+.tip-badge:hover{background:rgba(196,75,75,0.20);}
+.cuisine-tag{display:inline-block;font-size:11px;background:var(--warm);color:var(--ink-light);padding:2px 8px;border-radius:20px;border:1px solid var(--border);font-weight:500;}
 .doctor-meta{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:4px;}
 .meta-pill{font-size:12px;color:var(--ink-faint);display:flex;align-items:center;gap:3px;}
 .tags-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px;}

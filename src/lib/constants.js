@@ -48,6 +48,60 @@ export const AVATAR_COLORS = [
   '#7B5BC4','#2A9D8F','#B05A9A','#5A8A3A','#8A5A3A'
 ]
 
+// ── Restaurante / Locuri ──────────────────────────
+
+const TIP_EMOJI_MAP = {
+  'restaurant':  '🍽️',
+  'cafenea':     '☕',
+  'patiserie':   '🥐',
+  'cofetarie':   '🍰',
+  'fast-food':   '🍔',
+  'pizzerie':    '🍕',
+  'sushi':       '🍣',
+  'shaorma':     '🌯',
+  'bar-terasa':  '🍹',
+  'altele':      '🍴',
+}
+
+export function tipEmoji(tip) {
+  return TIP_EMOJI_MAP[(tip || '').toLowerCase()] || '🍴'
+}
+
+export const TIPURI_RESTAURANT = [
+  'Restaurant', 'Cafenea', 'Patiserie', 'Cofetărie',
+  'Fast-food', 'Pizzerie', 'Sushi', 'Shaorma',
+  'Bar / Terasă', 'Altele',
+]
+
+export const TIP_VALUE_MAP = {
+  'Restaurant': 'restaurant',
+  'Cafenea': 'cafenea',
+  'Patiserie': 'patiserie',
+  'Cofetărie': 'cofetarie',
+  'Fast-food': 'fast-food',
+  'Pizzerie': 'pizzerie',
+  'Sushi': 'sushi',
+  'Shaorma': 'shaorma',
+  'Bar / Terasă': 'bar-terasa',
+  'Altele': 'altele',
+}
+
+export const TIP_LABEL_MAP = Object.fromEntries(
+  Object.entries(TIP_VALUE_MAP).map(([label, value]) => [value, label])
+)
+
+export const BUCATARII = [
+  'Românească', 'Italiană', 'Asiatică', 'Chinezească',
+  'Japoneză', 'Indiană', 'Mexicană', 'Grecească',
+  'Turcă', 'Libaneză', 'Americană', 'Internațională',
+]
+
+export const TIPURI_CU_BUCATARIE = new Set([
+  'restaurant', 'pizzerie', 'sushi', 'altele'
+])
+
+// ── Medici ────────────────────────────────────────
+
 export const SPECIALTIES = [
   'Alergologie adulți','Alergologie pediatrică',
   'Altele',

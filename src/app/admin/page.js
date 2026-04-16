@@ -2,8 +2,8 @@
 export const dynamic = 'force-dynamic'
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { SPECIALTIES } from '@/lib/constants'
-import { doctorFullName, avatarColor, initials, generateSlug } from '@/lib/helpers'
+import { SPECIALTIES, TIPURI_RESTAURANT, TIP_VALUE_MAP, TIP_LABEL_MAP, BUCATARII, TIPURI_CU_BUCATARIE, tipEmoji } from '@/lib/constants'
+import { doctorFullName, avatarColor, initials, generateSlug, generateRestaurantSlug } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 
 export default function AdminPage() {
@@ -36,6 +36,14 @@ export default function AdminPage() {
   const [editClinicUrls, setEditClinicUrls] = useState({})
   const [editReview, setEditReview] = useState(null) // { id, text }
 
+  // Restaurant state
+  const [pendingRestaurants, setPendingRestaurants] = useState([])
+  const [allRestaurants, setAllRestaurants] = useState([])
+  const [restSearch, setRestSearch] = useState('')
+  const [editRest, setEditRest] = useState(null)
+  const [editTip, setEditTip] = useState('')
+  const [editBucatarii, setEditBucatarii] = useState([])
+
   const supabase = createClient()
 
   useEffect(() => {
@@ -49,19 +57,23 @@ export default function AdminPage() {
   }, [])
 
   const loadData = useCallback(async () => {
-    const [a, b, c, d, e, f, g] = await Promise.all([
+    const [a, b, c, d, e, f, g, h, i] = await Promise.all([
       supabase.from('doctors').select('*').eq('status', 'pending'),
-      supabase.from('reviews').select('*, doctors(first_name,last_name,specs)').eq('status', 'pending'),
-      supabase.from('reviews').select('*, doctors(first_name,last_name)').eq('status', 'approved').order('date', { ascending: false }),
+      supabase.from('reviews').select('*, doctors(first_name,last_name,specs), restaurants(name,tip)').eq('status', 'pending'),
+      supabase.from('reviews').select('*, doctors(first_name,last_name), restaurants(name,tip)').eq('status', 'approved').order('date', { ascending: false }),
       supabase.from('suggestions').select('*').order('date', { ascending: false }),
       supabase.from('site_feedback').select('*').order('date', { ascending: false }),
       supabase.from('doctors').select('*').order('last_name').order('first_name'),
       supabase.from('contact_messages').select('*').order('date', { ascending: false }),
+      supabase.from('restaurants').select('*').eq('status', 'pending'),
+      supabase.from('restaurants').select('*').order('name'),
     ])
     setPendingDocs(a.data || [])
     setPendingReviews(b.data || [])
     setApprovedReviews(c.data || [])
     setContactMessages(g.data || [])
+    setPendingRestaurants(h.data || [])
+    setAllRestaurants(i.data || [])
     const parentIds = (b.data || []).filter(r => r.parent_id).map(r => r.parent_id)
     if (parentIds.length > 0) {
       const { data: parents } = await supabase.from('reviews').select('id, reviewer, text').in('id', parentIds)
@@ -173,6 +185,51 @@ export default function AdminPage() {
     loadData()
   }
 
+  // Restaurant admin functions
+  async function approveRestaurant(id) {
+    const rest = [...pendingRestaurants, ...allRestaurants].find(r => r.id === id)
+    const updates = { status: 'approved' }
+    if (rest && !rest.slug) {
+      let slug = generateRestaurantSlug(rest.name)
+      const { data: existing } = await supabase.from('restaurants').select('id').eq('slug', slug).maybeSingle()
+      if (existing) slug = slug + '_2'
+      updates.slug = slug
+    }
+    await supabase.from('restaurants').update(updates).eq('id', id)
+    loadData()
+  }
+  async function rejectRestaurant(id) {
+    await supabase.from('restaurants').delete().eq('id', id)
+    loadData()
+  }
+  async function removeRestaurant(id) {
+    if (!confirm('Elimini acest loc?')) return
+    await supabase.from('restaurants').delete().eq('id', id)
+    loadData()
+  }
+  function openRestaurantEdit(rest) {
+    setEditRest({ ...rest })
+    setEditTip(rest.tip || '')
+    setEditBucatarii([...(rest.bucatarie || [])])
+  }
+  async function saveRestaurantEdit() {
+    if (!editRest) return
+    await supabase.from('restaurants').update({
+      name: editRest.name,
+      tip: editTip,
+      bucatarie: editBucatarii,
+      city: editRest.city,
+      zona: editRest.zona || '',
+      adresa: editRest.adresa || '',
+      website: editRest.website || '',
+      phone: editRest.phone || '',
+      obs: editRest.obs || '',
+      photo_url: editRest.photo_url || '',
+    }).eq('id', editRest.id)
+    setEditRest(null)
+    loadData()
+  }
+
   function openEdit(doc) {
     setEditDoc({ ...doc })
     setEditSpecs([...(doc.specs || [])])
@@ -233,12 +290,21 @@ export default function AdminPage() {
   const newFeedback = feedback.filter(f => !f.status)
   const newContactMessages = contactMessages.filter(m => m.status === 'new')
 
+  const filteredAllRestaurants = allRestaurants.filter(r =>
+    !restSearch ||
+    (r.name || '').toLowerCase().includes(restSearch.toLowerCase()) ||
+    (r.tip || '').toLowerCase().includes(restSearch.toLowerCase()) ||
+    (r.city || '').toLowerCase().includes(restSearch.toLowerCase())
+  )
+
   const TABS = [
     { id: 'all-docs', label: 'Toți medicii', count: null },
     { id: 'pending-docs', label: 'Medici de aprobat', count: pendingDocs.length },
+    { id: 'all-restaurants', label: 'Toate locurile', count: null },
+    { id: 'pending-restaurants', label: 'Locuri de aprobat', count: pendingRestaurants.length },
     { id: 'pending-reviews', label: 'Comentarii de aprobat', count: pendingReviews.length },
     { id: 'approved-reviews', label: 'Comentarii publicate', count: null },
-    { id: 'suggestions', label: 'Sugestii modificare medici', count: activeSuggestions.length },
+    { id: 'suggestions', label: 'Sugestii modificare', count: activeSuggestions.length },
     { id: 'site-feedback', label: 'Feedback site', count: newFeedback.length },
     { id: 'contact', label: 'Mesaje contact', count: newContactMessages.length },
     { id: 'analytics', label: '📊 Analytics', count: null },
@@ -321,6 +387,12 @@ export default function AdminPage() {
             ? <EmptyState icon="✅" label="Nu există comentarii în așteptare" />
             : pendingReviews.map(r => {
               const doc = r.doctors
+              const rest = r.restaurants
+              const entityLabel = doc
+                ? `Dr. ${doc.first_name} ${doc.last_name || ''} (${(doc.specs||[]).join(', ')})`
+                : rest
+                  ? `${rest.name} (${TIP_LABEL_MAP[rest.tip] || rest.tip})`
+                  : ''
               return (
                 <div key={r.id} className="admin-card">
                   <div className="admin-card-info">
@@ -328,9 +400,10 @@ export default function AdminPage() {
                       {r.rating >= 4 ? '😊' : r.rating > 0 && r.rating <= 3 ? '😔' : '💬'} {r.reviewer || 'Anonim'}
                       {r.is_anonymous && <span style={{ marginLeft: 6, fontSize: 11, color: 'var(--ink-faint)' }}>(anonim)</span>}
                       {r.parent_id && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, color: 'var(--teal)', background: 'var(--teal-light)', padding: '2px 8px', borderRadius: 10 }}>↩ reply</span>}
+                      {rest && <span style={{ marginLeft: 8, fontSize: 11, fontWeight: 600, color: 'var(--rose)', background: 'var(--rose-light)', padding: '2px 8px', borderRadius: 10 }}>🍽️ loc</span>}
                     </div>
                     <div className="admin-card-sub">
-                      {doc ? `Dr. ${doc.first_name} ${doc.last_name || ''} (${(doc.specs||[]).join(', ')})` : ''} • {r.date}
+                      {entityLabel} • {r.date}
                       {r.user_email && <span style={{ marginLeft: 8, color: 'var(--teal)', fontWeight: 600 }}>👤 {r.user_email}</span>}
                     </div>
                     {r.parent_id && parentReviewsMap[r.parent_id] && (
@@ -528,6 +601,90 @@ export default function AdminPage() {
         </div>
       )}
 
+      {tab === 'pending-restaurants' && (
+        <div>
+          {pendingRestaurants.length === 0
+            ? <EmptyState icon="✅" label="Nu există locuri în așteptare" />
+            : pendingRestaurants.map(r => {
+              const bg = avatarColor(r.name)
+              const init = (r.name || '').slice(0, 2).toUpperCase()
+              const tipLabel = TIP_LABEL_MAP[r.tip] || r.tip
+              return (
+                <div key={r.id} className="admin-card" style={{ marginBottom: 12, alignItems: 'flex-start' }}>
+                  <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 0 }}>
+                    {r.photo_url
+                      ? <img src={r.photo_url} className="doctor-avatar" alt="" style={{ objectFit: 'cover', objectPosition: 'center', flexShrink: 0 }} />
+                      : <div className="doctor-avatar" style={{ background: bg, flexShrink: 0 }}>{init}</div>
+                    }
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div className="doctor-name">{r.name}</div>
+                      <div className="doctor-specs">
+                        <span className="tip-badge">{tipEmoji(r.tip)} {tipLabel}</span>
+                        {(r.bucatarie || []).map(b => <span key={b} className="cuisine-tag">{b}</span>)}
+                      </div>
+                      <div className="doctor-meta">
+                        {(r.city || '').split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                          <span key={c} className="meta-pill">📍 {c}</span>
+                        ))}
+                        {r.zona && <span className="meta-pill">· {r.zona}</span>}
+                      </div>
+                      {r.adresa && <div style={{ fontSize: 12, color: 'var(--ink-faint)', marginTop: 2 }}>📍 {r.adresa}</div>}
+                      {r.obs && (
+                        <div className="tags-row">
+                          {r.obs.split(',').map(o => o.trim()).filter(Boolean).map((o, i) => (
+                            <span key={i} className="obs-tag">ℹ️ {o}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="admin-card-actions" onClick={e => e.stopPropagation()} style={{ flexShrink: 0 }}>
+                    <button className="btn-approve" onClick={() => approveRestaurant(r.id)}>✓ Aprobă</button>
+                    <button className="btn-edit" onClick={() => openRestaurantEdit(r)}>✎ Editează</button>
+                    <button className="btn-reject" onClick={() => rejectRestaurant(r.id)}>✕ Respinge</button>
+                  </div>
+                </div>
+              )
+            })
+          }
+        </div>
+      )}
+
+      {tab === 'all-restaurants' && (
+        <div>
+          <div className="admin-search-bar">
+            <input
+              type="text"
+              placeholder="Caută loc…"
+              value={restSearch}
+              onChange={e => setRestSearch(e.target.value)}
+            />
+          </div>
+          {filteredAllRestaurants.map(r => {
+            const tipLabel = TIP_LABEL_MAP[r.tip] || r.tip
+            return (
+              <div key={r.id} className="admin-card">
+                <div className="admin-card-info">
+                  <div className="admin-card-name">{r.name}</div>
+                  <div className="admin-card-sub">{tipEmoji(r.tip)} {tipLabel} • {r.city}{r.zona ? ' · ' + r.zona : ''}</div>
+                  <div style={{ marginTop: 4 }}>
+                    {r.status === 'approved'
+                      ? <span style={{ background:'#EAF5F2',color:'#3D8B7A',fontSize:11,fontWeight:700,padding:'3px 9px',borderRadius:12 }}>✓ Aprobat</span>
+                      : <span className="pending-badge">⏳ În așteptare</span>
+                    }
+                  </div>
+                </div>
+                <div className="admin-card-actions">
+                  <button className="btn-edit" onClick={() => openRestaurantEdit(r)}>✎ Editează</button>
+                  {r.status !== 'approved' && <button className="btn-approve" onClick={() => approveRestaurant(r.id)}>✓ Aprobă</button>}
+                  <button className="btn-reject" onClick={() => removeRestaurant(r.id)}>✕ Elimină</button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
       {tab === 'contact' && (
         <div>
           <div style={{ display: 'flex', gap: 8, marginBottom: '1rem' }}>
@@ -616,6 +773,91 @@ export default function AdminPage() {
 
       </div>
       </div>
+
+      {editRest && (
+        <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && setEditRest(null)}>
+          <div className="modal">
+            <div className="modal-header">
+              <div className="modal-title">Editează loc</div>
+              <button className="modal-close" onClick={() => setEditRest(null)}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="form-group">
+                <label className="form-label">Nume</label>
+                <input className="form-input" value={editRest.name} onChange={e => setEditRest(r => ({ ...r, name: e.target.value }))} />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Tip</label>
+                  <select className="form-input" value={Object.entries(TIP_VALUE_MAP).find(([,v]) => v === editTip)?.[0] || ''} onChange={e => setEditTip(TIP_VALUE_MAP[e.target.value] || '')}>
+                    <option value="">Alege tipul…</option>
+                    {TIPURI_RESTAURANT.map(t => <option key={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Localitate</label>
+                  <input className="form-input" value={editRest.city} onChange={e => setEditRest(r => ({ ...r, city: e.target.value }))} />
+                </div>
+              </div>
+              {TIPURI_CU_BUCATARIE.has(editTip) && (
+                <div className="form-group">
+                  <label className="form-label">Bucătărie</label>
+                  <div className="edit-specs-list">
+                    {editBucatarii.map(b => (
+                      <span key={b} className="edit-spec-tag">
+                        {b}
+                        <button onClick={() => setEditBucatarii(bs => bs.filter(x => x !== b))}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                  <select className="form-select" onChange={e => { const val = e.target.value; if (val && !editBucatarii.includes(val)) setEditBucatarii(b => [...b, val]); e.target.value = '' }}>
+                    <option value="">+ Adaugă bucătărie…</option>
+                    {BUCATARII.map(b => <option key={b}>{b}</option>)}
+                  </select>
+                </div>
+              )}
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Zonă / Cartier</label>
+                  <input className="form-input" value={editRest.zona || ''} onChange={e => setEditRest(r => ({ ...r, zona: e.target.value }))} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Adresă</label>
+                  <input className="form-input" value={editRest.adresa || ''} onChange={e => setEditRest(r => ({ ...r, adresa: e.target.value }))} />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Website</label>
+                  <input className="form-input" value={editRest.website || ''} onChange={e => setEditRest(r => ({ ...r, website: e.target.value }))} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Telefon</label>
+                  <input className="form-input" value={editRest.phone || ''} onChange={e => setEditRest(r => ({ ...r, phone: e.target.value }))} />
+                </div>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Observații</label>
+                <input className="form-input" value={editRest.obs || ''} onChange={e => setEditRest(r => ({ ...r, obs: e.target.value }))} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Poză (URL)</label>
+                <input className="form-input" placeholder="https://..." value={editRest.photo_url || ''} onChange={e => setEditRest(r => ({ ...r, photo_url: e.target.value }))} />
+                {editRest.photo_url && (
+                  <img src={editRest.photo_url} alt="preview" style={{ marginTop: 8, width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--border)' }} />
+                )}
+              </div>
+              {editRest.google_place_id && (
+                <div className="form-group">
+                  <label className="form-label">Google Place ID</label>
+                  <input className="form-input" value={editRest.google_place_id} disabled style={{ opacity: 0.6 }} />
+                </div>
+              )}
+              <button className="submit-btn" onClick={saveRestaurantEdit}>Salvează modificările</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {editDoc && (
         <div className="modal-overlay open" onClick={e => e.target === e.currentTarget && setEditDoc(null)}>

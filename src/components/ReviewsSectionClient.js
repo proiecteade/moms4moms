@@ -5,7 +5,7 @@ import { uid, todayISO, formatDate } from '@/lib/helpers'
 import { useToast } from './Toast'
 import { useAuth } from './AuthProvider'
 
-export default function ReviewsSectionClient({ topLevel, repliesByParentId, doctorId, doctor }) {
+export default function ReviewsSectionClient({ topLevel, repliesByParentId, doctorId, doctor, restaurantId, entityName }) {
   const { user } = useAuth() || {}
   const hasComments = topLevel.length > 0
   const [open, setOpen] = useState(hasComments)
@@ -59,7 +59,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
       : null
     const { error } = await supabase.from('reviews').insert({
       id: uid(),
-      doctor_id: doctorId,
+      ...(restaurantId ? { restaurant_id: restaurantId } : { doctor_id: doctorId }),
       reviewer: isAnonymous ? 'Anonim' : (displayName || 'Anonim'),
       text: text.trim() || null,
       rating: sentiment === 'happy' ? 5 : sentiment === 'sad' ? 1 : null,
@@ -81,7 +81,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
     const supabase = createClient()
     await supabase.from('reviews').insert({
       id: uid(),
-      doctor_id: doctorId,
+      ...(restaurantId ? { restaurant_id: restaurantId } : { doctor_id: doctorId }),
       parent_id: parentId,
       text: replyText.trim(),
       reviewer: replyName.trim() || 'Anonim',
@@ -98,7 +98,7 @@ export default function ReviewsSectionClient({ topLevel, repliesByParentId, doct
 
   if (!open) return null
 
-  const name = `Dr. ${doctor.first_name}${doctor.last_name ? ' ' + doctor.last_name : ''}`
+  const name = entityName || `Dr. ${doctor?.first_name || ''}${doctor?.last_name ? ' ' + doctor.last_name : ''}`
 
   return (
     <div id="comentarii" className="reviews-section">

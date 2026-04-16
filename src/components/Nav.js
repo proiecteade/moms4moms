@@ -26,9 +26,11 @@ export default function Nav() {
   return (
     <nav>
       <Link href="/" className="logo">
-        <span className="logo-wordmark">MOMS<span className="green">4</span>MOMS recomandă <span className="logo-medici">medici</span></span>
+        <span className="logo-wordmark">MOMS<span className="green">4</span>MOMS recomandă</span>
       </Link>
       <div className="nav-auth" ref={dropdownRef}>
+        <Link href="/medici" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Medici</Link>
+        <Link href="/unde-iesim" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Unde ieșim</Link>
         <Link href="/despre" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Despre</Link>
         <Link href="/contact" className="nav-btn nav-btn-ghost" style={{ fontSize: 14 }}>Contact</Link>
         {user ? (

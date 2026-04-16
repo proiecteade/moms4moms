@@ -2,14 +2,14 @@
 import { useState } from 'react'
 import SuggestModal from './SuggestModal'
 
-export default function SuggestLink({ doctor }) {
+export default function SuggestLink({ doctor, entityName, entityId }) {
   const [show, setShow] = useState(false)
   return (
     <>
       <div className="suggest-link-row">
         <button className="suggest-link" onClick={() => setShow(true)}>✏️ Sugerează o modificare</button>
       </div>
-      {show && <SuggestModal doctor={doctor} onClose={() => setShow(false)} />}
+      {show && <SuggestModal doctor={doctor} entityName={entityName} entityId={entityId} onClose={() => setShow(false)} />}
     </>
   )
 }

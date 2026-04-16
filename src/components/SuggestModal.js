@@ -4,11 +4,13 @@ import { createClient } from '@/lib/supabase/client'
 import { uid, todayISO, doctorFullName } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 
-export default function SuggestModal({ doctor, onClose }) {
+export default function SuggestModal({ doctor, entityName, entityId, onClose }) {
   const toast = useToast()
   const [text, setText] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const displayName = entityName || (doctor ? doctorFullName(doctor) : '')
+  const id = entityId || doctor?.id
 
   async function submit() {
     if (!text.trim()) return toast('Descrie ce s-a schimbat', 'error')
@@ -16,8 +18,8 @@ export default function SuggestModal({ doctor, onClose }) {
     const supabase = createClient()
     const { error } = await supabase.from('suggestions').insert({
       id: uid(),
-      doctor_id: doctor.id,
-      doctor_name: doctorFullName(doctor),
+      doctor_id: id,
+      doctor_name: displayName,
       text: text.trim(),
       date: todayISO(),
     })
@@ -44,7 +46,7 @@ export default function SuggestModal({ doctor, onClose }) {
           ) : (
             <>
               <div style={{ fontWeight: 600, fontSize: 15, color: 'var(--amber)', marginBottom: '1.25rem', padding: '10px 14px', background: 'var(--amber-light)', borderRadius: 10 }}>
-                {doctorFullName(doctor)}
+                {displayName}
               </div>
               <div className="form-group">
                 <label className="form-label">Ce s-a schimbat? *</label>
