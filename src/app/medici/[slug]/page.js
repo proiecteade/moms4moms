@@ -3,6 +3,7 @@ import { createClient as createDirectClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import DetailActions from '@/components/DetailActions'
 import DetailFooterChips from '@/components/DetailFooterChips'
+import FavButton from '@/components/FavButton'
 import ReviewsSectionClient from '@/components/ReviewsSectionClient'
 import SuggestLink from '@/components/SuggestLink'
 import { avatarColor, initials, formatDate, sortClinics } from '@/lib/helpers'
@@ -86,8 +87,11 @@ export default async function DoctorDetailPage({ params }) {
             : <div className="detail-avatar" style={{ background: bg }}>{init}</div>
           }
           <div className="detail-hero-info">
-            <div className="detail-name">
-              Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
+            <div className="detail-hero-name-row">
+              <div className="detail-name">
+                Dr. {doc.first_name}{doc.last_name ? ' ' + doc.last_name : ''}
+              </div>
+              <FavButton doctor={doc} />
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
               {(doc.specs || []).map(s => (

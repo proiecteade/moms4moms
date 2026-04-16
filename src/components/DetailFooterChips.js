@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { uid } from '@/lib/helpers'
 import { useAuth } from './AuthProvider'
 
 export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
@@ -9,25 +8,9 @@ export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
   const [count, setCount] = useState(doctor.recommendations_count || 0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [faved, setFaved] = useState(false)
-  const [favLoading, setFavLoading] = useState(false)
-
   useEffect(() => {
     setDone(!!localStorage.getItem('rec_' + doctor.id))
   }, [doctor.id])
-
-  useEffect(() => {
-    if (!user) return
-    const supabase = createClient()
-    if (!supabase) return
-    supabase
-      .from('favorites')
-      .select('id')
-      .eq('doctor_id', doctor.id)
-      .eq('user_id', user.id)
-      .maybeSingle()
-      .then(({ data }) => setFaved(!!data))
-  }, [doctor.id, user])
 
   async function recommend(e) {
     e.preventDefault()
@@ -43,22 +26,6 @@ export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
       setCount(c => c + 1)
     }
     setLoading(false)
-  }
-
-  async function toggleFav(e) {
-    e.preventDefault()
-    if (favLoading) return
-    if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
-    setFavLoading(true)
-    const supabase = createClient()
-    if (faved) {
-      await supabase.from('favorites').delete().eq('doctor_id', doctor.id).eq('user_id', user.id)
-      setFaved(false)
-    } else {
-      await supabase.from('favorites').insert({ id: uid(), doctor_id: doctor.id, user_id: user.id })
-      setFaved(true)
-    }
-    setFavLoading(false)
   }
 
   function scrollToComments(e) {
@@ -82,16 +49,6 @@ export default function DetailFooterChips({ doctor, reviewCount = 0 }) {
         <span className="footer-chip-count">💬 <strong>{reviewCount}</strong></span>
         <span className="footer-chip-divider" />
         <span className="footer-chip-label">Comentează</span>
-      </button>
-      <button
-        className={`footer-action-chip card-fav-btn${faved ? ' faved' : ''}`}
-        onClick={toggleFav}
-        disabled={favLoading}
-        title={faved ? 'Scoate din favorite' : 'Adaugă la favorite'}
-      >
-        <span className="footer-chip-count">{faved ? '♥' : '♡'}</span>
-        <span className="footer-chip-divider" />
-        <span className="footer-chip-label">{faved ? 'Salvat' : 'Salvează'}</span>
       </button>
     </div>
   )
