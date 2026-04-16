@@ -202,41 +202,45 @@ function DoctorRow({ doctor: d, reviewCount, actionLabel, onAction }) {
   const init = initials(d.first_name, d.last_name)
   return (
     <div className="contul-meu-doctor-row">
-      <Link href={`/medici/${d.slug || d.id}`} className="contul-meu-row-link">
-        {d.photo_url
-          ? <img src={d.photo_url} className="contul-meu-row-avatar" alt={`Dr. ${d.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
-          : <div className="contul-meu-row-avatar" style={{ background: bg }}>{init}</div>
-        }
-        <div className="contul-meu-row-info">
-          <div className="contul-meu-row-name">Dr. {d.first_name}{d.last_name ? ' ' + d.last_name : ''}</div>
-          {d.specs?.length > 0 && (
-            <div className="doctor-specs">
-              {d.specs.map(s => <span key={s} className="spec-badge">{specEmoji(s)} {s}</span>)}
-            </div>
-          )}
-          {d.city && (
-            <div className="doctor-meta">
-              {d.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
-                <span key={c} className="meta-pill">📍 {c}</span>
-              ))}
-            </div>
-          )}
-          {d.clinics?.length > 0 && (
-            <div className="tags-row">
-              {d.clinics.map(c => {
-                const url = d.clinic_urls?.[c]
-                return url
-                  ? <a key={c} href={url} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link" onClick={e => e.stopPropagation()}>🏥 {c}</a>
-                  : <span key={c} className="clinic-tag">🏥 {c}</span>
-              })}
-            </div>
-          )}
-          <div className="contul-meu-row-counts">
-            <span>👍 {d.recommendations_count || 0}</span>
-            <span>💬 {reviewCount}</span>
+      <div className="contul-meu-row-info">
+        <Link href={`/medici/${d.slug || d.id}`} className="contul-meu-row-name-link">
+          {d.photo_url
+            ? <img src={d.photo_url} className="contul-meu-row-avatar" alt={`Dr. ${d.first_name}`} style={{ objectFit: 'cover', objectPosition: 'top' }} />
+            : <div className="contul-meu-row-avatar" style={{ background: bg }}>{init}</div>
+          }
+          <span className="contul-meu-row-name">Dr. {d.first_name}{d.last_name ? ' ' + d.last_name : ''}</span>
+        </Link>
+        {d.specs?.length > 0 && (
+          <div className="doctor-specs">
+            {d.specs.map(s => (
+              <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="spec-badge">
+                {specEmoji(s)} {s}
+              </Link>
+            ))}
           </div>
+        )}
+        {d.city && (
+          <div className="doctor-meta">
+            {d.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
+              <Link key={c} href={`/medici?city=${encodeURIComponent(c)}`} className="meta-pill">📍 {c}</Link>
+            ))}
+          </div>
+        )}
+        {d.clinics?.length > 0 && (
+          <div className="tags-row">
+            {d.clinics.map(c => {
+              const url = d.clinic_urls?.[c]
+              return url
+                ? <a key={c} href={url} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link">🏥 {c}</a>
+                : <span key={c} className="clinic-tag">🏥 {c}</span>
+            })}
+          </div>
+        )}
+        <div className="contul-meu-row-counts">
+          <span>👍 {d.recommendations_count || 0}</span>
+          <span>💬 {reviewCount}</span>
         </div>
-      </Link>
+      </div>
       <button className="contul-meu-action-btn contul-meu-action-btn--remove" onClick={onAction}>
         {actionLabel}
       </button>
