@@ -1,14 +1,17 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import { SPECIALTIES } from '@/lib/constants'
 import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 import { ROMANIAN_CITIES } from '@/lib/romanianCities'
+import { createClient } from '@/lib/supabase/client'
 
 const CLINIC_NAMES = Object.keys(KNOWN_CLINIC_URLS)
 
 export default function AddDoctorModal({ onClose }) {
+  const router = useRouter()
   const toast = useToast()
   const modalRef = useRef(null)
   const titleId = 'add-doctor-modal-title'
@@ -44,6 +47,21 @@ export default function AddDoctorModal({ onClose }) {
   const [expText, setExpText] = useState('')
   const [loading, setLoading] = useState(false)
   const [done, setDone] = useState(false)
+  const [duplicates, setDuplicates] = useState([])
+  const [duplicateDismissed, setDuplicateDismissed] = useState(false)
+
+  async function checkDuplicate() {
+    if (!firstName.trim() || !lastName.trim()) return
+    const supabase = createClient()
+    if (!supabase) return
+    const { data } = await supabase
+      .from('doctors')
+      .select('id, first_name, last_name, specs, city, status, slug')
+      .ilike('first_name', firstName.trim())
+      .ilike('last_name', lastName.trim())
+    setDuplicates(data || [])
+    setDuplicateDismissed(false)
+  }
 
   function addSpec(val) {
     if (val && !specs.includes(val)) setSpecs(s => [...s, val])
@@ -146,14 +164,63 @@ export default function AddDoctorModal({ onClose }) {
               <p style={{ fontSize: 13, marginBottom: '1.25rem', padding: '10px 12px', background: 'var(--amber-light)', borderRadius: 8, color: 'var(--amber)', fontWeight: 500 }}>
                 ℹ️ Recomandarea va fi verificată de un administrator înainte de publicare.
               </p>
+              {duplicates.length > 0 && !duplicateDismissed && (
+                <div style={{ marginBottom: '1.25rem', padding: '12px 14px', background: '#fff3cd', borderRadius: 8, border: '1px solid #f5c842' }}>
+                  <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 8, color: '#7a5a00' }}>
+                    ⚠️ Am găsit un medic cu acest nume în platformă:
+                  </div>
+                  {duplicates.map(d => (
+                    <div key={d.id} style={{ marginBottom: 10, paddingBottom: 10, borderBottom: '1px solid #f5c84240' }}>
+                      <div style={{ fontWeight: 700, fontSize: 14 }}>
+                        Dr. {d.first_name} {d.last_name}
+                      </div>
+                      {d.specs?.length > 0 && (
+                        <div style={{ fontSize: 12, color: 'var(--ink-light)', marginTop: 2 }}>{d.specs.join(', ')}</div>
+                      )}
+                      {d.city && (
+                        <div style={{ fontSize: 12, color: 'var(--ink-light)' }}>📍 {d.city}</div>
+                      )}
+                      {d.status === 'pending' ? (
+                        <span style={{ fontSize: 11, background: '#e0e0e0', borderRadius: 4, padding: '2px 6px', marginTop: 4, display: 'inline-block', color: '#666' }}>În curs de verificare</span>
+                      ) : (
+                        <a href={`/medici/${d.slug || d.id}`} target="_blank" rel="noopener noreferrer" style={{ fontSize: 12, color: 'var(--teal)', textDecoration: 'underline', marginTop: 4, display: 'inline-block' }}>
+                          Vezi pagina →
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                  <div style={{ display: 'flex', gap: 8, marginTop: 4, flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      className="submit-btn"
+                      style={{ fontSize: 13, padding: '6px 12px' }}
+                      onClick={() => {
+                        const approved = duplicates.find(d => d.status === 'approved')
+                        onClose()
+                        if (approved) router.push(`/medici/${approved.slug || approved.id}`)
+                      }}
+                    >
+                      E același medic
+                    </button>
+                    <button
+                      type="button"
+                      className="reply-cancel-btn"
+                      style={{ fontSize: 13 }}
+                      onClick={() => setDuplicateDismissed(true)}
+                    >
+                      Nu, e alt medic cu același nume
+                    </button>
+                  </div>
+                </div>
+              )}
               <div className="form-row">
                 <div className="form-group">
                   <label className="form-label">Prenume *</label>
-                  <input className="form-input" placeholder="ex: Maria" value={firstName} onChange={e => setFirstName(e.target.value)} />
+                  <input className="form-input" placeholder="ex: Maria" value={firstName} onChange={e => { setFirstName(e.target.value); setDuplicates([]); setDuplicateDismissed(false) }} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Nume *</label>
-                  <input className="form-input" placeholder="ex: Ionescu" value={lastName} onChange={e => setLastName(e.target.value)} />
+                  <input className="form-input" placeholder="ex: Ionescu" value={lastName} onChange={e => { setLastName(e.target.value); setDuplicates([]); setDuplicateDismissed(false) }} onBlur={checkDuplicate} />
                 </div>
               </div>
               <div className="form-group">
