@@ -5,18 +5,19 @@ import Link from 'next/link'
 import { useAuth } from '@/components/AuthProvider'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/Toast'
-import { specEmoji } from '@/lib/constants'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
+import DoctorCard from '@/components/DoctorCard'
 
 export default function ContulMeuPage() {
   const { user, loading, signOut } = useAuth() || {}
   const router = useRouter()
   const toast = useToast()
 
-  const [favorites, setFavorites] = useState(null)
-  const [recommendations, setRecommendations] = useState(null)
+  const [favDoctors, setFavDoctors] = useState(null)
+  const [recDoctors, setRecDoctors] = useState(null)
   const [reviews, setReviews] = useState(null)
-  const [deleteConfirm, setDeleteConfirm] = useState(null) // null | 'account' | 'all'
+  const [reviewCountMap, setReviewCountMap] = useState({})
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   useEffect(() => {
     if (!loading && !user) router.replace('/')
@@ -27,20 +28,33 @@ export default function ContulMeuPage() {
     const supabase = createClient()
     if (!supabase) return
 
+    // Favorites
     supabase
       .from('favorites')
-      .select('id, doctor_id, doctors(id, first_name, last_name, slug, specs, city, clinics)')
+      .select('id, doctor_id, doctors(*)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .then(({ data }) => setFavorites(data || []))
+      .then(async ({ data }) => {
+        if (!data) return setFavDoctors([])
+        const doctors = data.map(f => f.doctors).filter(Boolean)
+        const enriched = await enrichDoctors(supabase, doctors)
+        setFavDoctors(enriched)
+      })
 
+    // Recommendations
     supabase
       .from('recommendations')
-      .select('id, doctor_id, doctors(id, first_name, last_name, slug, specs, city, clinics)')
+      .select('id, doctor_id, doctors(*)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .then(({ data }) => setRecommendations(data || []))
+      .then(async ({ data }) => {
+        if (!data) return setRecDoctors([])
+        const doctors = data.map(r => r.doctors).filter(Boolean)
+        const enriched = await enrichDoctors(supabase, doctors)
+        setRecDoctors(enriched)
+      })
 
+    // Reviews
     supabase
       .from('reviews')
       .select('id, doctor_id, text, rating, date, doctors(id, first_name, last_name, slug)')
@@ -50,18 +64,28 @@ export default function ContulMeuPage() {
       .then(({ data }) => setReviews(data || []))
   }, [user])
 
-  async function removeFavorite(favId, doctorId) {
-    const supabase = createClient()
-    await supabase.from('favorites').delete().eq('id', favId)
-    setFavorites(f => f.filter(x => x.id !== favId))
-    toast('Scos din favorite', 'success')
-  }
+  async function enrichDoctors(supabase, doctors) {
+    if (!doctors.length) return []
+    const ids = doctors.map(d => d.id)
 
-  async function withdrawRecommendation(recId) {
-    const supabase = createClient()
-    await supabase.from('recommendations').delete().eq('id', recId)
-    setRecommendations(r => r.filter(x => x.id !== recId))
-    toast('Recomandare retrasă', 'success')
+    const [{ data: recs }, { data: revs }] = await Promise.all([
+      supabase.from('recommendations').select('doctor_id').in('doctor_id', ids),
+      supabase.from('reviews').select('doctor_id').eq('status', 'approved').in('doctor_id', ids),
+    ])
+
+    const recMap = {}
+    ;(recs || []).forEach(r => { recMap[r.doctor_id] = (recMap[r.doctor_id] || 0) + 1 })
+
+    const revMap = {}
+    ;(revs || []).forEach(r => { revMap[r.doctor_id] = (revMap[r.doctor_id] || 0) + 1 })
+
+    setReviewCountMap(prev => ({ ...prev, ...revMap }))
+
+    return doctors.map(d => ({
+      ...d,
+      recommendations_count: recMap[d.id] || 0,
+      clinic_urls: Object.fromEntries((d.clinics || []).map(c => [c, KNOWN_CLINIC_URLS[c] || null])),
+    }))
   }
 
   async function deleteReview(reviewId) {
@@ -95,102 +119,40 @@ export default function ContulMeuPage() {
   const doctorName = (d) => d ? `Dr. ${d.first_name}${d.last_name ? ' ' + d.last_name : ''}` : '—'
   const doctorHref = (d) => d ? `/medici/${d.slug || d.id}` : '#'
 
-  function DoctorMeta({ doc }) {
-    if (!doc) return null
-    return (
-      <>
-        {doc.specs?.length > 0 && (
-          <div className="contul-meu-tags">
-            {doc.specs.map(s => (
-              <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="contul-meu-tag contul-meu-tag--link">
-                {specEmoji(s)} {s}
-              </Link>
-            ))}
-          </div>
-        )}
-        {doc.city && (
-          <div className="contul-meu-tags">
-            {doc.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
-              <Link key={c} href={`/medici?city=${encodeURIComponent(c)}`} className="contul-meu-tag contul-meu-tag--link">
-                📍 {c}
-              </Link>
-            ))}
-          </div>
-        )}
-        {doc.clinics?.length > 0 && (
-          <div className="contul-meu-tags">
-            {doc.clinics.map(c => {
-              const url = KNOWN_CLINIC_URLS[c]
-              return url
-                ? <a key={c} href={url} target="_blank" rel="noopener noreferrer" className="contul-meu-tag contul-meu-tag--link">🏥 {c}</a>
-                : <span key={c} className="contul-meu-tag">🏥 {c}</span>
-            })}
-          </div>
-        )}
-      </>
-    )
-  }
-
   return (
     <div className="contul-meu-page">
       <h1 className="contul-meu-title">Contul meu</h1>
       <p className="contul-meu-email">{user.email}</p>
 
-      {/* Medici Favoriti */}
+      {/* Medici Favoriți */}
       <section className="contul-meu-section">
         <h2 className="contul-meu-section-title">Medici favoriți</h2>
-        {favorites === null ? (
+        {favDoctors === null ? (
           <p className="contul-meu-empty">Se încarcă…</p>
-        ) : favorites.length === 0 ? (
+        ) : favDoctors.length === 0 ? (
           <p className="contul-meu-empty">Nu ai medici salvați la favorite. Apasă ♡ pe orice card de medic.</p>
         ) : (
-          <ul className="contul-meu-list">
-            {favorites.map(fav => (
-              <li key={fav.id} className="contul-meu-item">
-                <div className="contul-meu-item-info">
-                  <Link href={doctorHref(fav.doctors)} className="contul-meu-doctor-link">
-                    {doctorName(fav.doctors)}
-                  </Link>
-                  <DoctorMeta doc={fav.doctors} />
-                </div>
-                <button
-                  className="contul-meu-action-btn contul-meu-action-btn--remove"
-                  onClick={() => removeFavorite(fav.id, fav.doctor_id)}
-                >
-                  ♥ Scoate
-                </button>
-              </li>
+          <div className="doctors-grid-home">
+            {favDoctors.map(d => (
+              <DoctorCard key={d.id} doctor={d} reviewCount={reviewCountMap[d.id] || 0} />
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
-      {/* Recomandarile Mele */}
+      {/* Recomandările Mele */}
       <section className="contul-meu-section">
         <h2 className="contul-meu-section-title">Recomandările mele</h2>
-        {recommendations === null ? (
+        {recDoctors === null ? (
           <p className="contul-meu-empty">Se încarcă…</p>
-        ) : recommendations.length === 0 ? (
+        ) : recDoctors.length === 0 ? (
           <p className="contul-meu-empty">Nu ai recomandat niciun medic încă.</p>
         ) : (
-          <ul className="contul-meu-list">
-            {recommendations.map(rec => (
-              <li key={rec.id} className="contul-meu-item">
-                <div className="contul-meu-item-info">
-                  <Link href={doctorHref(rec.doctors)} className="contul-meu-doctor-link">
-                    {doctorName(rec.doctors)}
-                  </Link>
-                  <DoctorMeta doc={rec.doctors} />
-                </div>
-                <button
-                  className="contul-meu-action-btn contul-meu-action-btn--remove"
-                  onClick={() => withdrawRecommendation(rec.id)}
-                >
-                  Retrage
-                </button>
-              </li>
+          <div className="doctors-grid-home">
+            {recDoctors.map(d => (
+              <DoctorCard key={d.id} doctor={d} reviewCount={reviewCountMap[d.id] || 0} />
             ))}
-          </ul>
+          </div>
         )}
       </section>
 
@@ -226,23 +188,17 @@ export default function ContulMeuPage() {
         )}
       </section>
 
-      {/* Zona Periculoasa */}
+      {/* Șterge informațiile mele */}
       <section className="contul-meu-section contul-meu-danger-zone">
         <h2 className="contul-meu-section-title contul-meu-danger-title">Șterge informațiile mele</h2>
 
         {deleteConfirm === null ? (
           <div className="contul-meu-danger-btns">
-            <button
-              className="contul-meu-danger-btn"
-              onClick={() => setDeleteConfirm('account')}
-            >
+            <button className="contul-meu-danger-btn" onClick={() => setDeleteConfirm('account')}>
               Șterge contul
             </button>
             <p className="contul-meu-danger-desc">Contul este șters, dar recomandările și comentariile tale rămân pe platformă în formă anonimă.</p>
-            <button
-              className="contul-meu-danger-btn contul-meu-danger-btn--all"
-              onClick={() => setDeleteConfirm('all')}
-            >
+            <button className="contul-meu-danger-btn contul-meu-danger-btn--all" onClick={() => setDeleteConfirm('all')}>
               Șterge contul și contribuțiile
             </button>
             <p className="contul-meu-danger-desc">Contul, recomandările, comentariile și favoritele tale sunt șterse permanent.</p>
@@ -255,16 +211,10 @@ export default function ContulMeuPage() {
                 : 'Ești sigură? Contul tău va fi șters. Recomandările și comentariile rămân anonime pe platformă.'}
             </p>
             <div className="contul-meu-confirm-btns">
-              <button
-                className="contul-meu-danger-btn contul-meu-danger-btn--confirm"
-                onClick={() => deleteAccount(deleteConfirm === 'all')}
-              >
+              <button className="contul-meu-danger-btn contul-meu-danger-btn--confirm" onClick={() => deleteAccount(deleteConfirm === 'all')}>
                 Da, șterge
               </button>
-              <button
-                className="contul-meu-action-btn"
-                onClick={() => setDeleteConfirm(null)}
-              >
+              <button className="contul-meu-action-btn" onClick={() => setDeleteConfirm(null)}>
                 Anulează
               </button>
             </div>

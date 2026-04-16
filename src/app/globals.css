@@ -520,10 +520,6 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .contul-meu-item{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:12px;}
 .contul-meu-item--review{align-items:flex-start;}
 .contul-meu-item-info{display:flex;flex-direction:column;gap:5px;min-width:0;}
-.contul-meu-tags{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
-.contul-meu-tag{font-size:11px;color:var(--ink-light);background:var(--warm);border-radius:6px;padding:3px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.contul-meu-tag--link{text-decoration:none;transition:background 0.15s,color 0.15s;}
-.contul-meu-tag--link:hover{background:var(--teal-light);color:var(--teal);}
 .contul-meu-doctor-link{font-weight:700;font-size:14px;color:var(--teal);text-decoration:none;}
 .contul-meu-doctor-link:hover{text-decoration:underline;}
 .contul-meu-meta{font-size:12px;color:var(--ink-light);}
