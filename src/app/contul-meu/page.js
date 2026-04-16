@@ -6,6 +6,7 @@ import { useAuth } from '@/components/AuthProvider'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/components/Toast'
 import { specEmoji } from '@/lib/constants'
+import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
 
 export default function ContulMeuPage() {
   const { user, loading, signOut } = useAuth() || {}
@@ -94,6 +95,42 @@ export default function ContulMeuPage() {
   const doctorName = (d) => d ? `Dr. ${d.first_name}${d.last_name ? ' ' + d.last_name : ''}` : '—'
   const doctorHref = (d) => d ? `/medici/${d.slug || d.id}` : '#'
 
+  function DoctorMeta({ doc }) {
+    if (!doc) return null
+    return (
+      <>
+        {doc.specs?.length > 0 && (
+          <div className="contul-meu-tags">
+            {doc.specs.map(s => (
+              <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="contul-meu-tag contul-meu-tag--link">
+                {specEmoji(s)} {s}
+              </Link>
+            ))}
+          </div>
+        )}
+        {doc.city && (
+          <div className="contul-meu-tags">
+            {doc.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
+              <Link key={c} href={`/medici?city=${encodeURIComponent(c)}`} className="contul-meu-tag contul-meu-tag--link">
+                📍 {c}
+              </Link>
+            ))}
+          </div>
+        )}
+        {doc.clinics?.length > 0 && (
+          <div className="contul-meu-tags">
+            {doc.clinics.map(c => {
+              const url = KNOWN_CLINIC_URLS[c]
+              return url
+                ? <a key={c} href={url} target="_blank" rel="noopener noreferrer" className="contul-meu-tag contul-meu-tag--link">🏥 {c}</a>
+                : <span key={c} className="contul-meu-tag">🏥 {c}</span>
+            })}
+          </div>
+        )}
+      </>
+    )
+  }
+
   return (
     <div className="contul-meu-page">
       <h1 className="contul-meu-title">Contul meu</h1>
@@ -114,27 +151,7 @@ export default function ContulMeuPage() {
                   <Link href={doctorHref(fav.doctors)} className="contul-meu-doctor-link">
                     {doctorName(fav.doctors)}
                   </Link>
-                  {fav.doctors?.specs?.length > 0 && (
-                    <div className="contul-meu-tags">
-                      {fav.doctors.specs.map(s => (
-                        <span key={s} className="contul-meu-tag">{specEmoji(s)} {s}</span>
-                      ))}
-                    </div>
-                  )}
-                  {fav.doctors?.city && (
-                    <div className="contul-meu-tags">
-                      {fav.doctors.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
-                        <span key={c} className="contul-meu-tag">📍 {c}</span>
-                      ))}
-                    </div>
-                  )}
-                  {fav.doctors?.clinics?.length > 0 && (
-                    <div className="contul-meu-tags">
-                      {fav.doctors.clinics.map(c => (
-                        <span key={c} className="contul-meu-tag">🏥 {c}</span>
-                      ))}
-                    </div>
-                  )}
+                  <DoctorMeta doc={fav.doctors} />
                 </div>
                 <button
                   className="contul-meu-action-btn contul-meu-action-btn--remove"
@@ -163,27 +180,7 @@ export default function ContulMeuPage() {
                   <Link href={doctorHref(rec.doctors)} className="contul-meu-doctor-link">
                     {doctorName(rec.doctors)}
                   </Link>
-                  {rec.doctors?.specs?.length > 0 && (
-                    <div className="contul-meu-tags">
-                      {rec.doctors.specs.map(s => (
-                        <span key={s} className="contul-meu-tag">{specEmoji(s)} {s}</span>
-                      ))}
-                    </div>
-                  )}
-                  {rec.doctors?.city && (
-                    <div className="contul-meu-tags">
-                      {rec.doctors.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
-                        <span key={c} className="contul-meu-tag">📍 {c}</span>
-                      ))}
-                    </div>
-                  )}
-                  {rec.doctors?.clinics?.length > 0 && (
-                    <div className="contul-meu-tags">
-                      {rec.doctors.clinics.map(c => (
-                        <span key={c} className="contul-meu-tag">🏥 {c}</span>
-                      ))}
-                    </div>
-                  )}
+                  <DoctorMeta doc={rec.doctors} />
                 </div>
                 <button
                   className="contul-meu-action-btn contul-meu-action-btn--remove"
