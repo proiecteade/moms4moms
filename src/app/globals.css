@@ -510,19 +510,18 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 }
 
 /* ── Contul Meu page ── */
-.contul-meu-page{max-width:680px;margin:0 auto;padding:2.5rem 1.25rem 4rem;}
-.contul-meu-title{font-weight:800;font-size:24px;margin-bottom:4px;}
-.contul-meu-email{font-size:13px;color:var(--ink-faint);margin-bottom:2.5rem;}
-.contul-meu-section{margin-bottom:2.5rem;}
-.contul-meu-section-title{font-weight:700;font-size:17px;margin-bottom:1rem;color:var(--ink);}
 .contul-meu-empty{font-size:14px;color:var(--ink-light);padding:12px 0;}
-.contul-meu-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
-.contul-meu-item{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:12px;}
-.contul-meu-item--review{align-items:flex-start;}
-.contul-meu-item-info{display:flex;flex-direction:column;gap:5px;min-width:0;}
-.contul-meu-doctor-link{font-weight:700;font-size:14px;color:var(--teal);text-decoration:none;}
-.contul-meu-doctor-link:hover{text-decoration:underline;}
-.contul-meu-meta{font-size:12px;color:var(--ink-light);}
+.contul-meu-doctor-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:12px;}
+.contul-meu-row-link{display:flex;align-items:center;gap:12px;flex:1;min-width:0;text-decoration:none;color:inherit;}
+.contul-meu-row-link:hover .contul-meu-row-name{text-decoration:underline;color:var(--teal);}
+.contul-meu-row-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:white;overflow:hidden;}
+.contul-meu-row-info{display:flex;flex-direction:column;gap:2px;min-width:0;}
+.contul-meu-row-name{font-weight:700;font-size:14px;color:var(--ink);}
+.contul-meu-row-meta{font-size:12px;color:var(--ink-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.contul-meu-clinic-link{color:var(--ink-light);text-decoration:none;}
+.contul-meu-clinic-link:hover{color:var(--teal);text-decoration:underline;}
+.contul-meu-row-counts{display:flex;gap:10px;font-size:12px;color:var(--ink-faint);margin-top:2px;}
+.contul-meu-review-row{display:flex;align-items:flex-start;gap:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:12px;}
 .contul-meu-review-text{font-size:13px;color:var(--ink-light);margin-top:4px;line-height:1.5;}
 .contul-meu-action-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border-strong);background:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0;}
 .contul-meu-action-btn:hover{border-color:var(--teal);color:var(--teal);}
