@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { avatarColor, initials, sortClinics, uid } from '@/lib/helpers'
 import { specEmoji } from '@/lib/constants'
 import { createClient } from '@/lib/supabase/client'
@@ -147,7 +148,9 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
         </div>
         <div className="doctor-specs">
           {(doctor.specs || []).map(s => (
-            <span key={s} className="spec-badge">{specEmoji(s)} {s}</span>
+            <Link key={s} href={`/medici?spec=${encodeURIComponent(s)}`} className="spec-badge" onClick={e => e.stopPropagation()}>
+              {specEmoji(s)} {s}
+            </Link>
           ))}
         </div>
         <div className="doctor-meta">
