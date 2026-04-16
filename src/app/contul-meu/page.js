@@ -28,14 +28,14 @@ export default function ContulMeuPage() {
 
     supabase
       .from('favorites')
-      .select('id, doctor_id, doctors(id, first_name, last_name, slug, specs, city)')
+      .select('id, doctor_id, doctors(id, first_name, last_name, slug, specs, city, clinics)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .then(({ data }) => setFavorites(data || []))
 
     supabase
       .from('recommendations')
-      .select('id, doctor_id, doctors(id, first_name, last_name, slug, city)')
+      .select('id, doctor_id, doctors(id, first_name, last_name, slug, specs, city, clinics)')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .then(({ data }) => setRecommendations(data || []))
@@ -114,11 +114,26 @@ export default function ContulMeuPage() {
                   <Link href={doctorHref(fav.doctors)} className="contul-meu-doctor-link">
                     {doctorName(fav.doctors)}
                   </Link>
-                  {fav.doctors?.city && (
-                    <span className="contul-meu-meta">📍 {fav.doctors.city.split(',')[0].trim()}</span>
-                  )}
                   {fav.doctors?.specs?.length > 0 && (
-                    <span className="contul-meu-meta">{specEmoji(fav.doctors.specs[0])} {fav.doctors.specs[0]}</span>
+                    <div className="contul-meu-tags">
+                      {fav.doctors.specs.map(s => (
+                        <span key={s} className="contul-meu-tag">{specEmoji(s)} {s}</span>
+                      ))}
+                    </div>
+                  )}
+                  {fav.doctors?.city && (
+                    <div className="contul-meu-tags">
+                      {fav.doctors.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                        <span key={c} className="contul-meu-tag">📍 {c}</span>
+                      ))}
+                    </div>
+                  )}
+                  {fav.doctors?.clinics?.length > 0 && (
+                    <div className="contul-meu-tags">
+                      {fav.doctors.clinics.map(c => (
+                        <span key={c} className="contul-meu-tag">🏥 {c}</span>
+                      ))}
+                    </div>
                   )}
                 </div>
                 <button
@@ -148,8 +163,26 @@ export default function ContulMeuPage() {
                   <Link href={doctorHref(rec.doctors)} className="contul-meu-doctor-link">
                     {doctorName(rec.doctors)}
                   </Link>
+                  {rec.doctors?.specs?.length > 0 && (
+                    <div className="contul-meu-tags">
+                      {rec.doctors.specs.map(s => (
+                        <span key={s} className="contul-meu-tag">{specEmoji(s)} {s}</span>
+                      ))}
+                    </div>
+                  )}
                   {rec.doctors?.city && (
-                    <span className="contul-meu-meta">📍 {rec.doctors.city.split(',')[0].trim()}</span>
+                    <div className="contul-meu-tags">
+                      {rec.doctors.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                        <span key={c} className="contul-meu-tag">📍 {c}</span>
+                      ))}
+                    </div>
+                  )}
+                  {rec.doctors?.clinics?.length > 0 && (
+                    <div className="contul-meu-tags">
+                      {rec.doctors.clinics.map(c => (
+                        <span key={c} className="contul-meu-tag">🏥 {c}</span>
+                      ))}
+                    </div>
                   )}
                 </div>
                 <button
