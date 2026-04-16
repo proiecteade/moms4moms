@@ -536,4 +536,3 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .contul-meu-confirm{background:#fff0f4;border:1px solid #e05a7a;border-radius:12px;padding:16px;}
 .contul-meu-confirm-text{font-size:14px;color:var(--ink);margin-bottom:14px;line-height:1.5;}
 .contul-meu-confirm-btns{display:flex;gap:10px;flex-wrap:wrap;}
-}
