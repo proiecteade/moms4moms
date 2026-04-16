@@ -90,6 +90,6 @@ export const KNOWN_CLINIC_URLS = {
   'Spitalul Sf. Constantin Brașov': 'https://spitalulsfconstantin.ro/',
   'Spitalul Universitar de Urgență București': 'https://www.suub.ro/',
   'Spitalul Universitar de Urgenţă Militar Central "Dr. Carol Davila"': 'https://www.scumc.ro/',
-  'Spitalului Clinic de Copii "Dr. Victor Gomoiu"': 'https://spitalgomoiu.ro/',
+  'Spitalul Clinic de Copii "Dr. Victor Gomoiu"': 'https://spitalgomoiu.ro/',
   'Spitalul Clinic de Urgență pentru Copii Brașov': 'https://www.spitalcopiibrasov.ro/',
 }

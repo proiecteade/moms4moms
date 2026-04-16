@@ -46,6 +46,14 @@ export function generateSlug(firstName, lastName) {
     .replace(/^_|_$/g, '')
 }
 
+export function generateRestaurantSlug(name) {
+  return (name || '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_|_$/g, '')
+}
+
 const STATE_HOSPITALS = new Set([
   'Spitalul Clinic de Urgență „Prof. Dr. Agrippa Ionescu"',
   'Spitalul Clinic de Urgenta "Bagdasar-Arseni"',
@@ -67,7 +75,7 @@ const STATE_HOSPITALS = new Set([
   'Spitalul Clinic Prof. Dr. Th. Burghele',
   'Spitalul Sf. Constantin Brașov',
   'Spitalul Universitar de Urgență București',
-  'Spitalului Clinic de Copii "Dr. Victor Gomoiu"',
+  'Spitalul Clinic de Copii "Dr. Victor Gomoiu"',
   'Spitalul Clinic de Urgență pentru Copii Brașov',
   'Institutul Național pentru Sănătatea Mamei și Copilului "Alessandrescu-Rusescu" București',
   'Institutul Național de Endocrinologie C. I. Parhon',
