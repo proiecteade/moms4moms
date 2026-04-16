@@ -210,23 +210,25 @@ function DoctorRow({ doctor: d, reviewCount, actionLabel, onAction }) {
         <div className="contul-meu-row-info">
           <div className="contul-meu-row-name">Dr. {d.first_name}{d.last_name ? ' ' + d.last_name : ''}</div>
           {d.specs?.length > 0 && (
-            <div className="contul-meu-row-meta">
-              {d.specs.map(s => `${specEmoji(s)} ${s}`).join(' · ')}
+            <div className="doctor-specs">
+              {d.specs.map(s => <span key={s} className="spec-badge">{specEmoji(s)} {s}</span>)}
             </div>
           )}
           {d.city && (
-            <div className="contul-meu-row-meta">
-              {d.city.split(',').map(c => c.trim()).filter(Boolean).map(c => `📍 ${c}`).join(' · ')}
+            <div className="doctor-meta">
+              {d.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
+                <span key={c} className="meta-pill">📍 {c}</span>
+              ))}
             </div>
           )}
           {d.clinics?.length > 0 && (
-            <div className="contul-meu-row-meta">
+            <div className="tags-row">
               {d.clinics.map(c => {
                 const url = d.clinic_urls?.[c]
                 return url
-                  ? <a key={c} href={url} target="_blank" rel="noopener noreferrer" className="contul-meu-clinic-link" onClick={e => e.stopPropagation()}>🏥 {c}</a>
-                  : <span key={c}>🏥 {c}</span>
-              }).reduce((acc, el, i) => i === 0 ? [el] : [...acc, ' · ', el], [])}
+                  ? <a key={c} href={url} target="_blank" rel="noopener noreferrer" className="clinic-tag clinic-tag-link" onClick={e => e.stopPropagation()}>🏥 {c}</a>
+                  : <span key={c} className="clinic-tag">🏥 {c}</span>
+              })}
             </div>
           )}
           <div className="contul-meu-row-counts">
