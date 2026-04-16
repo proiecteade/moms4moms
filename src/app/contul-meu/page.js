@@ -222,7 +222,7 @@ function DoctorRow({ doctor: d, reviewCount, actionLabel, onAction }) {
         {d.city && (
           <div className="doctor-meta">
             {d.city.split(',').map(c => c.trim()).filter(Boolean).map(c => (
-              <Link key={c} href={`/medici?city=${encodeURIComponent(c)}`} className="meta-pill">📍 {c}</Link>
+              <span key={c} className="meta-pill">📍 {c}</span>
             ))}
           </div>
         )}
