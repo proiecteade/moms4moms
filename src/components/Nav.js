@@ -39,6 +39,9 @@ export default function Nav() {
             {showDropdown && (
               <div className="user-dropdown">
                 <div className="user-dropdown-email">{user.email}</div>
+                <Link href="/contul-meu" className="user-dropdown-link" onClick={() => setShowDropdown(false)}>
+                  Contul meu
+                </Link>
                 <button className="user-dropdown-signout" onClick={() => { signOut(); setShowDropdown(false) }}>
                   Ieși din cont
                 </button>

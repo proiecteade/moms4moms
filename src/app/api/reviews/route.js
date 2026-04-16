@@ -9,7 +9,7 @@ export async function POST(request) {
     return NextResponse.json({ error: 'Date invalide.' }, { status: 400 })
   }
 
-  const { doctor_id, reviewer, text, rating, date } = body
+  const { doctor_id, reviewer, text, rating, date, user_id } = body
 
   if (!doctor_id || !rating) {
     return NextResponse.json({ error: 'Câmpuri obligatorii lipsă.' }, { status: 400 })
@@ -24,6 +24,7 @@ export async function POST(request) {
     rating,
     date,
     status: 'pending',
+    user_id: user_id || null,
   })
 
   if (error) {

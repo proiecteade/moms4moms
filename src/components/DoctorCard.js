@@ -22,6 +22,8 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
   const [count, setCount] = useState(doctor.recommendations_count || 0)
   const [done, setDone] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [faved, setFaved] = useState(false)
+  const [favLoading, setFavLoading] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -42,6 +44,13 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
           setDone(false)
         }
       })
+    supabase
+      .from('favorites')
+      .select('id')
+      .eq('doctor_id', doctor.id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => setFaved(!!data))
   }, [doctor.id, user])
 
   async function recommend(e) {
@@ -72,6 +81,23 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
       setCount(c => c + 1)
     }
     setLoading(false)
+  }
+
+  async function toggleFav(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (favLoading) return
+    if (!user) { window.dispatchEvent(new CustomEvent('openAuth')); return }
+    setFavLoading(true)
+    const supabase = createClient()
+    if (faved) {
+      await supabase.from('favorites').delete().eq('doctor_id', doctor.id).eq('user_id', user.id)
+      setFaved(false)
+    } else {
+      await supabase.from('favorites').insert({ id: uid(), doctor_id: doctor.id, user_id: user.id })
+      setFaved(true)
+    }
+    setFavLoading(false)
   }
 
   const profileUrl = `https://moms4moms.ro/medici/${doctor.slug || doctor.id}`
@@ -107,6 +133,14 @@ export default function DoctorCard({ doctor, reviewCount = 0 }) {
             Dr. {doctor.first_name}{doctor.last_name ? ' ' + doctor.last_name : ''}
           </div>
           <div className="card-share-btns" onClick={e => e.stopPropagation()}>
+            <button
+              className={`card-share-btn card-fav-btn${faved ? ' faved' : ''}`}
+              onClick={toggleFav}
+              title={faved ? 'Scoate din favorite' : 'Adaugă la favorite'}
+              disabled={favLoading}
+            >
+              {faved ? '♥' : '♡'}
+            </button>
             <button className="card-share-btn" onClick={copyLink} title="Copiază link">🔗</button>
             <button className="card-share-btn card-share-btn-wa" onClick={shareWhatsApp} title="Share WhatsApp"><WhatsAppIcon /></button>
           </div>

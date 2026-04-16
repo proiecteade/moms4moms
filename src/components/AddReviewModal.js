@@ -2,9 +2,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
+import { useAuth } from '@/components/AuthProvider'
 
 export default function AddReviewModal({ doctor, onClose }) {
   const toast = useToast()
+  const { user } = useAuth() || {}
   const modalRef = useRef(null)
   const titleId = 'add-review-modal-title'
 
@@ -48,6 +50,7 @@ export default function AddReviewModal({ doctor, onClose }) {
         text: text.trim() || null,
         rating: sentiment === 'happy' ? 5 : 1,
         date: todayISO(),
+        user_id: user?.id ?? null,
       }),
     })
     setLoading(false)

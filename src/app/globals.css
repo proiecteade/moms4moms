@@ -34,6 +34,8 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .user-avatar-btn:hover{background:#2e7060;}
 .user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:white;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(44,36,32,0.12);min-width:200px;overflow:hidden;z-index:100;}
 .user-dropdown-email{padding:10px 14px;font-size:12px;color:var(--ink-faint);border-bottom:1px solid var(--border);word-break:break-all;}
+.user-dropdown-link{display:block;padding:10px 14px;font-size:13px;font-weight:600;color:var(--ink);text-decoration:none;transition:background 0.15s;}
+.user-dropdown-link:hover{background:var(--warm);}
 .user-dropdown-signout{width:100%;padding:10px 14px;background:none;border:none;text-align:left;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);cursor:pointer;transition:background 0.15s;}
 .user-dropdown-signout:hover{background:var(--warm);}
 .auth-modal-google-btn{width:100%;display:flex;align-items:center;justify-content:center;gap:10px;padding:12px 16px;background:white;border:1.5px solid var(--border-strong);border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;transition:all 0.15s;box-shadow:0 1px 4px rgba(44,36,32,0.06);}
@@ -143,6 +145,10 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
 .card-share-btn:hover{border-color:var(--teal);background:var(--teal-light);}
 .card-share-btn-wa{color:#25D366;border-color:rgba(37,211,102,0.4);}
 .card-share-btn-wa:hover{border-color:#25D366;background:#f0fdf4;}
+.card-fav-btn{color:var(--ink-light);font-size:16px;}
+.card-fav-btn:hover{border-color:#e05a7a;background:#fff0f4;color:#e05a7a;}
+.card-fav-btn.faved{color:#e05a7a;border-color:#e05a7a;background:#fff0f4;}
+.card-fav-btn:disabled{opacity:0.6;cursor:default;}
 .doctor-card:hover{box-shadow:var(--shadow-hover);border-color:var(--border-strong);}
 .doctor-avatar{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px;color:white;flex-shrink:0;overflow:hidden;}
 .doctor-name{font-weight:700;font-size:15.5px;line-height:1.25;color:var(--ink);margin-bottom:0;}
@@ -497,4 +503,37 @@ nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 2rem
   .stats-row { gap: 1rem; padding: 1rem 0.75rem; }
   .stat-num { font-size: 1.5rem; }
   .browse-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+
+/* ── Contul Meu page ── */
+.contul-meu-page{max-width:680px;margin:0 auto;padding:2.5rem 1.25rem 4rem;}
+.contul-meu-title{font-weight:800;font-size:24px;margin-bottom:4px;}
+.contul-meu-email{font-size:13px;color:var(--ink-faint);margin-bottom:2.5rem;}
+.contul-meu-section{margin-bottom:2.5rem;}
+.contul-meu-section-title{font-weight:700;font-size:17px;margin-bottom:1rem;color:var(--ink);}
+.contul-meu-empty{font-size:14px;color:var(--ink-light);padding:12px 0;}
+.contul-meu-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px;}
+.contul-meu-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:white;border:1px solid var(--border);border-radius:12px;}
+.contul-meu-item--review{align-items:flex-start;}
+.contul-meu-item-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
+.contul-meu-doctor-link{font-weight:700;font-size:14px;color:var(--teal);text-decoration:none;}
+.contul-meu-doctor-link:hover{text-decoration:underline;}
+.contul-meu-meta{font-size:12px;color:var(--ink-light);}
+.contul-meu-review-text{font-size:13px;color:var(--ink-light);margin-top:4px;line-height:1.5;}
+.contul-meu-action-btn{padding:6px 14px;border-radius:8px;border:1.5px solid var(--border-strong);background:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:600;color:var(--ink-light);cursor:pointer;white-space:nowrap;transition:all 0.15s;flex-shrink:0;}
+.contul-meu-action-btn:hover{border-color:var(--teal);color:var(--teal);}
+.contul-meu-action-btn--remove:hover{border-color:#e05a7a;color:#e05a7a;}
+.contul-meu-danger-zone{border-top:2px solid #fde8ed;padding-top:2rem;margin-top:1rem;}
+.contul-meu-danger-title{color:#c0392b;}
+.contul-meu-danger-btns{display:flex;flex-direction:column;gap:6px;}
+.contul-meu-danger-btn{width:fit-content;padding:8px 18px;border-radius:8px;border:1.5px solid #e05a7a;background:white;font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#c0392b;cursor:pointer;transition:all 0.15s;}
+.contul-meu-danger-btn:hover{background:#fff0f4;}
+.contul-meu-danger-btn--all{border-color:#c0392b;background:#fff0f4;}
+.contul-meu-danger-btn--all:hover{background:#fde8ed;}
+.contul-meu-danger-btn--confirm{background:#c0392b;color:white;border-color:#c0392b;}
+.contul-meu-danger-btn--confirm:hover{background:#a93226;}
+.contul-meu-danger-desc{font-size:12px;color:var(--ink-light);margin:2px 0 10px;}
+.contul-meu-confirm{background:#fff0f4;border:1px solid #e05a7a;border-radius:12px;padding:16px;}
+.contul-meu-confirm-text{font-size:14px;color:var(--ink);margin-bottom:14px;line-height:1.5;}
+.contul-meu-confirm-btns{display:flex;gap:10px;flex-wrap:wrap;}
 }
