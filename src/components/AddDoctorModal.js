@@ -49,6 +49,15 @@ export default function AddDoctorModal({ onClose }) {
   const [done, setDone] = useState(false)
   const [duplicates, setDuplicates] = useState([])
   const [duplicateDismissed, setDuplicateDismissed] = useState(false)
+  const [specQuery, setSpecQuery] = useState('')
+  const [specOpen, setSpecOpen] = useState(false)
+  const specWrapRef = useRef(null)
+
+  useEffect(() => {
+    function handler(e) { if (!specWrapRef.current?.contains(e.target)) setSpecOpen(false) }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   async function checkDuplicate() {
     if (!firstName.trim() || !lastName.trim()) return
@@ -234,10 +243,28 @@ export default function AddDoctorModal({ onClose }) {
                       </span>
                     ))}
                   </div>
-                  <select className="spec-select-input" onChange={e => { addSpec(e.target.value); e.target.value = '' }}>
-                    <option value="">+ Adaugă specialitate…</option>
-                    {SPECIALTIES.map(s => <option key={s}>{s}</option>)}
-                  </select>
+                  <div className="spec-combobox-wrap" ref={specWrapRef}>
+                    <input
+                      className="spec-combobox-input"
+                      placeholder="+ Adaugă specialitate…"
+                      value={specQuery}
+                      autoComplete="off"
+                      onFocus={() => setSpecOpen(true)}
+                      onChange={e => { setSpecQuery(e.target.value); setSpecOpen(true) }}
+                      onKeyDown={e => e.key === 'Escape' && setSpecOpen(false)}
+                    />
+                    {specOpen && (() => {
+                      const lq = specQuery.toLowerCase()
+                      const filtered = SPECIALTIES.filter(s => !specs.includes(s) && s.toLowerCase().includes(lq))
+                      return filtered.length > 0 ? (
+                        <ul className="spec-dropdown">
+                          {filtered.map(s => (
+                            <li key={s} className="spec-option" onMouseDown={() => { addSpec(s); setSpecQuery(''); setSpecOpen(false) }}>{s}</li>
+                          ))}
+                        </ul>
+                      ) : null
+                    })()}
+                  </div>
                 </div>
               </div>
               <div className="form-group">
