@@ -251,16 +251,30 @@ export default function AddDoctorModal({ onClose }) {
                       autoComplete="off"
                       onFocus={() => setSpecOpen(true)}
                       onChange={e => { setSpecQuery(e.target.value); setSpecOpen(true) }}
-                      onKeyDown={e => e.key === 'Escape' && setSpecOpen(false)}
+                      onKeyDown={e => {
+                        if (e.key === 'Escape') { setSpecOpen(false); return }
+                        if (e.key === 'Enter' && specQuery.trim() && !specs.includes(specQuery.trim())) {
+                          e.preventDefault()
+                          addSpec(specQuery.trim())
+                          setSpecQuery('')
+                          setSpecOpen(false)
+                        }
+                      }}
                     />
                     {specOpen && (() => {
                       const lq = specQuery.toLowerCase()
                       const filtered = SPECIALTIES.filter(s => !specs.includes(s) && s.toLowerCase().includes(lq))
-                      return filtered.length > 0 ? (
+                      const isNew = specQuery.trim() && !SPECIALTIES.some(s => s.toLowerCase() === lq) && !specs.includes(specQuery.trim())
+                      return (filtered.length > 0 || isNew) ? (
                         <ul className="spec-dropdown">
                           {filtered.map(s => (
                             <li key={s} className="spec-option" onMouseDown={() => { addSpec(s); setSpecQuery(''); setSpecOpen(false) }}>{s}</li>
                           ))}
+                          {isNew && (
+                            <li className="spec-option spec-option-new" onMouseDown={() => { addSpec(specQuery.trim()); setSpecQuery(''); setSpecOpen(false) }}>
+                              + Adaugă „{specQuery.trim()}"
+                            </li>
+                          )}
                         </ul>
                       ) : null
                     })()}
