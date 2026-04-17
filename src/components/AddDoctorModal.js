@@ -49,15 +49,6 @@ export default function AddDoctorModal({ onClose }) {
   const [done, setDone] = useState(false)
   const [duplicates, setDuplicates] = useState([])
   const [duplicateDismissed, setDuplicateDismissed] = useState(false)
-  const [specQuery, setSpecQuery] = useState('')
-  const [specOpen, setSpecOpen] = useState(false)
-  const specWrapRef = useRef(null)
-
-  useEffect(() => {
-    function handler(e) { if (!specWrapRef.current?.contains(e.target)) setSpecOpen(false) }
-    document.addEventListener('mousedown', handler)
-    return () => document.removeEventListener('mousedown', handler)
-  }, [])
 
   async function checkDuplicate() {
     if (!firstName.trim() || !lastName.trim()) return
@@ -243,42 +234,10 @@ export default function AddDoctorModal({ onClose }) {
                       </span>
                     ))}
                   </div>
-                  <div className="spec-combobox-wrap" ref={specWrapRef}>
-                    <input
-                      className="spec-combobox-input"
-                      placeholder="+ Adaugă specialitate…"
-                      value={specQuery}
-                      autoComplete="off"
-                      onFocus={() => setSpecOpen(true)}
-                      onChange={e => { setSpecQuery(e.target.value); setSpecOpen(true) }}
-                      onKeyDown={e => {
-                        if (e.key === 'Escape') { setSpecOpen(false); return }
-                        if (e.key === 'Enter' && specQuery.trim() && !specs.includes(specQuery.trim())) {
-                          e.preventDefault()
-                          addSpec(specQuery.trim())
-                          setSpecQuery('')
-                          setSpecOpen(false)
-                        }
-                      }}
-                    />
-                    {specOpen && (() => {
-                      const lq = specQuery.toLowerCase()
-                      const filtered = SPECIALTIES.filter(s => !specs.includes(s) && s.toLowerCase().includes(lq))
-                      const isNew = specQuery.trim() && !SPECIALTIES.some(s => s.toLowerCase() === lq) && !specs.includes(specQuery.trim())
-                      return (filtered.length > 0 || isNew) ? (
-                        <ul className="spec-dropdown">
-                          {filtered.map(s => (
-                            <li key={s} className="spec-option" onMouseDown={() => { addSpec(s); setSpecQuery(''); setSpecOpen(false) }}>{s}</li>
-                          ))}
-                          {isNew && (
-                            <li className="spec-option spec-option-new" onMouseDown={() => { addSpec(specQuery.trim()); setSpecQuery(''); setSpecOpen(false) }}>
-                              + Adaugă „{specQuery.trim()}"
-                            </li>
-                          )}
-                        </ul>
-                      ) : null
-                    })()}
-                  </div>
+                  <select className="spec-select-input" onChange={e => { addSpec(e.target.value); e.target.value = '' }}>
+                    <option value="">+ Adaugă specialitate…</option>
+                    {SPECIALTIES.map(s => <option key={s}>{s}</option>)}
+                  </select>
                 </div>
               </div>
               <div className="form-group">
