@@ -30,7 +30,7 @@ export default function PrivacyPage() {
           <li>Moderarea conținutului de către administratori pentru a asigura calitatea recomandărilor.</li>
           <li>Îmbunătățirea platformei pe baza datelor agregate de analytics.</li>
         </ul>
-        <p>Nu vindem și nu transferăm datele tale către terți în scopuri comerciale.</p>
+        <p style={{ marginTop: '0.75rem' }}>Nu vindem și nu transferăm datele tale către terți în scopuri comerciale.</p>
       </Section>
 
       <Section title="4. Comentarii anonime">
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
           <li>Soliciți corectarea datelor incorecte.</li>
           <li>Te opui prelucrării datelor în scopuri de marketing.</li>
         </ul>
-        <p>Pentru orice solicitare, contactează-ne la <strong>sabina_cornovac@yahoo.com</strong>.</p>
+        <p style={{ marginTop: '0.75rem' }}>Pentru orice solicitare, contactează-ne la <strong>sabina_cornovac@yahoo.com</strong>.</p>
       </Section>
 
       <Section title="9. Retenția datelor">
@@ -67,7 +67,7 @@ export default function PrivacyPage() {
           <li><strong>Șterge contul</strong> — contul este șters, iar comentariile și recomandările publicate rămân pe platformă în formă anonimă.</li>
           <li><strong>Șterge contul și contribuțiile</strong> — contul, toate recomandările, comentariile și lista de favorite sunt șterse permanent.</li>
         </ul>
-        <p>Lista de medici favoriți este ștearsă automat odată cu contul, indiferent de opțiunea aleasă.</p>
+        <p style={{ marginTop: '0.75rem' }}>Lista de medici favoriți este ștearsă automat odată cu contul, indiferent de opțiunea aleasă.</p>
       </Section>
 
       <Section title="10. Contact">
