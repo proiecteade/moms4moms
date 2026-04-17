@@ -5,7 +5,7 @@ import { SPECIALTIES } from '@/lib/constants'
 import { uid, todayISO } from '@/lib/helpers'
 import { useToast } from '@/components/Toast'
 import { KNOWN_CLINIC_URLS } from '@/lib/knownClinics'
-import { ROMANIAN_CITIES } from '@/lib/romanianCities'
+import CityCombobox from './CityCombobox'
 import { createClient } from '@/lib/supabase/client'
 
 const CLINIC_NAMES = Object.keys(KNOWN_CLINIC_URLS)
@@ -242,10 +242,7 @@ export default function AddDoctorModal({ onClose }) {
               </div>
               <div className="form-group">
                 <label className="form-label">Localitate *</label>
-                <input className="form-input" placeholder="ex: București" value={city} onChange={e => setCity(e.target.value)} list="romanian-cities-list" autoComplete="off" />
-                <datalist id="romanian-cities-list">
-                  {ROMANIAN_CITIES.map(c => <option key={c} value={c} />)}
-                </datalist>
+                <CityCombobox value={city} onChange={setCity} />
               </div>
               <div className="form-group">
                 <label className="form-label">Unitate medicală</label>
