@@ -125,6 +125,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
 .sheet-ttl{font-size:17px;font-weight:800;margin-bottom:18px}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@media(min-width:900px){
+  #app{max-width:none}
+  .hdr{padding:16px 32px 14px}
+  .page{padding:20px 32px}
+  .atbl-wrap{margin:0 -32px;padding:0 32px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+  .grid>.ocard,.grid>.pcard{margin-bottom:0}
+  .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .setup-grid>.card{margin-bottom:0}
+  .setup-grid>.span2{grid-column:1/-1}
+  .items-grid{display:grid;grid-template-columns:minmax(300px,420px) 1fr;grid-template-areas:"upload products" "totals products";gap:14px;align-items:start}
+  .items-grid>*{margin-bottom:0}
+  .area-upload{grid-area:upload}.area-products{grid-area:products}.area-totals{grid-area:totals}
+  .overlay{align-items:center;justify-content:center}
+  .sheet{max-width:520px;border-radius:22px;padding-bottom:24px}
+  .fab{right:40px;bottom:32px}
+}
+.chip-add{background:#fff;border:1.5px dashed var(--rose-mid);cursor:pointer}
+.chip-add:hover{background:var(--rose-light)}
 .toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#1e1014;color:#fff;padding:9px 18px;border-radius:18px;font-size:13px;font-weight:600;z-index:300;animation:tin .25s ease;white-space:nowrap;pointer-events:none}
 </style>
 </head>
@@ -133,6 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <script>
 let S = { view:'home', tab:'items', id:null, modal:null, editId:null, ai:false, loading:true };
 let DB = [];
+let PEOPLE = [];
 
 // Ieșirile sunt salvate pe server (comune pentru toată lumea)
 async function api(path, opts={}) {
@@ -140,12 +160,34 @@ async function api(path, opts={}) {
   if(!r.ok) throw new Error('API '+r.status);
   return r.json();
 }
-function fromRow(row) { return {...(row.data||{}),id:row.id,...(row.poza!==undefined?{poza:row.poza}:{})}; }
+function fromRow(row) {
+  const o={...(row.data||{}),id:row.id,...(row.poza!==undefined?{poza:row.poza}:{})};
+  // ieșiri vechi: bacșișul era separat, îl mutăm în listă
+  if(parseFloat(o.bacsisTotal)>0&&!(o.items||[]).some(i=>i.tip)){
+    o.items=[...(o.items||[]),tipItem(parseFloat(o.bacsisTotal))];
+  }
+  delete o.bacsisTotal;
+  return o;
+}
+function tipItem(amount) { return {id:uid(),produs:'Bacșiș',qty:1,pret:amount,tip:true,autoSplit:true}; }
 function toData(o) { const {id,poza,...data}=o; return data; }
 async function load() {
   try { DB=(await api('')).map(fromRow); }
   catch(e){ toast('⚠️ Nu am putut încărca ieșirile'); }
   S.loading=false;
+}
+async function loadPeople() {
+  try { PEOPLE=await api('/people'); } catch(e){}
+}
+function rememberPerson(name) {
+  if(PEOPLE.some(p=>p.toLowerCase()===name.toLowerCase())) return;
+  PEOPLE=sortPeople([...PEOPLE,name]);
+  api('/people',{method:'POST',body:JSON.stringify({name})}).catch(()=>{});
+}
+// Sabina mereu prima, restul alfabetic
+function sortPeople(list) {
+  const first=p=>p.trim().toLowerCase().startsWith('sabina')?0:1;
+  return [...list].sort((a,b)=>first(a)-first(b)||a.localeCompare(b,'ro',{sensitivity:'base'}));
 }
 const saveTimers={};
 function saveErr() { toast('⚠️ Nu s-a salvat. Verifică internetul.'); }
@@ -171,18 +213,27 @@ function fmtDate(d) {
   try { return new Date(d).toLocaleDateString('ro-RO',{day:'numeric',month:'short',year:'numeric'}); }
   catch(e){ return d; }
 }
+function totalOf(item) { return (item.qty||0)*(item.pret||0); }
 function itemsTotal(o) { return (o.items||[]).reduce((s,i)=>s+(i.qty||0)*(i.pret||0),0); }
-function tipTotal(o) { return parseFloat(o.bacsisTotal)||0; }
-function tipPerPerson(o) { const n=(o.persoane||[]).length; return n?tipTotal(o)/n:0; }
+// Alocarea unui produs; bacșișul se împarte implicit egal la toți
+function allocOf(o,item) {
+  if(item.autoSplit){
+    const ppl=o.persoane||[],m={};
+    ppl.forEach(p=>{m[p]=(item.qty||0)/ppl.length;});
+    return m;
+  }
+  return (o.alloc||{})[item.id]||{};
+}
+function fmtQty(v) { return v?String(Math.round(v*100)/100):''; }
 
 function calcSummary(o) {
-  const persoane=o.persoane||[],items=o.items||[],alloc=o.alloc||{};
-  const bacsis=tipPerPerson(o),transfers=o.transfers||{};
+  const persoane=o.persoane||[],items=o.items||[];
+  const transfers=o.transfers||{};
   const r={};
-  persoane.forEach(p=>{ r[p]={consumat:0,bacsis,total:0,platit:0,primit:0,transferat:parseFloat(transfers[p])||0,sold:0}; });
-  items.forEach(item=>{ const a=alloc[item.id]||{}; persoane.forEach(p=>{ r[p].consumat+=(parseFloat(a[p])||0)*(item.pret||0); }); });
+  persoane.forEach(p=>{ r[p]={consumat:0,bacsis:0,total:0,platit:0,primit:0,transferat:parseFloat(transfers[p])||0,sold:0}; });
+  items.forEach(item=>{ const a=allocOf(o,item),k=item.tip?'bacsis':'consumat'; persoane.forEach(p=>{ r[p][k]+=(parseFloat(a[p])||0)*(item.pret||0); }); });
   persoane.forEach(p=>{ r[p].total=r[p].consumat+r[p].bacsis; });
-  const fullBon=o.totalBon||(itemsTotal(o)+tipTotal(o));
+  const fullBon=o.totalBon||itemsTotal(o);
   if(o.platitor&&r[o.platitor]){
     r[o.platitor].platit=fullBon;
     r[o.platitor].primit=persoane.filter(p=>p!==o.platitor).reduce((s,p)=>s+(parseFloat(transfers[p])||0),0);
@@ -193,7 +244,7 @@ function calcSummary(o) {
 
 function unallocated(o) {
   return (o.items||[]).filter(item=>{
-    const a=(o.alloc||{})[item.id]||{};
+    const a=allocOf(o,item);
     const done=(o.persoane||[]).reduce((s,p)=>s+(parseFloat(a[p])||0),0);
     return Math.abs((item.qty||0)-done)>0.01;
   });
@@ -239,7 +290,7 @@ async function parseReceipt(dataUrl) {
 }
 
 async function newOuting() {
-  const o={id:uid(),name:'',date:new Date().toISOString().slice(0,10),platitor:'',persoane:[],items:[],alloc:{},bacsisTotal:0,totalBon:null,poza:null,transfers:{}};
+  const o={id:uid(),name:'',date:new Date().toISOString().slice(0,10),platitor:'',persoane:[],items:[],alloc:{},totalBon:null,poza:null,transfers:{}};
   try { await api('',{method:'POST',body:JSON.stringify({id:o.id,data:toData(o)})}); }
   catch(e){ toast('⚠️ Nu am putut crea ieșirea'); return; }
   DB.unshift(o); S.id=o.id; S.view='setup'; S.tab='items'; render();
@@ -292,7 +343,7 @@ function vHome() {
     <div class="empty-ttl">Prima ieșire!</div>
     <div class="empty-sub">Apasă + pentru a adăuga o ieșire și a împărți bonul cu prietenele</div></div>`:
     DB.map(o=>{
-      const tot=itemsTotal(o)+tipTotal(o),np=(o.persoane||[]).length;
+      const tot=itemsTotal(o),np=(o.persoane||[]).length;
       return `<div class="ocard" data-a="open" data-id="${o.id}">
         <div class="ocard-emoji">🍽️</div>
         <div class="ocard-info"><div class="ocard-name">${esc(o.name||'Ieșire')}</div>
@@ -304,29 +355,34 @@ function vHome() {
     }).join('');
   return `<div class="hdr"><div class="hdr-row"><div class="hdr-title">🍽️ Bon împărțit</div></div>
     <div class="hdr-sub">Împarte bonul cu prietenele tale</div></div>
-    <div class="page">${items}</div><button class="fab" data-a="new">+</button>`;
+    <div class="page"><div class="grid">${items}</div></div><button class="fab" data-a="new">+</button>`;
 }
 
 function vSetup() {
   const o=cur(); if(!o) return vHome();
   const ppl=o.persoane||[];
   const warn=o.platitor&&o.platitor.trim()&&!ppl.includes(o.platitor.trim());
+  const all=[...PEOPLE];
+  DB.forEach(x=>(x.persoane||[]).forEach(p=>{ if(!all.some(y=>y.toLowerCase()===p.toLowerCase())) all.push(p); }));
+  const known=sortPeople(all.filter(p=>!ppl.some(x=>x.toLowerCase()===p.toLowerCase())));
   return `<div class="hdr"><div class="hdr-row">
     <button class="hdr-back" data-a="home">←</button>
     <div><div class="hdr-title">${esc(o.name||'Ieșire nouă')}</div><div class="hdr-sub">Setează detaliile</div></div></div></div>
-    <div class="page">
+    <div class="page"><div class="setup-grid">
       <div class="card"><div class="card-ttl">Detalii</div>
         <div class="fg"><label class="fl">Restaurantul</label><input class="fi" id="f-name" placeholder="Nume restaurant" value="${esc(o.name||'')}"></div>
         <div class="fg"><label class="fl">Data</label><input class="fi" id="f-date" type="date" value="${o.date||''}"></div></div>
       <div class="card"><div class="card-ttl">Cine a plătit bonul?</div>
         <input class="fi" id="f-platitor" placeholder="Numele celei care a plătit" value="${esc(o.platitor||'')}">
         ${warn?`<div style="margin-top:8px;font-size:12px;color:var(--warn)">⚠️ Adaug-o și în lista de participante!</div>`:''}</div>
-      <div class="card"><div class="card-ttl">Participante (${ppl.length})</div>
-        <div class="chips">${ppl.map(p=>`<div class="chip">${esc(p)}<span class="chip-x" data-a="rm-person" data-name="${esc(p)}">×</span></div>`).join('')}</div>
-        <div style="display:flex;gap:8px"><input class="fi" id="new-p" placeholder="Adaugă un nume…" style="flex:1">
+      <div class="card span2"><div class="card-ttl">Participante (${ppl.length})</div>
+        <div class="chips">${sortPeople(ppl).map(p=>`<div class="chip">${esc(p)}<span class="chip-x" data-a="rm-person" data-name="${esc(p)}">×</span></div>`).join('')}</div>
+        ${known.length?`<div class="fl" style="margin-top:4px">Alege din listă</div>
+        <div class="chips">${known.map(p=>`<div class="chip chip-add" data-a="pick-person" data-name="${esc(p)}">+ ${esc(p)}</div>`).join('')}</div>`:''}
+        <div style="display:flex;gap:8px"><input class="fi" id="new-p" placeholder="Persoană nouă…" style="flex:1">
         <button class="btn btn-s" data-a="add-person">+ Adaugă</button></div></div>
-      <button class="btn btn-p btn-full" data-a="to-items" style="margin-top:4px">Continuă → Adaugă produse</button>
-    </div>`;
+      <button class="btn btn-p btn-full span2" data-a="to-items" style="margin-top:4px">Continuă → Adaugă produse</button>
+    </div></div>`;
 }
 
 function vOuting() {
@@ -350,56 +406,57 @@ function vOuting() {
 }
 
 function vItems(o) {
-  const items=o.items||[],totP=itemsTotal(o),totB=tipTotal(o);
-  const uploadSection=o.poza?`<div class="card"><div class="card-ttl">Poza bonului</div>
+  const items=o.items||[],totP=itemsTotal(o),n=(o.persoane||[]).length;
+  const hasTip=items.some(i=>i.tip);
+  const uploadSection=o.poza?`<div class="card area-upload"><div class="card-ttl">Poza bonului</div>
       <img src="${o.poza}" class="receipt-img" alt="Bon">
       <div style="display:flex;gap:8px">
         <label class="btn btn-s btn-sm" style="cursor:pointer">📷 Schimbă<input type="file" accept="image/*" capture="environment" id="photo-inp" style="display:none"></label>
         <button class="btn btn-g btn-sm" data-a="del-photo">🗑️ Șterge</button></div></div>`:
-    S.ai?`<div class="upload-box" style="cursor:default">
+    S.ai?`<div class="upload-box area-upload" style="cursor:default">
       <div class="upload-icon"><div class="spinner"></div></div>
       <div class="upload-txt" style="margin-top:10px">Citesc bonul cu AI…</div>
       <div class="upload-sub">Identificând produse și prețuri</div></div>`:
-    `<label class="upload-box"><div class="upload-icon">📷</div>
+    `<label class="upload-box area-upload"><div class="upload-icon">📷</div>
       <div class="upload-txt">Fotografiază bonul</div>
       <div class="upload-sub">AI va extrage automat produsele și prețurile</div>
       <input type="file" accept="image/*" capture="environment" id="photo-inp" style="display:none"></label>`;
 
-  return `<div class="page">${uploadSection}
-    <div class="card"><div class="card-ttl">Produse (${items.length})</div>
+  return `<div class="page"><div class="items-grid">${uploadSection}
+    <div class="card area-products"><div class="card-ttl">Produse (${items.length})</div>
       ${items.length===0?`<div style="text-align:center;padding:16px;color:var(--text-light);font-size:14px">Niciun produs adăugat</div>`:
         items.map(item=>`<div class="irow">
-          <div class="irow-name">${esc(item.produs)}<div class="irow-sub">${item.qty} buc × ${lei(item.pret)}</div></div>
+          <div class="irow-name">${item.tip?'💝 ':''}${esc(item.produs)}<div class="irow-sub">${item.tip&&item.autoSplit?(n?`împărțit egal la ${n} · ${lei(totalOf(item)/n)} / persoană`:'împărțit egal la toți'):`${item.qty} buc × ${lei(item.pret)}`}</div></div>
           <div class="irow-total">${lei((item.qty||0)*(item.pret||0))}</div>
           <button class="ico-btn ico-edit" data-a="edit-item" data-id="${item.id}">✏️</button>
           <button class="ico-btn ico-del" data-a="del-item" data-id="${item.id}">🗑️</button></div>`).join('')}
       <div class="div"></div>
-      <button class="btn btn-s btn-full" data-a="add-item">+ Adaugă produs manual</button></div>
-    <div class="card">
-      <div class="sum-row"><span>Total produse</span><span>${lei(totP)}</span></div>
-      <div class="sum-row"><span>Bacșiș${(o.persoane||[]).length?` (${lei(tipPerPerson(o))} / persoană)`:''}</span><span>${lei(totB)}</span></div>
-      <div class="sum-row total"><span>TOTAL</span><span>${lei(totP+totB)}</span></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-s" style="flex:2" data-a="add-item">+ Adaugă produs manual</button>
+        ${hasTip?'':`<button class="btn btn-g" style="flex:1" data-a="add-tip">+ Bacșiș</button>`}</div></div>
+    <div class="card area-totals">
+      <div class="sum-row total" style="border-top:none;margin-top:0;padding-top:0"><span>TOTAL</span><span>${lei(totP)}</span></div>
       ${o.totalBon?`<div class="div"></div>
         <div class="sum-row"><span>Total pe bon</span><span>${lei(o.totalBon)}</span></div>
-        <div class="sum-row"><span>Diferență</span><span style="color:${Math.abs(totP+totB-o.totalBon)<2?'var(--green)':'var(--warn)'}">${lei(totP+totB-o.totalBon)}</span></div>`:''}
-    </div></div>`;
+        <div class="sum-row"><span>Diferență</span><span style="color:${Math.abs(totP-o.totalBon)<2?'var(--green)':'var(--warn)'}">${lei(totP-o.totalBon)}</span></div>`:''}
+    </div></div></div>`;
 }
 
 function vAssign(o) {
-  const items=o.items||[],ppl=o.persoane||[],alloc=o.alloc||{};
+  const items=o.items||[],ppl=sortPeople(o.persoane||[]);
   if(!items.length) return `<div class="page"><div class="empty"><div class="empty-icon">📋</div><div class="empty-ttl">Adaugă produse mai întâi</div></div></div>`;
   if(!ppl.length) return `<div class="page"><div class="empty"><div class="empty-icon">👥</div><div class="empty-ttl">Adaugă participante în Setări</div><button class="btn btn-p" data-a="edit-setup" style="margin-top:14px">✏️ Editează</button></div></div>`;
   const persTotal={};
   ppl.forEach(p=>{persTotal[p]=0;});
-  items.forEach(item=>{const a=alloc[item.id]||{};ppl.forEach(p=>{persTotal[p]+=(parseFloat(a[p])||0)*(item.pret||0);});});
+  items.forEach(item=>{const a=allocOf(o,item);ppl.forEach(p=>{persTotal[p]+=(parseFloat(a[p])||0)*(item.pret||0);});});
   const rows=items.map(item=>{
-    const a=alloc[item.id]||{};
+    const a=allocOf(o,item);
     const done=ppl.reduce((s,p)=>s+(parseFloat(a[p])||0),0);
     const rem=(item.qty||0)-done,isUn=Math.abs(rem)>0.01;
     return `<tr class="${isUn?'unalloc-bg':''}">
-      <td class="name-col${isUn?' unalloc-row':''}">${esc(item.produs)}<div style="font-size:10px;color:var(--text-light)">${item.qty} buc</div></td>
-      ${ppl.map(p=>{const v=a[p]||'',filled=v!==''&&parseFloat(v)>0;
-        return `<td style="text-align:center"><input class="atbl-input${filled?' filled':''}" type="number" min="0" step="0.5" value="${v||''}" placeholder="0" data-a="alloc" data-item="${item.id}" data-p="${esc(p)}"></td>`;
+      <td class="name-col${isUn?' unalloc-row':''}">${item.tip?'💝 ':''}${esc(item.produs)}<div style="font-size:10px;color:var(--text-light)">${item.tip&&item.autoSplit?'egal la toți':`${item.qty} buc`}</div></td>
+      ${ppl.map(p=>{const v=fmtQty(a[p]),filled=v!==''&&parseFloat(v)>0;
+        return `<td style="text-align:center"><input class="atbl-input${filled?' filled':''}" type="number" min="0" step="0.5" value="${v}" placeholder="0" data-a="alloc" data-item="${item.id}" data-p="${esc(p)}"></td>`;
       }).join('')}
       <td style="text-align:center;font-weight:700;font-size:12px;color:${isUn?'var(--warn)':'var(--green)'}">${isUn?rem.toFixed(rem%1?1:0):'✓'}</td></tr>`;
   }).join('');
@@ -418,7 +475,7 @@ function vAssign(o) {
 }
 
 function vSummary(o) {
-  const ppl=o.persoane||[];
+  const ppl=sortPeople(o.persoane||[]);
   if(!ppl.length) return `<div class="page"><div class="empty"><div class="empty-icon">👥</div><div class="empty-ttl">Adaugă participante</div></div></div>`;
   const ua=unallocated(o).length,sum=calcSummary(o);
   const cards=ppl.map(p=>{
@@ -450,7 +507,7 @@ function vSummary(o) {
   }).join('');
   return `<div class="page">
     ${ua>0?`<div class="warn-block">⚠️ ${ua} produs${ua===1?'':'e'} nealocate — verifică tab-ul Alocare</div>`:''}
-    ${cards}
+    <div class="grid">${cards}</div>
     <div style="text-align:center;padding:16px 0;font-size:12px;color:var(--text-light)">📱 Fă un screenshot și trimite-l în grup</div></div>`;
 }
 
@@ -459,8 +516,8 @@ function vModal(o) {
   return `<div class="overlay" data-a="close-overlay">
     <div class="sheet" onclick="event.stopPropagation()">
       <div class="sheet-handle"></div>
-      <div class="sheet-ttl">${isEdit?'Editează produs':'Adaugă produs'}</div>
-      <div class="fg"><label class="fl">Produs</label><input class="fi" id="m-produs" placeholder="ex: Carbonara" value="${esc(item?.produs||'')}"></div>
+      <div class="sheet-ttl">${isEdit?'Editează produs':S.modal==='tip'?'Adaugă bacșiș':'Adaugă produs'}</div>
+      <div class="fg"><label class="fl">Produs</label><input class="fi" id="m-produs" placeholder="ex: Carbonara" value="${esc(item?.produs||(S.modal==='tip'?'Bacșiș':''))}"></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
         <div class="fg"><label class="fl">Cantitate</label><input class="fi" id="m-qty" type="number" min="0.5" step="0.5" placeholder="1" value="${item?.qty||''}"></div>
         <div class="fg"><label class="fl">Preț/buc (lei)</label><input class="fi" id="m-pret" type="number" min="0" step="0.5" placeholder="0.00" value="${item?.pret||''}"></div></div>
@@ -485,11 +542,17 @@ document.addEventListener('click', e => {
   if(a==='open'){openOuting(el.dataset.id);return;}
   if(a==='tab'){S.tab=el.dataset.tab;render();return;}
   if(a==='edit-setup'){S.view='setup';render();return;}
-  if(a==='add-person'){
-    if(!o)return; const inp=document.getElementById('new-p'),name=(inp?.value||'').trim();
-    if(!name)return; readSetup(o); const ppl=[...(o.persoane||[])];
-    if(!ppl.includes(name)){ppl.push(name);upd(o.id,{persoane:ppl});}
-    if(inp)inp.value=''; render();return;
+  if(a==='add-person'||a==='pick-person'){
+    if(!o)return; const inp=document.getElementById('new-p');
+    let name=(a==='pick-person'?el.dataset.name:(inp?.value||'')).trim().replace(/\s+/g,' ');
+    if(!name)return; readSetup(o);
+    name=PEOPLE.find(p=>p.toLowerCase()===name.toLowerCase())||name;
+    const ppl=[...(o.persoane||[])];
+    if(!ppl.some(p=>p.toLowerCase()===name.toLowerCase())){ppl.push(name);upd(o.id,{persoane:ppl});}
+    rememberPerson(name);
+    if(inp&&a==='add-person')inp.value=''; render();
+    if(a==='add-person')document.getElementById('new-p')?.focus();
+    return;
   }
   if(a==='rm-person'){if(!o)return;readSetup(o);upd(o.id,{persoane:(o.persoane||[]).filter(p=>p!==el.dataset.name)});render();return;}
   if(a==='to-items'){
@@ -498,6 +561,7 @@ document.addEventListener('click', e => {
     S.view='outing';S.tab='items';render();return;
   }
   if(a==='del-photo'){if(o){o.poza=null;savePhoto(o);render();}return;}
+  if(a==='add-tip'){S.modal='tip';S.editId=null;render();setTimeout(()=>{document.getElementById('m-pret')?.focus();updModalTotal();},50);return;}
   if(a==='add-item'){S.modal='item';S.editId=null;render();setTimeout(()=>{document.getElementById('m-produs')?.focus();updModalTotal();},50);return;}
   if(a==='edit-item'){S.modal='item';S.editId=el.dataset.id;render();setTimeout(()=>{document.getElementById('m-produs')?.focus();updModalTotal();},50);return;}
   if(a==='del-item'){if(!o||!confirm('Ștergi produsul?'))return;delItem(o,el.dataset.id);render();return;}
@@ -505,7 +569,9 @@ document.addEventListener('click', e => {
   if(a==='save-add'){
     if(!o)return; const produs=document.getElementById('m-produs')?.value.trim();
     if(!produs){document.getElementById('m-produs')?.focus();return;}
-    addItem(o,{produs,qty:parseFloat(document.getElementById('m-qty')?.value)||1,pret:parseFloat(document.getElementById('m-pret')?.value)||0});
+    const it={produs,qty:parseFloat(document.getElementById('m-qty')?.value)||1,pret:parseFloat(document.getElementById('m-pret')?.value)||0};
+    if(S.modal==='tip'){it.tip=true;it.autoSplit=true;}
+    addItem(o,it);
     S.modal=null;render();return;
   }
   if(a==='save-edit'){
@@ -543,7 +609,7 @@ document.addEventListener('change', e=>{
         result.items.forEach(item=>addItem(fresh,{produs:item.produs,qty:item.qty||1,pret:item.pret||0}));
         const ch={};
         if(result.totalBon)ch.totalBon=result.totalBon;
-        if(result.bacsis)ch.bacsisTotal=result.bacsis;
+        if(result.bacsis&&!(fresh.items||[]).some(i=>i.tip))addItem(fresh,tipItem(result.bacsis));
         if(result.restaurant&&(!fresh.name||fresh.name==='Ieșire'))ch.name=result.restaurant;
         upd(fresh.id,ch);
         toast(`✓ Am găsit ${result.items.length} produse${result.bacsis?' + bacșiș':''}!`);
@@ -553,10 +619,15 @@ document.addEventListener('change', e=>{
     reader.readAsDataURL(file);return;
   }
   if(el.dataset.a==='alloc'&&o){
+    const it=(o.items||[]).find(x=>x.id===el.dataset.item);
+    if(it?.autoSplit){
+      const eq=allocOf(o,it);it.autoSplit=false;
+      if(!o.alloc)o.alloc={};o.alloc[it.id]={...eq};
+    }
     const v=parseFloat(el.value)||0;setAlloc(o,el.dataset.item,el.dataset.p,v);
     el.classList.toggle('filled',v>0);
     const item=(o.items||[]).find(x=>x.id===el.dataset.item);
-    if(item){const ppl=o.persoane||[],a=o.alloc?.[item.id]||{},done=ppl.reduce((s,p)=>s+(parseFloat(a[p])||0),0),rem=(item.qty||0)-done;
+    if(item){const ppl=o.persoane||[],a=allocOf(o,item),done=ppl.reduce((s,p)=>s+(parseFloat(a[p])||0),0),rem=(item.qty||0)-done;
       const row=el.closest('tr'),last=row?.querySelector('td:last-child');
       if(last){const isUn=Math.abs(rem)>0.01;last.style.color=isUn?'var(--warn)':'var(--green)';last.textContent=isUn?rem.toFixed(rem%1?1:0):'✓';}}
   }
@@ -568,7 +639,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&S.modal){S.modal=null;S.editId=null;render();}
 });
 
-render();load().then(()=>{ if(S.view==='home') render(); });
+render();loadPeople();load().then(()=>{ if(S.view==='home') render(); });
 </script>
 </body>
 </html>
