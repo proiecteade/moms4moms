@@ -115,6 +115,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sbadge-w{background:var(--warn-light);color:var(--warn)}
 .srows{font-size:12px;color:var(--text-med)}
 .srow{display:flex;justify-content:space-between;padding:2px 0}
+.srow.subtotal{font-weight:800;color:var(--text);border-top:1px dashed var(--border);margin-top:4px;padding-top:4px;margin-bottom:6px}
 .srow.total{border-top:1px solid var(--border);margin-top:6px;padding-top:6px;font-weight:800;color:var(--text);font-size:13px}
 .div{height:1px;background:var(--border);margin:12px 0}
 .sum-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--text-med)}
@@ -518,6 +519,7 @@ function vSummary(o) {
       <div class="srows">
         <div class="srow"><span>Consumat</span><span>${lei(s.consumat)}</span></div>
         <div class="srow"><span>Bacșiș</span><span>${lei(s.bacsis)}</span></div>
+        <div class="srow subtotal"><span>Total consumat + bacșiș</span><span>${lei(s.consumat+s.bacsis)}</span></div>
         ${isPlatitor?`<div class="srow"><span>A plătit bonul</span><span>−${lei(s.platit)}</span></div>
           <div class="srow"><span>Primit prin transfer</span><span>+${lei(s.primit)}</span></div>`:
           `<div class="srow"><span>Transferat deja</span><span>−${lei(s.transferat)}</span></div>`}
