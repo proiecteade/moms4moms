@@ -9,7 +9,8 @@ const MAX_BASE64_LENGTH = 7_000_000 // ~5MB image
 const PROMPT = `Aceasta este poza unui bon de restaurant din România.
 Extrage toate produsele cu cantitatea și prețul pe bucată (în lei).
 Ignoră liniile de TVA, subtotal și metodele de plată.
-Numele restaurantului e în antetul bonului: pune-l în "restaurant", fără SRL/SA, scris normal (ex: "Freen Restaurant").
+Numele restaurantului este primul rând din antetul bonului, deasupra adresei și a CIF-ului
+(ex: "FREEN RESTAURANT SRL"). Pune-l mereu în "restaurant", fără SRL/SA, scris normal (ex: "Freen Restaurant").
 Bacșișul (ex: linia "BACSIS") NU este produs: pune suma lui în câmpul "bacsis".
 Răspunde DOAR cu JSON valid, fără alt text, în formatul:
 {"restaurant":"Freen Restaurant","items":[{"produs":"Carbonara","qty":1,"pret":45.5}],"bacsis":30,"totalBon":123.5}
