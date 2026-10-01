@@ -88,7 +88,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .receipt-img{width:100%;border-radius:var(--r-sm);margin-bottom:10px;max-height:220px;object-fit:contain;display:block}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--rose);border-radius:50%;animation:spin .8s linear infinite}
-.atbl-wrap{overflow-x:auto;margin:0 -14px;padding:0}
+.atbl-wrap{overflow:auto;margin:0 -14px;padding:0;max-height:calc(100dvh - 190px);overscroll-behavior:contain}
+.atbl thead th{position:sticky;top:0;z-index:3}
+.atbl thead th.name-col{z-index:4}
+.atbl tfoot td{position:sticky;bottom:0;z-index:2}
+.atbl tfoot td.name-col{z-index:3}
 .atbl{border-collapse:collapse;font-size:12px;min-width:100%;margin-bottom:8px}
 .atbl th{padding:8px 5px;text-align:center;font-weight:800;color:var(--text-med);white-space:nowrap;background:var(--rose-light);font-size:11px;border-bottom:1px solid var(--border)}
 .atbl th.name-col{text-align:left;min-width:110px;position:sticky;left:0;z-index:2;background:var(--rose-light);padding-left:14px;box-shadow:2px 0 6px -2px rgba(140,30,50,.18)}
@@ -343,7 +347,16 @@ function render() {
   if(S.view==='home') app.innerHTML=vHome();
   else if(S.view==='setup') app.innerHTML=vSetup();
   else if(S.view==='outing') app.innerHTML=vOuting();
+  fitTable();
 }
+// Zona tabelului de alocare = înălțimea ecranului sub bara fixă (capul și totalurile rămân vizibile)
+function fitTable() {
+  const wrap=document.querySelector('.atbl-wrap'),bar=document.querySelector('.topbar');
+  if(!wrap||!bar) return;
+  const btn=document.querySelector('[data-a=split-equal]');
+  wrap.style.maxHeight=Math.max(240,window.innerHeight-bar.offsetHeight-(btn?70:24))+'px';
+}
+window.addEventListener('resize',fitTable);
 
 function vHome() {
   const items=S.loading?`<div class="empty"><div class="spinner"></div></div>`:DB.length===0?`
