@@ -544,6 +544,7 @@ document.addEventListener('change', e=>{
         const ch={};
         if(result.totalBon)ch.totalBon=result.totalBon;
         if(result.bacsis)ch.bacsisTotal=result.bacsis;
+        if(result.restaurant&&(!fresh.name||fresh.name==='Ieșire'))ch.name=result.restaurant;
         upd(fresh.id,ch);
         toast(`✓ Am găsit ${result.items.length} produse${result.bacsis?' + bacșiș':''}!`);
       } else {toast(`Nu am putut citi bonul${result?.error?` (${result.error})`:''}. Adaugă manual.`);}

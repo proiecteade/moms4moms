@@ -9,11 +9,12 @@ const MAX_BASE64_LENGTH = 7_000_000 // ~5MB image
 const PROMPT = `Aceasta este poza unui bon de restaurant din România.
 Extrage toate produsele cu cantitatea și prețul pe bucată (în lei).
 Ignoră liniile de TVA, subtotal și metodele de plată.
+Numele restaurantului e în antetul bonului: pune-l în "restaurant", fără SRL/SA, scris normal (ex: "Freen Restaurant").
 Bacșișul (ex: linia "BACSIS") NU este produs: pune suma lui în câmpul "bacsis".
 Răspunde DOAR cu JSON valid, fără alt text, în formatul:
-{"items":[{"produs":"Carbonara","qty":1,"pret":45.5}],"bacsis":30,"totalBon":123.5}
+{"restaurant":"Freen Restaurant","items":[{"produs":"Carbonara","qty":1,"pret":45.5}],"bacsis":30,"totalBon":123.5}
 "totalBon" este totalul final de plată de pe bon (inclusiv bacșișul).
-Dacă nu găsești bacșișul sau totalul, pune null.`
+Dacă nu găsești restaurantul, bacșișul sau totalul, pune null.`
 
 export async function POST(request) {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -52,7 +53,7 @@ export async function POST(request) {
     })
 
     if (response.stop_reason === 'refusal') {
-      return NextResponse.json({ items: [], bacsis: null, totalBon: null })
+      return NextResponse.json({ restaurant: null, items: [], bacsis: null, totalBon: null })
     }
 
     const text = response.content
@@ -71,6 +72,7 @@ export async function POST(request) {
       .filter(i => i.produs)
 
     return NextResponse.json({
+      restaurant: typeof parsed.restaurant === 'string' ? parsed.restaurant.trim().slice(0, 80) || null : null,
       items,
       bacsis: Number(parsed.bacsis) || null,
       totalBon: Number(parsed.totalBon) || null,
