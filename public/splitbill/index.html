@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Bon împărțit 🍽️</title>
+<style>
+:root {
+  color-scheme: light;
+  --rose: #c8556a;
+  --rose-mid: #d96f83;
+  --rose-light: #f9eaed;
+  --rose-pale: #fdf5f7;
+  --green: #4a9e6e;
+  --green-light: #e6f5ee;
+  --warn: #d4870a;
+  --warn-light: #fff8ed;
+  --red: #c94040;
+  --red-light: #fdeaea;
+  --text: #1e1014;
+  --text-med: #5a3040;
+  --text-light: #9a7080;
+  --border: #ecdde2;
+  --bg: #fdf7f8;
+  --surface: #fff;
+  --r: 14px;
+  --r-sm: 8px;
+  --shadow: 0 2px 16px rgba(180,70,90,.09);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+#app{max-width:500px;margin:0 auto;min-height:100vh;position:relative}
+.hdr{background:linear-gradient(135deg,#9e2d45,var(--rose));color:#fff;padding:16px 16px 14px;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(140,30,50,.25)}
+.hdr-row{display:flex;align-items:center;gap:10px}
+.hdr-back{background:rgba(255,255,255,.2);border:none;color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:20px;flex-shrink:0;line-height:1}
+.hdr-title{font-size:18px;font-weight:800;flex:1}
+.hdr-sub{font-size:12px;opacity:.8;margin-top:2px}
+.tabs{display:flex;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:76px;z-index:90}
+.tab{flex:1;padding:11px 4px 9px;border:none;background:none;color:var(--text-light);font-size:11px;font-weight:700;cursor:pointer;border-bottom:2px solid transparent;text-align:center;transition:all .2s;letter-spacing:.3px}
+.tab.on{color:var(--rose);border-bottom-color:var(--rose)}
+.tab-icon{display:block;font-size:17px;margin-bottom:2px}
+.badge-tab{display:inline-block;background:var(--warn);color:#fff;font-size:10px;font-weight:800;padding:1px 5px;border-radius:8px;margin-left:2px;vertical-align:middle}
+.page{padding:14px}
+.card{background:var(--surface);border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);margin-bottom:12px;border:1px solid var(--border)}
+.card-ttl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--text-light);margin-bottom:12px}
+.ocard{background:var(--surface);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:var(--shadow);cursor:pointer;display:flex;align-items:center;gap:12px;transition:transform .15s}
+.ocard:active{transform:scale(.98)}
+.ocard-emoji{font-size:30px;flex-shrink:0}
+.ocard-info{flex:1;min-width:0}
+.ocard-name{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ocard-meta{font-size:12px;color:var(--text-light);margin-top:2px}
+.ocard-total{font-size:17px;font-weight:800;color:var(--rose);flex-shrink:0;text-align:right}
+.fab{position:fixed;bottom:22px;right:22px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#9e2d45,var(--rose));color:#fff;font-size:28px;border:none;cursor:pointer;box-shadow:0 4px 18px rgba(160,40,65,.4);display:flex;align-items:center;justify-content:center;z-index:50;transition:transform .2s}
+.fab:active{transform:scale(.92)}
+.fg{margin-bottom:13px}
+.fl{display:block;font-size:12px;font-weight:700;color:var(--text-med);margin-bottom:5px}
+.fi{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:15px;color:var(--text);background:var(--bg);outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fi:focus{border-color:var(--rose);background:#fff}
+.fi-sm{padding:8px 11px;font-size:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:12px 18px;border-radius:var(--r-sm);font-size:14px;font-weight:700;cursor:pointer;border:none;transition:all .15s;letter-spacing:.2px}
+.btn:active{transform:scale(.97)}
+.btn-p{background:linear-gradient(135deg,#9e2d45,var(--rose));color:#fff;box-shadow:0 2px 12px rgba(160,40,65,.28)}
+.btn-s{background:var(--rose-light);color:var(--rose)}
+.btn-g{background:transparent;color:var(--text-med);border:1.5px solid var(--border)}
+.btn-d{background:var(--red-light);color:var(--red)}
+.btn-w{background:var(--warn-light);color:var(--warn)}
+.btn-full{width:100%}
+.btn-sm{padding:7px 13px;font-size:13px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;background:var(--rose-light);color:var(--rose);border-radius:20px;font-size:13px;font-weight:700}
+.chip-x{cursor:pointer;font-size:15px;opacity:.55;line-height:1}
+.chip-x:hover{opacity:1}
+.irow{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:8px}
+.irow:last-child{border-bottom:none}
+.irow-name{flex:1;font-size:14px;font-weight:600;min-width:0}
+.irow-sub{font-size:11px;color:var(--text-light);margin-top:1px}
+.irow-total{font-size:14px;font-weight:800;color:var(--rose);flex-shrink:0}
+.ico-btn{width:30px;height:30px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;transition:all .15s}
+.ico-edit{background:var(--rose-light);color:var(--rose)}
+.ico-del{background:var(--red-light);color:var(--red)}
+.upload-box{border:2px dashed var(--rose-mid);border-radius:var(--r);padding:28px 16px;text-align:center;cursor:pointer;background:var(--rose-pale);transition:all .2s;margin-bottom:12px;display:block}
+.upload-box:hover{border-color:var(--rose)}
+.upload-icon{font-size:44px;margin-bottom:8px}
+.upload-txt{color:var(--rose);font-weight:700;font-size:15px}
+.upload-sub{color:var(--text-light);font-size:12px;margin-top:4px}
+.receipt-img{width:100%;border-radius:var(--r-sm);margin-bottom:10px;max-height:220px;object-fit:contain;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--rose);border-radius:50%;animation:spin .8s linear infinite}
+.atbl-wrap{overflow-x:auto;margin:0 -14px;padding:0 14px}
+.atbl{border-collapse:collapse;font-size:12px;min-width:100%;margin-bottom:8px}
+.atbl th{padding:8px 5px;text-align:center;font-weight:800;color:var(--text-med);white-space:nowrap;background:var(--rose-light);font-size:11px;border-bottom:1px solid var(--border)}
+.atbl th.name-col{text-align:left;min-width:110px;position:sticky;left:0;z-index:2;background:var(--rose-light)}
+.atbl td{padding:6px 4px;border-bottom:1px solid var(--border);vertical-align:middle}
+.atbl td.name-col{font-size:12px;font-weight:600;min-width:110px;position:sticky;left:0;background:#fff;z-index:1}
+.atbl td.name-col.unalloc-row{background:#fff9ee}
+.atbl tr.unalloc-bg td{background:#fff9ee}
+.atbl-input{width:52px;padding:4px 5px;border:1.5px solid var(--border);border-radius:6px;font-size:12px;text-align:center;color:var(--text);background:#fff}
+.atbl-input:focus{outline:none;border-color:var(--rose)}
+.atbl-input.filled{background:var(--rose-light);border-color:var(--rose);font-weight:700;color:var(--rose)}
+.atbl tfoot td{background:var(--rose-light);font-weight:800;color:var(--rose);font-size:11px;padding:7px 4px;border-top:2px solid var(--rose)}
+.pcard{background:var(--surface);border-radius:var(--r);padding:13px 15px;margin-bottom:10px;border:1.5px solid var(--border);box-shadow:var(--shadow)}
+.pcard-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+.pname{font-size:15px;font-weight:800}
+.psold{font-size:18px;font-weight:900}
+.psold.owes{color:var(--red)}
+.psold.recv{color:var(--green)}
+.psold.ok{color:var(--text-light)}
+.sbadge{display:inline-block;padding:2px 9px;border-radius:10px;font-size:11px;font-weight:800;margin-top:3px}
+.sbadge-g{background:var(--green-light);color:var(--green)}
+.sbadge-r{background:var(--red-light);color:var(--red)}
+.sbadge-w{background:var(--warn-light);color:var(--warn)}
+.srows{font-size:12px;color:var(--text-med)}
+.srow{display:flex;justify-content:space-between;padding:2px 0}
+.srow.total{border-top:1px solid var(--border);margin-top:6px;padding-top:6px;font-weight:800;color:var(--text);font-size:13px}
+.div{height:1px;background:var(--border);margin:12px 0}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:3px 0;color:var(--text-med)}
+.sum-row.total{border-top:1px solid var(--border);margin-top:8px;padding-top:8px;font-weight:800;font-size:14px;color:var(--text)}
+.warn-block{background:var(--warn-light);border:1px solid #f0c060;border-radius:var(--r-sm);padding:10px 12px;margin-bottom:12px;font-size:13px;color:var(--warn)}
+.empty{text-align:center;padding:48px 24px;color:var(--text-light)}
+.empty-icon{font-size:60px;margin-bottom:12px}
+.empty-ttl{font-size:18px;font-weight:800;color:var(--text-med);margin-bottom:6px}
+.empty-sub{font-size:13px;line-height:1.5}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end}
+.sheet{background:#fff;border-radius:22px 22px 0 0;padding:18px 18px 40px;width:100%;max-height:85vh;overflow-y:auto}
+.sheet-handle{width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 18px}
+.sheet-ttl{font-size:17px;font-weight:800;margin-bottom:18px}
+@keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.toast{position:fixed;bottom:92px;left:50%;transform:translateX(-50%);background:#1e1014;color:#fff;padding:9px 18px;border-radius:18px;font-size:13px;font-weight:600;z-index:300;animation:tin .25s ease;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const KEY = 'bon-v2';
+let S = { view:'home', tab:'items', id:null, modal:null, editId:null, ai:false };
+let DB = [];
+
+function load() { try { DB=JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){} }
+function save() { try { localStorage.setItem(KEY,JSON.stringify(DB)); } catch(e){} }
+function cur() { return DB.find(o=>o.id===S.id)||null; }
+function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+
+function lei(n) {
+  if(n==null||isNaN(n)) return '—';
+  return (Math.round(n*100)/100).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
+}
+function fmtDate(d) {
+  if(!d) return '';
+  try { return new Date(d).toLocaleDateString('ro-RO',{day:'numeric',month:'short',year:'numeric'}); }
+  catch(e){ return d; }
+}
+function itemsTotal(o) { return (o.items||[]).reduce((s,i)=>s+(i.qty||0)*(i.pret||0),0); }
+function tipTotal(o) { return (parseFloat(o.bacsis)||0)*(o.persoane||[]).length; }
+
+function calcSummary(o) {
+  const persoane=o.persoane||[],items=o.items||[],alloc=o.alloc||{};
+  const bacsis=parseFloat(o.bacsis)||0,transfers=o.transfers||{};
+  const r={};
+  persoane.forEach(p=>{ r[p]={consumat:0,bacsis,total:0,platit:0,primit:0,transferat:parseFloat(transfers[p])||0,sold:0}; });
+  items.forEach(item=>{ const a=alloc[item.id]||{}; persoane.forEach(p=>{ r[p].consumat+=(parseFloat(a[p])||0)*(item.pret||0); }); });
+  persoane.forEach(p=>{ r[p].total=r[p].consumat+r[p].bacsis; });
+  const fullBon=o.totalBon||(itemsTotal(o)+bacsis*(persoane.length));
+  if(o.platitor&&r[o.platitor]){
+    r[o.platitor].platit=fullBon;
+    r[o.platitor].primit=persoane.filter(p=>p!==o.platitor).reduce((s,p)=>s+(parseFloat(transfers[p])||0),0);
+  }
+  persoane.forEach(p=>{ r[p].sold=p===o.platitor?r[p].total-r[p].platit+r[p].primit:r[p].total-r[p].transferat; });
+  return r;
+}
+
+function unallocated(o) {
+  return (o.items||[]).filter(item=>{
+    const a=(o.alloc||{})[item.id]||{};
+    const done=(o.persoane||[]).reduce((s,p)=>s+(parseFloat(a[p])||0),0);
+    return Math.abs((item.qty||0)-done)>0.01;
+  });
+}
+
+function toast(msg) {
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2600);
+}
+
+// Downscale photos so they fit the API body limit and localStorage
+function shrinkImage(dataUrl, maxSide=1600) {
+  return new Promise(resolve=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1,maxSide/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale); c.height=Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      resolve(c.toDataURL('image/jpeg',0.85));
+    };
+    img.onerror=()=>resolve(dataUrl);
+    img.src=dataUrl;
+  });
+}
+
+// AI receipt parsing — calls the Next.js API route
+async function parseReceipt(dataUrl) {
+  S.ai=true; render();
+  try {
+    const base64=dataUrl.split(',')[1];
+    const mimeType=dataUrl.split(';')[0].split(':')[1]||'image/jpeg';
+    const resp=await fetch('/api/parse-receipt',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({imageBase64:base64,mimeType})
+    });
+    if(!resp.ok) throw new Error('API error');
+    return await resp.json();
+  } catch(e) { console.error(e); return null; }
+  finally { S.ai=false; }
+}
+
+function newOuting() {
+  const o={id:uid(),name:'',date:new Date().toISOString().slice(0,10),platitor:'',persoane:[],items:[],alloc:{},bacsis:0,totalBon:null,poza:null,transfers:{}};
+  DB.unshift(o); save(); S.id=o.id; S.view='setup'; S.tab='items'; render();
+}
+function upd(id,ch) { const i=DB.findIndex(o=>o.id===id); if(i>=0){Object.assign(DB[i],ch);save();} }
+function addItem(o,item) { (o.items=o.items||[]).push({id:uid(),...item}); save(); }
+function updItem(o,id,ch) { const i=(o.items||[]).findIndex(x=>x.id===id); if(i>=0){Object.assign(o.items[i],ch);save();} }
+function delItem(o,id) { o.items=(o.items||[]).filter(x=>x.id!==id); delete (o.alloc||{})[id]; save(); }
+function setAlloc(o,itemId,person,qty) {
+  if(!o.alloc)o.alloc={}; if(!o.alloc[itemId])o.alloc[itemId]={};
+  const v=parseFloat(qty);
+  if(!v||isNaN(v)) delete o.alloc[itemId][person]; else o.alloc[itemId][person]=v;
+  save();
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function updModalTotal() {
+  const q=parseFloat(document.getElementById('m-qty')?.value)||0;
+  const p=parseFloat(document.getElementById('m-pret')?.value)||0;
+  const t=document.getElementById('m-total'); if(t) t.textContent=lei(q*p);
+}
+
+function render() {
+  const app=document.getElementById('app');
+  if(S.view==='home') app.innerHTML=vHome();
+  else if(S.view==='setup') app.innerHTML=vSetup();
+  else if(S.view==='outing') app.innerHTML=vOuting();
+}
+
+function vHome() {
+  const items=DB.length===0?`
+    <div class="empty"><div class="empty-icon">🧾</div>
+    <div class="empty-ttl">Prima ieșire!</div>
+    <div class="empty-sub">Apasă + pentru a adăuga o ieșire și a împărți bonul cu prietenele</div></div>`:
+    DB.map(o=>{
+      const tot=itemsTotal(o)+tipTotal(o),np=(o.persoane||[]).length;
+      return `<div class="ocard" data-a="open" data-id="${o.id}">
+        <div class="ocard-emoji">🍽️</div>
+        <div class="ocard-info"><div class="ocard-name">${esc(o.name||'Ieșire')}</div>
+        <div class="ocard-meta">${fmtDate(o.date)} · ${np} ${np===1?'persoană':'persoane'}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+          <div class="ocard-total">${lei(tot)}</div>
+          <button class="btn btn-d btn-sm" data-a="del" data-id="${o.id}" style="font-size:12px;padding:4px 10px">🗑️ Șterge</button>
+        </div></div>`;
+    }).join('');
+  return `<div class="hdr"><div class="hdr-row"><div class="hdr-title">🍽️ Bon împărțit</div></div>
+    <div class="hdr-sub">Împarte bonul cu prietenele tale</div></div>
+    <div class="page">${items}</div><button class="fab" data-a="new">+</button>`;
+}
+
+function vSetup() {
+  const o=cur(); if(!o) return vHome();
+  const ppl=o.persoane||[];
+  const warn=o.platitor&&o.platitor.trim()&&!ppl.includes(o.platitor.trim());
+  return `<div class="hdr"><div class="hdr-row">
+    <button class="hdr-back" data-a="home">←</button>
+    <div><div class="hdr-title">${esc(o.name||'Ieșire nouă')}</div><div class="hdr-sub">Setează detaliile</div></div></div></div>
+    <div class="page">
+      <div class="card"><div class="card-ttl">Detalii</div>
+        <div class="fg"><label class="fl">Restaurantul</label><input class="fi" id="f-name" placeholder="ex: Freen Restaurant" value="${esc(o.name||'')}"></div>
+        <div class="fg"><label class="fl">Data</label><input class="fi" id="f-date" type="date" value="${o.date||''}"></div></div>
+      <div class="card"><div class="card-ttl">Cine a plătit bonul?</div>
+        <input class="fi" id="f-platitor" placeholder="Numele celei care a plătit" value="${esc(o.platitor||'')}">
+        ${warn?`<div style="margin-top:8px;font-size:12px;color:var(--warn)">⚠️ Adaug-o și în lista de participante!</div>`:''}</div>
+      <div class="card"><div class="card-ttl">Participante (${ppl.length})</div>
+        <div class="chips">${ppl.map(p=>`<div class="chip">${esc(p)}<span class="chip-x" data-a="rm-person" data-name="${esc(p)}">×</span></div>`).join('')}</div>
+        <div style="display:flex;gap:8px"><input class="fi" id="new-p" placeholder="Adaugă un nume…" style="flex:1">
+        <button class="btn btn-s" data-a="add-person">+ Adaugă</button></div></div>
+      <div class="card"><div class="card-ttl">Bacșiș per persoană (lei)</div>
+        <input class="fi" id="f-bacsis" type="number" min="0" step="0.5" placeholder="ex: 12" value="${o.bacsis||''}">
+        ${ppl.length&&o.bacsis?`<div style="margin-top:6px;font-size:12px;color:var(--text-light)">Total bacșiș: ${lei((parseFloat(o.bacsis)||0)*ppl.length)}</div>`:''}</div>
+      <button class="btn btn-p btn-full" data-a="to-items" style="margin-top:4px">Continuă → Adaugă produse</button>
+    </div>`;
+}
+
+function vOuting() {
+  const o=cur(); if(!o) return vHome();
+  const ua=unallocated(o).length;
+  const hdr=`<div class="hdr"><div class="hdr-row">
+    <button class="hdr-back" data-a="home">←</button>
+    <div style="flex:1"><div class="hdr-title">${esc(o.name||'Ieșire')}</div>
+    <div class="hdr-sub">${fmtDate(o.date)} · ${(o.persoane||[]).length} persoane · ${esc(o.platitor||'?')} a plătit</div></div>
+    <button class="btn btn-s btn-sm" data-a="edit-setup" style="font-size:12px;padding:6px 10px">✏️</button></div></div>
+    <div class="tabs">
+      <button class="tab ${S.tab==='items'?'on':''}" data-a="tab" data-tab="items"><span class="tab-icon">📋</span>Produse</button>
+      <button class="tab ${S.tab==='assign'?'on':''}" data-a="tab" data-tab="assign"><span class="tab-icon">👥</span>Alocare${ua>0?`<span class="badge-tab">${ua}</span>`:''}</button>
+      <button class="tab ${S.tab==='summary'?'on':''}" data-a="tab" data-tab="summary"><span class="tab-icon">💰</span>Sumar</button>
+    </div>`;
+  let body='';
+  if(S.tab==='items') body=vItems(o);
+  else if(S.tab==='assign') body=vAssign(o);
+  else body=vSummary(o);
+  return hdr+body+(S.modal?vModal(o):'');
+}
+
+function vItems(o) {
+  const items=o.items||[],totP=itemsTotal(o),totB=tipTotal(o);
+  const uploadSection=o.poza?`<div class="card"><div class="card-ttl">Poza bonului</div>
+      <img src="${o.poza}" class="receipt-img" alt="Bon">
+      <div style="display:flex;gap:8px">
+        <label class="btn btn-s btn-sm" style="cursor:pointer">📷 Schimbă<input type="file" accept="image/*" capture="environment" id="photo-inp" style="display:none"></label>
+        <button class="btn btn-g btn-sm" data-a="del-photo">🗑️ Șterge</button></div></div>`:
+    S.ai?`<div class="upload-box" style="cursor:default">
+      <div class="upload-icon"><div class="spinner"></div></div>
+      <div class="upload-txt" style="margin-top:10px">Citesc bonul cu AI…</div>
+      <div class="upload-sub">Identificând produse și prețuri</div></div>`:
+    `<label class="upload-box"><div class="upload-icon">📷</div>
+      <div class="upload-txt">Fotografiază bonul</div>
+      <div class="upload-sub">AI va extrage automat produsele și prețurile</div>
+      <input type="file" accept="image/*" capture="environment" id="photo-inp" style="display:none"></label>`;
+
+  return `<div class="page">${uploadSection}
+    <div class="card"><div class="card-ttl">Produse (${items.length})</div>
+      ${items.length===0?`<div style="text-align:center;padding:16px;color:var(--text-light);font-size:14px">Niciun produs adăugat</div>`:
+        items.map(item=>`<div class="irow">
+          <div class="irow-name">${esc(item.produs)}<div class="irow-sub">${item.qty} buc × ${lei(item.pret)}</div></div>
+          <div class="irow-total">${lei((item.qty||0)*(item.pret||0))}</div>
+          <button class="ico-btn ico-edit" data-a="edit-item" data-id="${item.id}">✏️</button>
+          <button class="ico-btn ico-del" data-a="del-item" data-id="${item.id}">🗑️</button></div>`).join('')}
+      <div class="div"></div>
+      <button class="btn btn-s btn-full" data-a="add-item">+ Adaugă produs manual</button></div>
+    <div class="card">
+      <div class="sum-row"><span>Total produse</span><span>${lei(totP)}</span></div>
+      <div class="sum-row"><span>Bacșiș total (${(o.persoane||[]).length} × ${lei(parseFloat(o.bacsis)||0)})</span><span>${lei(totB)}</span></div>
+      <div class="sum-row total"><span>TOTAL</span><span>${lei(totP+totB)}</span></div>
+      ${o.totalBon?`<div class="div"></div>
+        <div class="sum-row"><span>Total pe bon</span><span>${lei(o.totalBon)}</span></div>
+        <div class="sum-row"><span>Diferență</span><span style="color:${Math.abs(totP-o.totalBon)<2?'var(--green)':'var(--warn)'}">${lei(totP-o.totalBon)}</span></div>`:''}
+    </div></div>`;
+}
+
+function vAssign(o) {
+  const items=o.items||[],ppl=o.persoane||[],alloc=o.alloc||{};
+  if(!items.length) return `<div class="page"><div class="empty"><div class="empty-icon">📋</div><div class="empty-ttl">Adaugă produse mai întâi</div></div></div>`;
+  if(!ppl.length) return `<div class="page"><div class="empty"><div class="empty-icon">👥</div><div class="empty-ttl">Adaugă participante în Setări</div><button class="btn btn-p" data-a="edit-setup" style="margin-top:14px">✏️ Editează</button></div></div>`;
+  const persTotal={};
+  ppl.forEach(p=>{persTotal[p]=0;});
+  items.forEach(item=>{const a=alloc[item.id]||{};ppl.forEach(p=>{persTotal[p]+=(parseFloat(a[p])||0)*(item.pret||0);});});
+  const rows=items.map(item=>{
+    const a=alloc[item.id]||{};
+    const done=ppl.reduce((s,p)=>s+(parseFloat(a[p])||0),0);
+    const rem=(item.qty||0)-done,isUn=Math.abs(rem)>0.01;
+    return `<tr class="${isUn?'unalloc-bg':''}">
+      <td class="name-col${isUn?' unalloc-row':''}">${esc(item.produs)}<div style="font-size:10px;color:var(--text-light)">${item.qty} buc</div></td>
+      ${ppl.map(p=>{const v=a[p]||'',filled=v!==''&&parseFloat(v)>0;
+        return `<td style="text-align:center"><input class="atbl-input${filled?' filled':''}" type="number" min="0" step="0.5" value="${v||''}" placeholder="0" data-a="alloc" data-item="${item.id}" data-p="${esc(p)}"></td>`;
+      }).join('')}
+      <td style="text-align:center;font-weight:700;font-size:12px;color:${isUn?'var(--warn)':'var(--green)'}">${isUn?rem.toFixed(rem%1?1:0):'✓'}</td></tr>`;
+  }).join('');
+  return `<div style="padding:10px 14px;background:var(--rose-pale);border-bottom:1px solid var(--border);font-size:12px;color:var(--rose)">
+    💡 Câte bucăți a consumat fiecare? Poți scrie 0.5 pentru jumătate.</div>
+    <div class="page" style="padding-top:10px"><div class="atbl-wrap">
+    <table class="atbl"><thead><tr>
+      <th class="name-col">Produs</th>
+      ${ppl.map(p=>`<th>${esc(p.split(' ')[0])}</th>`).join('')}
+      <th>Rămas</th></tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot><tr><td class="name-col">Total (lei)</td>
+      ${ppl.map(p=>`<td style="text-align:center">${Math.round(persTotal[p]).toLocaleString('ro-RO')}</td>`).join('')}
+      <td></td></tr></tfoot></table></div>
+    ${unallocated(o).length>0?`<button class="btn btn-w btn-full" data-a="split-equal" style="margin-top:4px">➗ Împarte egal produsele nealocate</button>`:''}</div>`;
+}
+
+function vSummary(o) {
+  const ppl=o.persoane||[];
+  if(!ppl.length) return `<div class="page"><div class="empty"><div class="empty-icon">👥</div><div class="empty-ttl">Adaugă participante</div></div></div>`;
+  const ua=unallocated(o).length,sum=calcSummary(o);
+  const cards=ppl.map(p=>{
+    const s=sum[p],isPlatitor=p===o.platitor;
+    let soldTxt,soldClass,badge;
+    if(isPlatitor){
+      if(s.sold<-0.5){soldTxt=`mai primește ${lei(-s.sold)}`;soldClass='recv';badge=`<span class="sbadge sbadge-w">de primit</span>`;}
+      else{soldTxt='achitat ✓';soldClass='ok';badge=`<span class="sbadge sbadge-g">OK ✓</span>`;}
+    } else {
+      if(s.sold>0.5){soldTxt=lei(s.sold);soldClass='owes';badge=`<span class="sbadge sbadge-r">de dat</span>`;}
+      else{soldTxt='achitat ✓';soldClass='ok';badge=`<span class="sbadge sbadge-g">OK ✓</span>`;}
+    }
+    const trInput=(!isPlatitor&&s.sold>0.5)?`<div style="margin-top:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--text-light);margin-bottom:5px">Marchează transfer:</div>
+      <div style="display:flex;gap:8px">
+        <input class="fi fi-sm" type="number" min="0" step="1" placeholder="Sumă (lei)" id="tr-${p.replace(/\s/g,'_')}" value="${s.transferat||''}" style="flex:1">
+        <button class="btn btn-p btn-sm" data-a="save-tr" data-p="${esc(p)}">✓</button></div></div>`:'';
+    return `<div class="pcard"><div class="pcard-hdr">
+      <div><div class="pname">${esc(p)} ${isPlatitor?'💳':''}</div>${badge}</div>
+      <div class="psold ${soldClass}">${soldTxt}</div></div>
+      <div class="srows">
+        <div class="srow"><span>Consumat</span><span>${lei(s.consumat)}</span></div>
+        <div class="srow"><span>Bacșiș</span><span>${lei(s.bacsis)}</span></div>
+        ${isPlatitor?`<div class="srow"><span>A plătit bonul</span><span>−${lei(s.platit)}</span></div>
+          <div class="srow"><span>Primit prin transfer</span><span>+${lei(s.primit)}</span></div>`:
+          `<div class="srow"><span>Transferat deja</span><span>−${lei(s.transferat)}</span></div>`}
+        <div class="srow total"><span>Sold</span><span>${lei(Math.max(0,isPlatitor?-s.sold:s.sold))}</span></div>
+      </div>${trInput}</div>`;
+  }).join('');
+  return `<div class="page">
+    ${ua>0?`<div class="warn-block">⚠️ ${ua} produs${ua===1?'':'e'} nealocate — verifică tab-ul Alocare</div>`:''}
+    ${cards}
+    <div style="text-align:center;padding:16px 0;font-size:12px;color:var(--text-light)">📱 Fă un screenshot și trimite-l în grup</div></div>`;
+}
+
+function vModal(o) {
+  const isEdit=S.editId!=null,item=isEdit?(o.items||[]).find(x=>x.id===S.editId):null;
+  return `<div class="overlay" data-a="close-overlay">
+    <div class="sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-ttl">${isEdit?'Editează produs':'Adaugă produs'}</div>
+      <div class="fg"><label class="fl">Produs</label><input class="fi" id="m-produs" placeholder="ex: Carbonara" value="${esc(item?.produs||'')}"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div class="fg"><label class="fl">Cantitate</label><input class="fi" id="m-qty" type="number" min="0.5" step="0.5" placeholder="1" value="${item?.qty||''}"></div>
+        <div class="fg"><label class="fl">Preț/buc (lei)</label><input class="fi" id="m-pret" type="number" min="0" step="0.5" placeholder="0.00" value="${item?.pret||''}"></div></div>
+      <div style="background:var(--rose-pale);border-radius:var(--r-sm);padding:10px 12px;font-size:13px;color:var(--rose);margin-bottom:16px">
+        Total: <strong id="m-total">—</strong></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-g" style="flex:1" data-a="close-modal">Anulează</button>
+        <button class="btn btn-p" style="flex:2" data-a="${isEdit?'save-edit':'save-add'}">${isEdit?'✓ Salvează':'+ Adaugă'}</button></div>
+    </div></div>`;
+}
+
+document.addEventListener('click', e => {
+  const el=e.target.closest('[data-a]'); if(!el) return;
+  const a=el.dataset.a,o=cur();
+  if(a==='new'){newOuting();return;}
+  if(a==='home'){S.view='home';S.id=null;S.modal=null;render();return;}
+  if(a==='open'){S.id=el.dataset.id;S.view='outing';S.tab='items';render();return;}
+  if(a==='del'){e.stopPropagation();if(!confirm('Ștergi această ieșire?'))return;DB=DB.filter(x=>x.id!==el.dataset.id);save();render();return;}
+  if(a==='tab'){S.tab=el.dataset.tab;render();return;}
+  if(a==='edit-setup'){S.view='setup';render();return;}
+  if(a==='add-person'){
+    if(!o)return; const inp=document.getElementById('new-p'),name=(inp?.value||'').trim();
+    if(!name)return; const ppl=[...(o.persoane||[])];
+    if(!ppl.includes(name)){ppl.push(name);upd(o.id,{persoane:ppl});}
+    if(inp)inp.value=''; render();return;
+  }
+  if(a==='rm-person'){if(!o)return;upd(o.id,{persoane:(o.persoane||[]).filter(p=>p!==el.dataset.name)});render();return;}
+  if(a==='to-items'){
+    if(!o)return;
+    upd(o.id,{name:document.getElementById('f-name')?.value.trim()||'Ieșire',date:document.getElementById('f-date')?.value||o.date,platitor:document.getElementById('f-platitor')?.value.trim()||'',bacsis:parseFloat(document.getElementById('f-bacsis')?.value)||0});
+    S.view='outing';S.tab='items';render();return;
+  }
+  if(a==='del-photo'){if(o){upd(o.id,{poza:null});render();}return;}
+  if(a==='add-item'){S.modal='item';S.editId=null;render();setTimeout(()=>{document.getElementById('m-produs')?.focus();updModalTotal();},50);return;}
+  if(a==='edit-item'){S.modal='item';S.editId=el.dataset.id;render();setTimeout(()=>{document.getElementById('m-produs')?.focus();updModalTotal();},50);return;}
+  if(a==='del-item'){if(!o||!confirm('Ștergi produsul?'))return;delItem(o,el.dataset.id);render();return;}
+  if(a==='close-modal'||a==='close-overlay'){S.modal=null;S.editId=null;render();return;}
+  if(a==='save-add'){
+    if(!o)return; const produs=document.getElementById('m-produs')?.value.trim();
+    if(!produs){document.getElementById('m-produs')?.focus();return;}
+    addItem(o,{produs,qty:parseFloat(document.getElementById('m-qty')?.value)||1,pret:parseFloat(document.getElementById('m-pret')?.value)||0});
+    S.modal=null;render();return;
+  }
+  if(a==='save-edit'){
+    if(!o||!S.editId)return; const produs=document.getElementById('m-produs')?.value.trim();
+    if(!produs){document.getElementById('m-produs')?.focus();return;}
+    updItem(o,S.editId,{produs,qty:parseFloat(document.getElementById('m-qty')?.value)||1,pret:parseFloat(document.getElementById('m-pret')?.value)||0});
+    S.modal=null;S.editId=null;render();return;
+  }
+  if(a==='split-equal'){
+    if(!o)return;
+    unallocated(o).forEach(item=>{
+      const ppl=o.persoane||[];if(!ppl.length)return;
+      const a2=o.alloc?.[item.id]||{},done=ppl.reduce((s,p)=>s+(parseFloat(a2[p])||0),0),rem=(item.qty||0)-done,perPpl=rem/ppl.length;
+      ppl.forEach(p=>{const c=parseFloat(a2[p])||0;setAlloc(o,item.id,p,Math.round((c+perPpl)*100)/100);});
+    });
+    render();toast('✓ Împărțit egal!');return;
+  }
+  if(a==='save-tr'){
+    if(!o)return; const p=el.dataset.p,key=p.replace(/\s/g,'_');
+    const amt=parseFloat(document.getElementById(`tr-${key}`)?.value)||0;
+    if(!o.transfers)o.transfers={};o.transfers[p]=amt;save();
+    toast(`✓ Transfer salvat pentru ${p}`);render();return;
+  }
+});
+
+document.addEventListener('change', e=>{
+  const el=e.target,o=cur();
+  if(el.id==='photo-inp'&&el.files?.[0]&&o){
+    const file=el.files[0],reader=new FileReader();
+    reader.onload=async ev=>{
+      const dataUrl=await shrinkImage(ev.target.result);upd(o.id,{poza:dataUrl});
+      const result=await parseReceipt(dataUrl);
+      const fresh=cur();if(!fresh)return;
+      if(result?.items?.length>0){
+        result.items.forEach(item=>addItem(fresh,{produs:item.produs,qty:item.qty||1,pret:item.pret||0}));
+        if(result.totalBon)upd(fresh.id,{totalBon:result.totalBon});
+        toast(`✓ Am găsit ${result.items.length} produse!`);
+      } else {toast('Nu am putut citi bonul. Adaugă manual.');}
+      S.ai=false;render();
+    };
+    reader.readAsDataURL(file);return;
+  }
+  if(el.dataset.a==='alloc'&&o){
+    const v=parseFloat(el.value)||0;setAlloc(o,el.dataset.item,el.dataset.p,v);
+    el.classList.toggle('filled',v>0);
+    const item=(o.items||[]).find(x=>x.id===el.dataset.item);
+    if(item){const ppl=o.persoane||[],a=o.alloc?.[item.id]||{},done=ppl.reduce((s,p)=>s+(parseFloat(a[p])||0),0),rem=(item.qty||0)-done;
+      const row=el.closest('tr'),last=row?.querySelector('td:last-child');
+      if(last){const isUn=Math.abs(rem)>0.01;last.style.color=isUn?'var(--warn)':'var(--green)';last.textContent=isUn?rem.toFixed(rem%1?1:0):'✓';}}
+  }
+});
+
+document.addEventListener('input',e=>{if(e.target.id==='m-qty'||e.target.id==='m-pret')updModalTotal();});
+document.addEventListener('keydown',e=>{
+  if(e.target.id==='new-p'&&e.key==='Enter'){e.preventDefault();document.querySelector('[data-a="add-person"]')?.click();}
+  if(e.key==='Escape'&&S.modal){S.modal=null;S.editId=null;render();}
+});
+
+load();render();
+</script>
+</body>
+</html>

@@ -52,6 +52,11 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      { source: '/splitbill', destination: '/splitbill/index.html' },
+    ]
+  },
   async headers() {
     return [
       {
