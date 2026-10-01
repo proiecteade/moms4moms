@@ -473,7 +473,7 @@ function vAssign(o) {
     <div class="page" style="padding-top:10px"><div class="atbl-wrap">
     <table class="atbl"><thead><tr>
       <th class="name-col">Produs</th>
-      ${ppl.map(p=>`<th>${esc(p.split(' ')[0])}</th>`).join('')}
+      ${ppl.map(p=>`<th>${esc(p)}</th>`).join('')}
       <th>Rămas</th></tr></thead>
     <tbody>${rows}</tbody>
     <tfoot><tr><td class="name-col">Total (lei)</td>
