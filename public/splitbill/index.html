@@ -259,7 +259,7 @@ async function goHome() {
 function readSetup(o) {
   const v=id=>document.getElementById(id)?.value;
   if(v('f-name')===undefined) return;
-  upd(o.id,{name:v('f-name').trim(),date:v('f-date')||o.date,platitor:(v('f-platitor')||'').trim(),bacsisTotal:parseFloat(v('f-bacsis'))||0});
+  upd(o.id,{name:v('f-name').trim(),date:v('f-date')||o.date,platitor:(v('f-platitor')||'').trim()});
 }
 function upd(id,ch) { const i=DB.findIndex(o=>o.id===id); if(i>=0){Object.assign(DB[i],ch);save();} }
 function addItem(o,item) { (o.items=o.items||[]).push({id:uid(),...item}); save(); }
@@ -325,9 +325,6 @@ function vSetup() {
         <div class="chips">${ppl.map(p=>`<div class="chip">${esc(p)}<span class="chip-x" data-a="rm-person" data-name="${esc(p)}">×</span></div>`).join('')}</div>
         <div style="display:flex;gap:8px"><input class="fi" id="new-p" placeholder="Adaugă un nume…" style="flex:1">
         <button class="btn btn-s" data-a="add-person">+ Adaugă</button></div></div>
-      <div class="card"><div class="card-ttl">Bacșiș total (lei)</div>
-        <input class="fi" id="f-bacsis" type="number" min="0" step="0.5" placeholder="Se completează automat din bon" value="${o.bacsisTotal||''}">
-        <div style="margin-top:6px;font-size:12px;color:var(--text-light)">${ppl.length&&o.bacsisTotal?`Se împarte egal: ${lei(tipPerPerson(o))} / persoană`:'Îl citesc de pe bon și îl împart egal la participante'}</div></div>
       <button class="btn btn-p btn-full" data-a="to-items" style="margin-top:4px">Continuă → Adaugă produse</button>
     </div>`;
 }
