@@ -476,9 +476,21 @@ function vAssign(o) {
       <th>Rămas</th></tr></thead>
     <tbody>${rows}</tbody>
     <tfoot><tr><td class="name-col">Total (lei)</td>
-      ${ppl.map(p=>`<td style="text-align:center">${Math.round(persTotal[p]).toLocaleString('ro-RO')}</td>`).join('')}
+      ${ppl.map(p=>`<td style="text-align:center" data-tot="${esc(p)}">${Math.round(persTotal[p]).toLocaleString('ro-RO')}</td>`).join('')}
       <td></td></tr></tfoot></table></div>
     ${unallocated(o).length>0?`<button class="btn btn-w btn-full" data-a="split-equal" style="margin-top:4px">➗ Împarte egal produsele nealocate</button>`:''}</div>`;
+}
+
+// Actualizează totalurile din Alocare fără re-render (păstrează focusul și scroll-ul)
+function refreshAssignTotals(o) {
+  const ppl=o.persoane||[],tot={};
+  ppl.forEach(p=>{tot[p]=0;});
+  (o.items||[]).forEach(item=>{const a=allocOf(o,item);ppl.forEach(p=>{tot[p]+=(parseFloat(a[p])||0)*(item.pret||0);});});
+  document.querySelectorAll('[data-tot]').forEach(td=>{td.textContent=Math.round(tot[td.dataset.tot]||0).toLocaleString('ro-RO');});
+  const ua=unallocated(o).length,tab=document.querySelector('[data-tab=assign]');
+  if(tab){const b=tab.querySelector('.badge-tab');
+    if(ua>0){ if(b) b.textContent=ua; else tab.insertAdjacentHTML('beforeend',`<span class="badge-tab">${ua}</span>`); }
+    else b?.remove();}
 }
 
 function vSummary(o) {
@@ -636,7 +648,9 @@ document.addEventListener('change', e=>{
     const item=(o.items||[]).find(x=>x.id===el.dataset.item);
     if(item){const ppl=o.persoane||[],a=allocOf(o,item),done=ppl.reduce((s,p)=>s+(parseFloat(a[p])||0),0),rem=(item.qty||0)-done;
       const row=el.closest('tr'),last=row?.querySelector('td:last-child');
-      if(last){const isUn=Math.abs(rem)>0.01;last.style.color=isUn?'var(--warn)':'var(--green)';last.textContent=isUn?rem.toFixed(rem%1?1:0):'✓';}}
+      if(last){const isUn=Math.abs(rem)>0.01;last.style.color=isUn?'var(--warn)':'var(--green)';last.textContent=isUn?rem.toFixed(rem%1?1:0):'✓';
+        row.classList.toggle('unalloc-bg',isUn);row.querySelector('.name-col')?.classList.toggle('unalloc-row',isUn);}}
+    refreshAssignTotals(o);
   }
 });
 
