@@ -175,13 +175,14 @@ function fromRow(row) {
   const o={...(row.data||{}),id:row.id,...(row.poza!==undefined?{poza:row.poza}:{})};
   // ieșiri vechi: bacșișul era separat, îl mutăm în listă
   if(parseFloat(o.bacsisTotal)>0&&!(o.items||[]).some(i=>i.tip)){
-    o.items=[...(o.items||[]),tipItem(parseFloat(o.bacsisTotal))];
+    o.items=[...(o.items||[]),{...tipItem(parseFloat(o.bacsisTotal)),id:'tip'+row.id.slice(0,20)}];
+    o._mig=true;
   }
   delete o.bacsisTotal;
   return o;
 }
 function tipItem(amount) { return {id:uid(),produs:'Bacșiș',qty:1,pret:amount,tip:true,autoSplit:true}; }
-function toData(o) { const {id,poza,...data}=o; return data; }
+function toData(o) { const {id,poza,_mig,...data}=o; return data; }
 async function load() {
   try { DB=(await api('')).map(fromRow); }
   catch(e){ toast('⚠️ Nu am putut încărca ieșirile'); }
@@ -201,18 +202,86 @@ function sortPeople(list,platitor) {
   const first=p=>pay&&p.trim().toLowerCase()===pay?0:1;
   return [...list].sort((a,b)=>first(a)-first(b)||a.localeCompare(b,'ro',{sensitivity:'base'}));
 }
-const saveTimers={};
-function saveErr() { toast('⚠️ Nu s-a salvat. Verifică internetul.'); }
-function save() {
-  const o=cur(); if(!o) return;
-  const id=o.id;
-  clearTimeout(saveTimers[id]);
-  saveTimers[id]=setTimeout(()=>{
-    const x=DB.find(d=>d.id===id); if(!x) return;
-    api('/'+id,{method:'PUT',body:JSON.stringify({data:toData(x)})}).catch(saveErr);
-  },400);
+// Salvare separată: fiecare modificare e trimisă ca operație și aplicată de server
+// peste versiunea curentă, ca să nu se suprascrie ce completează alții în paralel.
+// Aceeași logică e și pe server (src/app/api/splitbill/validate.js → applyOp).
+function applyOp(d,op) {
+  switch(op.t){
+    case 'set': d[op.k]=op.v; break;
+    case 'addPerson': d.persoane=d.persoane||[]; if(!d.persoane.some(p=>p.toLowerCase()===op.v.toLowerCase())) d.persoane.push(op.v); break;
+    case 'rmPerson': d.persoane=(d.persoane||[]).filter(p=>p!==op.v); break;
+    case 'addItem': d.items=d.items||[]; if(!d.items.some(i=>i.id===op.v.id)) d.items.push({...op.v}); break;
+    case 'updItem': { const it=(d.items||[]).find(i=>i.id===op.id); if(it) Object.assign(it,op.v); break; }
+    case 'delItem': d.items=(d.items||[]).filter(i=>i.id!==op.id); if(d.alloc) delete d.alloc[op.id]; break;
+    case 'alloc': { d.alloc=d.alloc||{}; const m=d.alloc[op.item]=d.alloc[op.item]||{}; if(op.v) m[op.p]=op.v; else delete m[op.p]; break; }
+    case 'allocAll': d.alloc=d.alloc||{}; d.alloc[op.item]={...op.v}; break;
+    case 'transfer': d.transfers=d.transfers||{}; d.transfers[op.p]=op.v; break;
+  }
 }
-function savePhoto(o) { api('/'+o.id,{method:'PUT',body:JSON.stringify({poza:o.poza||null})}).catch(saveErr); }
+const QUEUE={},INFLIGHT={},TIMERS={};
+function saveErr(msg) { toast(msg||'⚠️ Nu s-a salvat. Verifică internetul.'); }
+function send(o,...ops) {
+  ops.forEach(op=>applyOp(o,op));
+  (QUEUE[o.id]=QUEUE[o.id]||[]).push(...ops);
+  clearTimeout(TIMERS[o.id]);
+  TIMERS[o.id]=setTimeout(()=>flush(o.id),300);
+}
+async function flush(id) {
+  if(INFLIGHT[id]||!QUEUE[id]?.length) return;
+  const ops=QUEUE[id]; QUEUE[id]=[]; INFLIGHT[id]=true;
+  let ok=false;
+  try {
+    const r=await fetch('/api/splitbill/'+id,{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({ops})});
+    if(!r.ok) throw new Error('API '+r.status);
+    const {data}=await r.json();
+    ok=true; INFLIGHT[id]=false;
+    mergeServer(id,data);
+  } catch(e) {
+    QUEUE[id]=[...ops,...(QUEUE[id]||[])];
+    saveErr('⚠️ Nu s-a salvat încă. Reîncerc…');
+    setTimeout(()=>flush(id),4000);
+  } finally {
+    INFLIGHT[id]=false;
+    if(ok&&QUEUE[id]?.length) flush(id);
+  }
+}
+// Versiunea de pe server + modificările mele încă netrimise
+function mergeServer(id,data) {
+  const i=DB.findIndex(o=>o.id===id); if(i<0) return;
+  const fresh=fromRow({id,data,poza:DB[i].poza});
+  delete fresh._mig;
+  (QUEUE[id]||[]).forEach(op=>applyOp(fresh,op));
+  DB[i]=fresh;
+  if(S.id===id) softRender();
+}
+// Re-render fără să strice ce scrie utilizatorul acum
+function softRender() {
+  const ae=document.activeElement;
+  if(S.modal||S.ai||(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'))) return;
+  const w=document.querySelector('.atbl-wrap'),sl=w?.scrollLeft,st=w?.scrollTop;
+  render();
+  const w2=document.querySelector('.atbl-wrap'); if(w&&w2){w2.scrollLeft=sl;w2.scrollTop=st;}
+}
+function stable(v) {
+  if(Array.isArray(v)) return '['+v.map(stable).join(',')+']';
+  if(v&&typeof v==='object') return '{'+Object.keys(v).sort().map(k=>JSON.stringify(k)+':'+stable(v[k])).join(',')+'}';
+  return JSON.stringify(v);
+}
+// Vezi ce completează celelalte, fără refresh
+async function poll(force) {
+  const id=S.id;
+  if(!id||S.view==='home'||(document.hidden&&!force)||INFLIGHT[id]||QUEUE[id]?.length) return;
+  try {
+    const row=await api('/'+id+'?nopoza=1');
+    if(S.id!==id||INFLIGHT[id]||QUEUE[id]?.length) return;
+    const local=DB.find(o=>o.id===id); if(!local) return;
+    const remote=fromRow({id,data:row.data}); delete remote._mig;
+    if(stable(toData(remote))!==stable(toData(local))) mergeServer(id,row.data);
+  } catch(e){}
+}
+setInterval(poll,8000);
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) poll(); });
+function savePhoto(o) { api('/'+o.id,{method:'PUT',body:JSON.stringify({poza:o.poza||null})}).catch(()=>saveErr()); }
 function cur() { return DB.find(o=>o.id===S.id)||null; }
 function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
@@ -311,7 +380,9 @@ async function openOuting(id) {
   S.id=id; S.view='outing'; S.tab='items'; render();
   try {
     const fresh=fromRow(await api('/'+id));
+    (QUEUE[id]||[]).forEach(op=>applyOp(fresh,op));
     const i=DB.findIndex(o=>o.id===id); if(i>=0) DB[i]=fresh; else DB.unshift(fresh);
+    if(fresh._mig){ delete fresh._mig; send(fresh,{t:'addItem',v:fresh.items.find(x=>x.tip)}); }
     if(S.id===id&&!S.modal) render();
   } catch(e){ toast('⚠️ Nu am putut încărca ieșirea'); }
 }
@@ -322,17 +393,18 @@ async function goHome() {
 function readSetup(o) {
   const v=id=>document.getElementById(id)?.value;
   if(v('f-name')===undefined) return;
-  upd(o.id,{name:v('f-name').trim(),date:v('f-date')||o.date,platitor:(v('f-platitor')||'').trim()});
+  setFields(o,{name:v('f-name').trim(),date:v('f-date')||o.date,platitor:(v('f-platitor')||'').trim()});
 }
-function upd(id,ch) { const i=DB.findIndex(o=>o.id===id); if(i>=0){Object.assign(DB[i],ch);save();} }
-function addItem(o,item) { (o.items=o.items||[]).push({id:uid(),...item}); save(); }
-function updItem(o,id,ch) { const i=(o.items||[]).findIndex(x=>x.id===id); if(i>=0){Object.assign(o.items[i],ch);save();} }
-function delItem(o,id) { o.items=(o.items||[]).filter(x=>x.id!==id); delete (o.alloc||{})[id]; save(); }
+function setFields(o,ch) {
+  const ops=Object.entries(ch).filter(([k,v])=>o[k]!==v).map(([k,v])=>({t:'set',k,v}));
+  if(ops.length) send(o,...ops);
+}
+function addItem(o,item) { send(o,{t:'addItem',v:{id:uid(),...item}}); }
+function updItem(o,id,ch) { send(o,{t:'updItem',id,v:ch}); }
+function delItem(o,id) { send(o,{t:'delItem',id}); }
 function setAlloc(o,itemId,person,qty) {
-  if(!o.alloc)o.alloc={}; if(!o.alloc[itemId])o.alloc[itemId]={};
   const v=parseFloat(qty);
-  if(!v||isNaN(v)) delete o.alloc[itemId][person]; else o.alloc[itemId][person]=v;
-  save();
+  send(o,{t:'alloc',item:itemId,p:person,v:(!v||isNaN(v))?null:v});
 }
 
 function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -579,17 +651,16 @@ document.addEventListener('click', e => {
     let name=(a==='pick-person'?el.dataset.name:(inp?.value||'')).trim().replace(/\s+/g,' ');
     if(!name)return; readSetup(o);
     name=PEOPLE.find(p=>p.toLowerCase()===name.toLowerCase())||name;
-    const ppl=[...(o.persoane||[])];
-    if(!ppl.some(p=>p.toLowerCase()===name.toLowerCase())){ppl.push(name);upd(o.id,{persoane:ppl});}
+    if(!(o.persoane||[]).some(p=>p.toLowerCase()===name.toLowerCase())) send(o,{t:'addPerson',v:name});
     rememberPerson(name);
     if(inp&&a==='add-person')inp.value=''; render();
     if(a==='add-person')document.getElementById('new-p')?.focus();
     return;
   }
-  if(a==='rm-person'){if(!o)return;readSetup(o);upd(o.id,{persoane:(o.persoane||[]).filter(p=>p!==el.dataset.name)});render();return;}
+  if(a==='rm-person'){if(!o)return;readSetup(o);send(o,{t:'rmPerson',v:el.dataset.name});render();return;}
   if(a==='to-items'){
     if(!o)return;
-    readSetup(o); if(!o.name) upd(o.id,{name:'Ieșire'});
+    readSetup(o); if(!o.name) setFields(o,{name:'Ieșire'});
     S.view='outing';S.tab='items';render();return;
   }
   if(a==='del-photo'){if(o){o.poza=null;savePhoto(o);render();}return;}
@@ -615,7 +686,7 @@ document.addEventListener('click', e => {
   if(a==='save-tr'){
     if(!o)return; const p=el.dataset.p,key=p.replace(/\s/g,'_');
     const amt=parseFloat(document.getElementById(`tr-${key}`)?.value)||0;
-    if(!o.transfers)o.transfers={};o.transfers[p]=amt;save();
+    send(o,{t:'transfer',p,v:amt});
     toast(`✓ Transfer salvat pentru ${p}`);render();return;
   }
 });
@@ -634,18 +705,19 @@ document.addEventListener('change', e=>{
         if(result.totalBon)ch.totalBon=result.totalBon;
         if(result.bacsis&&!(fresh.items||[]).some(i=>i.tip))addItem(fresh,tipItem(result.bacsis));
         if(result.restaurant&&(!fresh.name||fresh.name==='Ieșire'))ch.name=result.restaurant;
-        upd(fresh.id,ch);
+        setFields(fresh,ch);
         toast(`✓ Am găsit ${result.items.length} produse${result.bacsis?' + bacșiș':''}!`);
       } else {toast(`Nu am putut citi bonul${result?.error?` (${result.error})`:''}. Adaugă manual.`);}
       S.ai=false;render();
     };
     reader.readAsDataURL(file);return;
   }
+  if(['f-name','f-date','f-platitor'].includes(el.id)&&o){ readSetup(o); return; }
   if(el.dataset.a==='alloc'&&o){
     const it=(o.items||[]).find(x=>x.id===el.dataset.item);
     if(it?.autoSplit){
-      const eq=allocOf(o,it);it.autoSplit=false;
-      if(!o.alloc)o.alloc={};o.alloc[it.id]={...eq};
+      const eq=allocOf(o,it);
+      send(o,{t:'updItem',id:it.id,v:{autoSplit:false}},{t:'allocAll',item:it.id,v:eq});
     }
     const v=parseFloat(el.value)||0;setAlloc(o,el.dataset.item,el.dataset.p,v);
     el.classList.toggle('filled',v>0);
