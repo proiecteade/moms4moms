@@ -353,8 +353,7 @@ function render() {
 function fitTable() {
   const wrap=document.querySelector('.atbl-wrap'),bar=document.querySelector('.topbar');
   if(!wrap||!bar) return;
-  const btn=document.querySelector('[data-a=split-equal]');
-  wrap.style.maxHeight=Math.max(240,window.innerHeight-bar.offsetHeight-(btn?70:24))+'px';
+  wrap.style.maxHeight=Math.max(240,window.innerHeight-bar.offsetHeight-24)+'px';
 }
 window.addEventListener('resize',fitTable);
 
@@ -491,8 +490,7 @@ function vAssign(o) {
     <tbody>${rows}</tbody>
     <tfoot><tr><td class="name-col">Total (lei)</td>
       ${ppl.map(p=>`<td style="text-align:center" data-tot="${esc(p)}">${Math.round(persTotal[p]).toLocaleString('ro-RO')}</td>`).join('')}
-      <td></td></tr></tfoot></table></div>
-    ${unallocated(o).length>0?`<button class="btn btn-w btn-full" data-a="split-equal" style="margin-top:4px">➗ Împarte egal produsele nealocate</button>`:''}</div>`;
+      <td></td></tr></tfoot></table></div></div>`;
 }
 
 // Actualizează totalurile din Alocare fără re-render (păstrează focusul și scroll-ul)
@@ -613,15 +611,6 @@ document.addEventListener('click', e => {
     if(!produs){document.getElementById('m-produs')?.focus();return;}
     updItem(o,S.editId,{produs,qty:parseFloat(document.getElementById('m-qty')?.value)||1,pret:parseFloat(document.getElementById('m-pret')?.value)||0});
     S.modal=null;S.editId=null;render();return;
-  }
-  if(a==='split-equal'){
-    if(!o)return;
-    unallocated(o).forEach(item=>{
-      const ppl=o.persoane||[];if(!ppl.length)return;
-      const a2=o.alloc?.[item.id]||{},done=ppl.reduce((s,p)=>s+(parseFloat(a2[p])||0),0),rem=(item.qty||0)-done,perPpl=rem/ppl.length;
-      ppl.forEach(p=>{const c=parseFloat(a2[p])||0;setAlloc(o,item.id,p,Math.round((c+perPpl)*100)/100);});
-    });
-    render();toast('✓ Împărțit egal!');return;
   }
   if(a==='save-tr'){
     if(!o)return; const p=el.dataset.p,key=p.replace(/\s/g,'_');
