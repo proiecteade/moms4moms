@@ -131,12 +131,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <body>
 <div id="app"></div>
 <script>
-const KEY = 'bon-v2';
-let S = { view:'home', tab:'items', id:null, modal:null, editId:null, ai:false };
+let S = { view:'home', tab:'items', id:null, modal:null, editId:null, ai:false, loading:true };
 let DB = [];
 
-function load() { try { DB=JSON.parse(localStorage.getItem(KEY)||'[]'); } catch(e){} }
-function save() { try { localStorage.setItem(KEY,JSON.stringify(DB)); } catch(e){} }
+// Ieșirile sunt salvate pe server (comune pentru toată lumea)
+async function api(path, opts={}) {
+  const r=await fetch('/api/splitbill'+path,{headers:{'Content-Type':'application/json'},cache:'no-store',...opts});
+  if(!r.ok) throw new Error('API '+r.status);
+  return r.json();
+}
+function fromRow(row) { return {...(row.data||{}),id:row.id,...(row.poza!==undefined?{poza:row.poza}:{})}; }
+function toData(o) { const {id,poza,...data}=o; return data; }
+async function load() {
+  try { DB=(await api('')).map(fromRow); }
+  catch(e){ toast('⚠️ Nu am putut încărca ieșirile'); }
+  S.loading=false;
+}
+const saveTimers={};
+function saveErr() { toast('⚠️ Nu s-a salvat. Verifică internetul.'); }
+function save() {
+  const o=cur(); if(!o) return;
+  const id=o.id;
+  clearTimeout(saveTimers[id]);
+  saveTimers[id]=setTimeout(()=>{
+    const x=DB.find(d=>d.id===id); if(!x) return;
+    api('/'+id,{method:'PUT',body:JSON.stringify({data:toData(x)})}).catch(saveErr);
+  },400);
+}
+function savePhoto(o) { api('/'+o.id,{method:'PUT',body:JSON.stringify({poza:o.poza||null})}).catch(saveErr); }
 function cur() { return DB.find(o=>o.id===S.id)||null; }
 function uid() { return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
 
@@ -150,16 +172,17 @@ function fmtDate(d) {
   catch(e){ return d; }
 }
 function itemsTotal(o) { return (o.items||[]).reduce((s,i)=>s+(i.qty||0)*(i.pret||0),0); }
-function tipTotal(o) { return (parseFloat(o.bacsis)||0)*(o.persoane||[]).length; }
+function tipTotal(o) { return parseFloat(o.bacsisTotal)||0; }
+function tipPerPerson(o) { const n=(o.persoane||[]).length; return n?tipTotal(o)/n:0; }
 
 function calcSummary(o) {
   const persoane=o.persoane||[],items=o.items||[],alloc=o.alloc||{};
-  const bacsis=parseFloat(o.bacsis)||0,transfers=o.transfers||{};
+  const bacsis=tipPerPerson(o),transfers=o.transfers||{};
   const r={};
   persoane.forEach(p=>{ r[p]={consumat:0,bacsis,total:0,platit:0,primit:0,transferat:parseFloat(transfers[p])||0,sold:0}; });
   items.forEach(item=>{ const a=alloc[item.id]||{}; persoane.forEach(p=>{ r[p].consumat+=(parseFloat(a[p])||0)*(item.pret||0); }); });
   persoane.forEach(p=>{ r[p].total=r[p].consumat+r[p].bacsis; });
-  const fullBon=o.totalBon||(itemsTotal(o)+bacsis*(persoane.length));
+  const fullBon=o.totalBon||(itemsTotal(o)+tipTotal(o));
   if(o.platitor&&r[o.platitor]){
     r[o.platitor].platit=fullBon;
     r[o.platitor].primit=persoane.filter(p=>p!==o.platitor).reduce((s,p)=>s+(parseFloat(transfers[p])||0),0);
@@ -181,7 +204,7 @@ function toast(msg) {
   document.body.appendChild(t); setTimeout(()=>t.remove(),2600);
 }
 
-// Downscale photos so they fit the API body limit and localStorage
+// Downscale photos so they fit the API body limit
 function shrinkImage(dataUrl, maxSide=1600) {
   return new Promise(resolve=>{
     const img=new Image();
@@ -208,15 +231,35 @@ async function parseReceipt(dataUrl) {
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({imageBase64:base64,mimeType})
     });
-    if(!resp.ok) throw new Error('API error');
-    return await resp.json();
-  } catch(e) { console.error(e); return null; }
+    const data=await resp.json().catch(()=>({}));
+    if(!resp.ok) { console.error('parse-receipt',resp.status,data); return {error:data.detail||String(resp.status)}; }
+    return data;
+  } catch(e) { console.error(e); return {error:'network'}; }
   finally { S.ai=false; }
 }
 
-function newOuting() {
-  const o={id:uid(),name:'',date:new Date().toISOString().slice(0,10),platitor:'',persoane:[],items:[],alloc:{},bacsis:0,totalBon:null,poza:null,transfers:{}};
-  DB.unshift(o); save(); S.id=o.id; S.view='setup'; S.tab='items'; render();
+async function newOuting() {
+  const o={id:uid(),name:'',date:new Date().toISOString().slice(0,10),platitor:'',persoane:[],items:[],alloc:{},bacsisTotal:0,totalBon:null,poza:null,transfers:{}};
+  try { await api('',{method:'POST',body:JSON.stringify({id:o.id,data:toData(o)})}); }
+  catch(e){ toast('⚠️ Nu am putut crea ieșirea'); return; }
+  DB.unshift(o); S.id=o.id; S.view='setup'; S.tab='items'; render();
+}
+async function openOuting(id) {
+  S.id=id; S.view='outing'; S.tab='items'; render();
+  try {
+    const fresh=fromRow(await api('/'+id));
+    const i=DB.findIndex(o=>o.id===id); if(i>=0) DB[i]=fresh; else DB.unshift(fresh);
+    if(S.id===id&&!S.modal) render();
+  } catch(e){ toast('⚠️ Nu am putut încărca ieșirea'); }
+}
+async function goHome() {
+  S.view='home'; S.id=null; S.modal=null; render();
+  await load(); if(S.view==='home') render();
+}
+function readSetup(o) {
+  const v=id=>document.getElementById(id)?.value;
+  if(v('f-name')===undefined) return;
+  upd(o.id,{name:v('f-name').trim(),date:v('f-date')||o.date,platitor:(v('f-platitor')||'').trim(),bacsisTotal:parseFloat(v('f-bacsis'))||0});
 }
 function upd(id,ch) { const i=DB.findIndex(o=>o.id===id); if(i>=0){Object.assign(DB[i],ch);save();} }
 function addItem(o,item) { (o.items=o.items||[]).push({id:uid(),...item}); save(); }
@@ -244,7 +287,7 @@ function render() {
 }
 
 function vHome() {
-  const items=DB.length===0?`
+  const items=S.loading?`<div class="empty"><div class="spinner"></div></div>`:DB.length===0?`
     <div class="empty"><div class="empty-icon">🧾</div>
     <div class="empty-ttl">Prima ieșire!</div>
     <div class="empty-sub">Apasă + pentru a adăuga o ieșire și a împărți bonul cu prietenele</div></div>`:
@@ -273,7 +316,7 @@ function vSetup() {
     <div><div class="hdr-title">${esc(o.name||'Ieșire nouă')}</div><div class="hdr-sub">Setează detaliile</div></div></div></div>
     <div class="page">
       <div class="card"><div class="card-ttl">Detalii</div>
-        <div class="fg"><label class="fl">Restaurantul</label><input class="fi" id="f-name" placeholder="ex: Freen Restaurant" value="${esc(o.name||'')}"></div>
+        <div class="fg"><label class="fl">Restaurantul</label><input class="fi" id="f-name" placeholder="Nume restaurant" value="${esc(o.name||'')}"></div>
         <div class="fg"><label class="fl">Data</label><input class="fi" id="f-date" type="date" value="${o.date||''}"></div></div>
       <div class="card"><div class="card-ttl">Cine a plătit bonul?</div>
         <input class="fi" id="f-platitor" placeholder="Numele celei care a plătit" value="${esc(o.platitor||'')}">
@@ -282,9 +325,9 @@ function vSetup() {
         <div class="chips">${ppl.map(p=>`<div class="chip">${esc(p)}<span class="chip-x" data-a="rm-person" data-name="${esc(p)}">×</span></div>`).join('')}</div>
         <div style="display:flex;gap:8px"><input class="fi" id="new-p" placeholder="Adaugă un nume…" style="flex:1">
         <button class="btn btn-s" data-a="add-person">+ Adaugă</button></div></div>
-      <div class="card"><div class="card-ttl">Bacșiș per persoană (lei)</div>
-        <input class="fi" id="f-bacsis" type="number" min="0" step="0.5" placeholder="ex: 12" value="${o.bacsis||''}">
-        ${ppl.length&&o.bacsis?`<div style="margin-top:6px;font-size:12px;color:var(--text-light)">Total bacșiș: ${lei((parseFloat(o.bacsis)||0)*ppl.length)}</div>`:''}</div>
+      <div class="card"><div class="card-ttl">Bacșiș total (lei)</div>
+        <input class="fi" id="f-bacsis" type="number" min="0" step="0.5" placeholder="Se completează automat din bon" value="${o.bacsisTotal||''}">
+        <div style="margin-top:6px;font-size:12px;color:var(--text-light)">${ppl.length&&o.bacsisTotal?`Se împarte egal: ${lei(tipPerPerson(o))} / persoană`:'Îl citesc de pe bon și îl împart egal la participante'}</div></div>
       <button class="btn btn-p btn-full" data-a="to-items" style="margin-top:4px">Continuă → Adaugă produse</button>
     </div>`;
 }
@@ -337,11 +380,11 @@ function vItems(o) {
       <button class="btn btn-s btn-full" data-a="add-item">+ Adaugă produs manual</button></div>
     <div class="card">
       <div class="sum-row"><span>Total produse</span><span>${lei(totP)}</span></div>
-      <div class="sum-row"><span>Bacșiș total (${(o.persoane||[]).length} × ${lei(parseFloat(o.bacsis)||0)})</span><span>${lei(totB)}</span></div>
+      <div class="sum-row"><span>Bacșiș${(o.persoane||[]).length?` (${lei(tipPerPerson(o))} / persoană)`:''}</span><span>${lei(totB)}</span></div>
       <div class="sum-row total"><span>TOTAL</span><span>${lei(totP+totB)}</span></div>
       ${o.totalBon?`<div class="div"></div>
         <div class="sum-row"><span>Total pe bon</span><span>${lei(o.totalBon)}</span></div>
-        <div class="sum-row"><span>Diferență</span><span style="color:${Math.abs(totP-o.totalBon)<2?'var(--green)':'var(--warn)'}">${lei(totP-o.totalBon)}</span></div>`:''}
+        <div class="sum-row"><span>Diferență</span><span style="color:${Math.abs(totP+totB-o.totalBon)<2?'var(--green)':'var(--warn)'}">${lei(totP+totB-o.totalBon)}</span></div>`:''}
     </div></div>`;
 }
 
@@ -436,24 +479,28 @@ document.addEventListener('click', e => {
   const el=e.target.closest('[data-a]'); if(!el) return;
   const a=el.dataset.a,o=cur();
   if(a==='new'){newOuting();return;}
-  if(a==='home'){S.view='home';S.id=null;S.modal=null;render();return;}
-  if(a==='open'){S.id=el.dataset.id;S.view='outing';S.tab='items';render();return;}
-  if(a==='del'){e.stopPropagation();if(!confirm('Ștergi această ieșire?'))return;DB=DB.filter(x=>x.id!==el.dataset.id);save();render();return;}
+  if(a==='home'){goHome();return;}
+  if(a==='del'){
+    e.stopPropagation();if(!confirm('Ștergi această ieșire pentru toată lumea?'))return;
+    const id=el.dataset.id;DB=DB.filter(x=>x.id!==id);render();
+    api('/'+id,{method:'DELETE'}).catch(()=>toast('⚠️ Nu am putut șterge'));return;
+  }
+  if(a==='open'){openOuting(el.dataset.id);return;}
   if(a==='tab'){S.tab=el.dataset.tab;render();return;}
   if(a==='edit-setup'){S.view='setup';render();return;}
   if(a==='add-person'){
     if(!o)return; const inp=document.getElementById('new-p'),name=(inp?.value||'').trim();
-    if(!name)return; const ppl=[...(o.persoane||[])];
+    if(!name)return; readSetup(o); const ppl=[...(o.persoane||[])];
     if(!ppl.includes(name)){ppl.push(name);upd(o.id,{persoane:ppl});}
     if(inp)inp.value=''; render();return;
   }
-  if(a==='rm-person'){if(!o)return;upd(o.id,{persoane:(o.persoane||[]).filter(p=>p!==el.dataset.name)});render();return;}
+  if(a==='rm-person'){if(!o)return;readSetup(o);upd(o.id,{persoane:(o.persoane||[]).filter(p=>p!==el.dataset.name)});render();return;}
   if(a==='to-items'){
     if(!o)return;
-    upd(o.id,{name:document.getElementById('f-name')?.value.trim()||'Ieșire',date:document.getElementById('f-date')?.value||o.date,platitor:document.getElementById('f-platitor')?.value.trim()||'',bacsis:parseFloat(document.getElementById('f-bacsis')?.value)||0});
+    readSetup(o); if(!o.name) upd(o.id,{name:'Ieșire'});
     S.view='outing';S.tab='items';render();return;
   }
-  if(a==='del-photo'){if(o){upd(o.id,{poza:null});render();}return;}
+  if(a==='del-photo'){if(o){o.poza=null;savePhoto(o);render();}return;}
   if(a==='add-item'){S.modal='item';S.editId=null;render();setTimeout(()=>{document.getElementById('m-produs')?.focus();updModalTotal();},50);return;}
   if(a==='edit-item'){S.modal='item';S.editId=el.dataset.id;render();setTimeout(()=>{document.getElementById('m-produs')?.focus();updModalTotal();},50);return;}
   if(a==='del-item'){if(!o||!confirm('Ștergi produsul?'))return;delItem(o,el.dataset.id);render();return;}
@@ -492,14 +539,17 @@ document.addEventListener('change', e=>{
   if(el.id==='photo-inp'&&el.files?.[0]&&o){
     const file=el.files[0],reader=new FileReader();
     reader.onload=async ev=>{
-      const dataUrl=await shrinkImage(ev.target.result);upd(o.id,{poza:dataUrl});
+      const dataUrl=await shrinkImage(ev.target.result);o.poza=dataUrl;savePhoto(o);
       const result=await parseReceipt(dataUrl);
       const fresh=cur();if(!fresh)return;
       if(result?.items?.length>0){
         result.items.forEach(item=>addItem(fresh,{produs:item.produs,qty:item.qty||1,pret:item.pret||0}));
-        if(result.totalBon)upd(fresh.id,{totalBon:result.totalBon});
-        toast(`✓ Am găsit ${result.items.length} produse!`);
-      } else {toast('Nu am putut citi bonul. Adaugă manual.');}
+        const ch={};
+        if(result.totalBon)ch.totalBon=result.totalBon;
+        if(result.bacsis)ch.bacsisTotal=result.bacsis;
+        upd(fresh.id,ch);
+        toast(`✓ Am găsit ${result.items.length} produse${result.bacsis?' + bacșiș':''}!`);
+      } else {toast(`Nu am putut citi bonul${result?.error?` (${result.error})`:''}. Adaugă manual.`);}
       S.ai=false;render();
     };
     reader.readAsDataURL(file);return;
@@ -520,7 +570,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&S.modal){S.modal=null;S.editId=null;render();}
 });
 
-load();render();
+render();load().then(()=>{ if(S.view==='home') render(); });
 </script>
 </body>
 </html>

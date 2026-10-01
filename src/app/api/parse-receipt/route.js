@@ -1,15 +1,19 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { NextResponse } from 'next/server'
 
+export const maxDuration = 60
+
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 const MAX_BASE64_LENGTH = 7_000_000 // ~5MB image
 
 const PROMPT = `Aceasta este poza unui bon de restaurant din România.
 Extrage toate produsele cu cantitatea și prețul pe bucată (în lei).
-Ignoră liniile de TVA, subtotal, bacșiș și metodele de plată.
+Ignoră liniile de TVA, subtotal și metodele de plată.
+Bacșișul (ex: linia "BACSIS") NU este produs: pune suma lui în câmpul "bacsis".
 Răspunde DOAR cu JSON valid, fără alt text, în formatul:
-{"items":[{"produs":"Carbonara","qty":1,"pret":45.5}],"totalBon":123.5}
-Dacă nu găsești totalul, pune "totalBon": null.`
+{"items":[{"produs":"Carbonara","qty":1,"pret":45.5}],"bacsis":30,"totalBon":123.5}
+"totalBon" este totalul final de plată de pe bon (inclusiv bacșișul).
+Dacă nu găsești bacșișul sau totalul, pune null.`
 
 export async function POST(request) {
   if (!process.env.ANTHROPIC_API_KEY) {
@@ -48,7 +52,7 @@ export async function POST(request) {
     })
 
     if (response.stop_reason === 'refusal') {
-      return NextResponse.json({ items: [], totalBon: null })
+      return NextResponse.json({ items: [], bacsis: null, totalBon: null })
     }
 
     const text = response.content
@@ -68,6 +72,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       items,
+      bacsis: Number(parsed.bacsis) || null,
       totalBon: Number(parsed.totalBon) || null,
     })
   } catch (error) {
@@ -75,6 +80,9 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Prea multe cereri' }, { status: 429 })
     }
     console.error('parse-receipt error:', error)
-    return NextResponse.json({ error: 'Nu am putut citi bonul' }, { status: 500 })
+    const detail = error instanceof Anthropic.APIError
+      ? `${error.status} ${error.error?.error?.type || ''}`.trim()
+      : 'parse_error'
+    return NextResponse.json({ error: 'Nu am putut citi bonul', detail }, { status: 500 })
   }
 }
