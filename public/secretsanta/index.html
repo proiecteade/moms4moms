@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Secret Santa · Moms4Moms</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1f3b2d">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pine:#1f3b2d; --pine2:#2c5240; --berry:#b8323f; --berry2:#962633;
+  --cream:#fbf6ec; --paper:#fffdf8; --ink:#23201c; --mute:#6f675c; --line:#e7dccb;
+  --gold:#c99a3b; --ok:#2f7a4f; --r:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.5;
+  background-image:radial-gradient(circle at 10% 0%,#f3e7d2 0,transparent 40%),radial-gradient(circle at 90% 10%,#f6e2e0 0,transparent 35%);min-height:100vh}
+a{color:var(--berry)}
+header.top{background:var(--pine);color:#fff;padding:28px 18px 54px;text-align:center;position:relative;overflow:hidden}
+header.top h1{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,6vw,44px);margin:0;letter-spacing:-.5px}
+header.top p{margin:6px 0 0;opacity:.85}
+header.top .snow{position:absolute;inset:0;pointer-events:none}
+header.top .snow i{position:absolute;top:-10px;width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7;animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(220px)}}
+@media (prefers-reduced-motion:reduce){header.top .snow{display:none}}
+main{max-width:760px;margin:-34px auto 40px;padding:0 14px;position:relative}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px;margin-bottom:16px;box-shadow:0 6px 24px -14px rgba(60,40,20,.25)}
+.card h2{font-family:Fraunces,Georgia,serif;font-size:22px;margin:0 0 10px;color:var(--pine)}
+.card h3{margin:16px 0 8px;font-size:16px}
+.muted{color:var(--mute);font-size:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grow{flex:1 1 200px}
+label{display:block;font-weight:700;font-size:14px;margin:12px 0 4px}
+input,textarea,select{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink)}
+input:focus,textarea:focus,select:focus{outline:2px solid var(--gold);outline-offset:0;border-color:var(--gold)}
+textarea{min-height:80px;resize:vertical}
+button,.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:11px 16px;cursor:pointer;background:var(--berry);color:#fff;display:inline-flex;align-items:center;gap:6px;text-decoration:none;min-height:44px}
+button:hover,.btn:hover{background:var(--berry2)}
+button.sec{background:#efe6d6;color:var(--ink)} button.sec:hover{background:#e5d8c2}
+button.green{background:var(--pine)} button.green:hover{background:var(--pine2)}
+button.ghost{background:transparent;color:var(--berry);padding:6px 8px;min-height:auto}
+button:disabled{opacity:.5;cursor:not-allowed}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:700;background:#efe6d6}
+.pill.ok{background:#dcefe2;color:var(--ok)} .pill.warn{background:#f8e3c8;color:#8a5a12} .pill.red{background:#f6dcdc;color:var(--berry2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:4px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.stat b{display:block;font-family:Fraunces,Georgia,serif;font-size:22px;color:var(--pine)}
+.stat span{font-size:12px;color:var(--mute)}
+.target{background:linear-gradient(135deg,var(--pine),var(--pine2));color:#fff;border:0;text-align:center}
+.target h2{color:#fff}
+.target .name{font-family:Fraunces,Georgia,serif;font-size:clamp(30px,8vw,46px);margin:6px 0}
+.envelope{cursor:pointer;background:var(--berry);color:#fff;border-radius:14px;padding:28px 16px;font-family:Fraunces,Georgia,serif;font-size:22px;user-select:none}
+.wish{display:flex;gap:8px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+.wish:last-child{border-bottom:0}
+.wish .t{flex:1;word-break:break-word}
+.wishedit{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;margin-bottom:8px}
+@media (max-width:560px){.wishedit{grid-template-columns:1fr auto}.wishedit input.l{grid-column:1/2}.stats{grid-template-columns:repeat(3,1fr)}}
+.steps{display:flex;gap:6px;flex-wrap:wrap}
+.steps button{background:#efe6d6;color:var(--ink);font-size:14px;padding:8px 12px;min-height:40px}
+.steps button.on{background:var(--pine);color:#fff}
+.q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+.q .a{margin-top:6px;padding-left:10px;border-left:3px solid var(--gold)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute)}
+.tablewrap{overflow-x:auto}
+.linkbox{display:flex;gap:8px;align-items:center;background:#fff;border:2px dashed var(--gold);border-radius:12px;padding:10px;word-break:break-all;font-size:14px}
+.linkbox code{flex:1}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;z-index:9;opacity:0;transition:.25s;pointer-events:none;max-width:90vw}
+.toast.on{opacity:1}
+.err{color:var(--berry2);font-weight:600;margin-top:8px}
+.center{text-align:center}
+.hidden{display:none!important}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:0 0 30px}
+.names{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.names span{background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:14px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="snow" id="snow"></div>
+  <h1>🎁 Secret Santa</h1>
+  <p id="subtitle">Moms4Moms</p>
+</header>
+<main id="app"><div class="card center muted">Se încarcă…</div></main>
+<footer>Secret Santa · <a href="https://moms4moms.ro">moms4moms.ro</a></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '/api/secretsanta';
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const qs = new URLSearchParams(location.search);
+const LS_KEY = 'ss_token', LS_ADMIN = 'ss_admin';
+const ls = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}, del(k){try{localStorage.removeItem(k)}catch(e){}} };
+
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const linkify = s => esc(s).replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+const fmtDate = d => { if(!d) return ''; const x = new Date(d+'T12:00:00'); return x.toLocaleDateString('ro-RO',{day:'numeric',month:'long',year:'numeric'}); };
+const daysTo = d => { if(!d) return null; const t = new Date(d+'T00:00:00') - new Date(new Date().toDateString()); return Math.round(t/86400000); };
+const ago = iso => { if(!iso) return '—'; const m = Math.round((Date.now()-new Date(iso))/60000); if(m<2) return 'acum'; if(m<60) return `acum ${m} min`; const h=Math.round(m/60); if(h<24) return `acum ${h} h`; return `acum ${Math.round(h/24)} zile`; };
+const baseUrl = () => location.origin + location.pathname;
+const meLink = t => `${baseUrl()}?t=${t}`;
+const waShare = (text) => `https://wa.me/?text=${encodeURIComponent(text)}`;
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2400); }
+async function copy(text){ try{ await navigator.clipboard.writeText(text); toast('Copiat ✓'); }catch(e){ prompt('Copiază linkul:', text); } }
+
+async function api(action, body, token){
+  const opt = body ? {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...body, t:token})} : {};
+  const url = `${API}?a=${action}` + (!body && token ? `&t=${encodeURIComponent(token)}` : '');
+  let r;
+  try { r = await fetch(url, opt); } catch(e){ throw new Error('Nu pot contacta serverul. Verifică internetul.'); }
+  let j; try { j = await r.json(); } catch(e){ throw new Error('Răspuns invalid de la server.'); }
+  if(!j.ok) throw new Error(j.error || 'Eroare');
+  return j;
+}
+
+// zăpadă discretă
+(function(){ const s=$('#snow'); for(let i=0;i<28;i++){ const e=document.createElement('i'); e.style.left=Math.random()*100+'%'; e.style.animationDuration=(5+Math.random()*7)+'s'; e.style.animationDelay=(-Math.random()*10)+'s'; const z=2+Math.random()*4; e.style.width=e.style.height=z+'px'; s.appendChild(e);} })();
+
+function infoBlock(info){
+  const dd = daysTo(info.date);
+  return `<div class="stats">
+    <div class="stat"><b>${info.names.length}</b><span>înscrise</span></div>
+    <div class="stat"><b>${info.budget ? esc(info.budget) : '—'}</b><span>buget</span></div>
+    <div class="stat"><b>${info.date ? (dd>0? dd : dd===0?'azi':'✓') : '—'}</b><span>${info.date ? (dd>0?'zile până la '+esc(fmtDate(info.date)):esc(fmtDate(info.date))) : 'data se anunță'}</span></div>
+  </div>${info.note ? `<p class="muted" style="margin:12px 0 0">${linkify(info.note)}</p>`:''}`;
+}
+const STATUS_TXT = {open:'Înscrieri deschise', closed:'Înscrieri închise', drawn:'Tragerea a avut loc', revealed:'Perechile au fost dezvăluite'};
+const STATUS_CLS = {open:'ok', closed:'warn', drawn:'red', revealed:'ok'};
+
+// ================== ROUTER ==================
+async function route(){
+  const t = qs.get('t'), adm = qs.get('admin');
+  if(adm){ ls.set(LS_ADMIN, adm); return renderAdmin(adm); }
+  if(t){ ls.set(LS_KEY, t); return renderMe(t); }
+  let info;
+  try { info = await api('info'); } catch(e){ app.innerHTML = `<div class="card"><p class="err">${esc(e.message)}</p></div>`; return; }
+  if(!info.setup) return renderSetup();
+  return renderJoin(info);
+}
+
+// ================== SETUP (o singură dată) ==================
+function renderSetup(){
+  app.innerHTML = `<div class="card">
+    <h2>Configurare inițială</h2>
+    <p>Pagina nu e încă configurată. Pasul ăsta se face o singură dată și creează <b>linkul tău de organizatoare</b>.</p>
+    <label for="code">Cuvânt-cheie pentru înscriere (opțional)</label>
+    <input id="code" placeholder="ex. brad" autocomplete="off">
+    <p class="muted">Dacă îl setezi, doar cine îl știe (îl dai pe grupul de WhatsApp) se poate înscrie.</p>
+    <button id="go" class="green">Creează linkul de organizatoare</button>
+    <div id="res"></div></div>`;
+  $('#go').onclick = async () => {
+    try{
+      const j = await api('setup', {joinCode: $('#code').value});
+      ls.set(LS_ADMIN, j.admin);
+      const url = `${baseUrl()}?admin=${j.admin}`;
+      $('#res').innerHTML = `<h3>Linkul tău de organizatoare</h3>
+        <div class="linkbox"><code>${esc(url)}</code><button class="sec" id="cp">Copiază</button></div>
+        <p class="muted">Păstrează-l doar pentru tine (de ex. trimite-l ție pe WhatsApp). Nu arată perechile, doar te lasă să conduci tragerea.</p>
+        <a class="btn green" href="${esc(url)}">Deschide panoul</a>`;
+      $('#cp').onclick = () => copy(url);
+      $('#go').disabled = true;
+    }catch(e){ $('#res').innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  };
+}
+
+// ================== ÎNSCRIERE ==================
+function renderJoin(info){
+  const saved = ls.get(LS_KEY);
+  const open = info.status === 'open';
+  app.innerHTML = `
+  ${saved ? `<div class="card center"><p style="margin:0 0 10px">Te-ai înscris deja de pe acest telefon.</p><a class="btn green" href="?t=${esc(saved)}">Deschide pagina mea →</a></div>`:''}
+  <div class="card">
+    <h2>Secret Santa ${esc(info.year||'')}</h2>
+    <p><span class="pill ${STATUS_CLS[info.status]}">${STATUS_TXT[info.status]}</span></p>
+    <p>Fiecare mamă trage la sorți pe altcineva din grup căreia îi face un cadou, în secret. Îți scrii lista de dorințe, iar cea care te trage o vede. Nimeni nu știe cine pe cine are, nici organizatoarea, până la final.</p>
+    ${infoBlock(info)}
+    ${info.names.length ? `<h3>Înscrise până acum</h3><div class="names">${info.names.map(n=>`<span>${esc(n)}</span>`).join('')}</div>`:''}
+  </div>
+  ${open ? `<div class="card">
+    <h2>Înscrie-te</h2>
+    <label for="nm">Numele tău (cum te știu celelalte)</label>
+    <input id="nm" autocomplete="name" maxlength="60" placeholder="ex. Ioana Popescu">
+    <label for="ph">Telefon (opțional)</label>
+    <input id="ph" type="tel" autocomplete="tel" placeholder="07xx xxx xxx">
+    <p class="muted" style="margin:4px 0 0">Ajută organizatoarea să-ți retrimită linkul dacă îl pierzi.</p>
+    ${info.needCode ? `<label for="cd">Cuvânt-cheie</label><input id="cd" autocomplete="off" placeholder="îl găsești pe grupul de WhatsApp">`:''}
+    <p style="margin-top:16px"><button id="join">🎄 Mă înscriu</button></p>
+    <div id="err"></div>
+  </div>` : `<div class="card center"><p>Înscrierile sunt închise. Dacă te-ai înscris și ți-ai pierdut linkul, cere-i organizatoarei unul nou.</p></div>`}`;
+  if(open) $('#join').onclick = async () => {
+    const b = $('#join'); b.disabled = true;
+    try{
+      const j = await api('join', {name: $('#nm').value, phone: $('#ph').value, code: info.needCode ? $('#cd').value : ''});
+      ls.set(LS_KEY, j.token);
+      history.replaceState(null,'',`?t=${j.token}`);
+      renderMe(j.token, true);
+    }catch(e){ $('#err').innerHTML = `<p class="err">${esc(e.message)}</p>`; b.disabled = false; }
+  };
+}
+
+// ================== PAGINA PARTICIPANTEI ==================
+const GIFT = [['idee','💭 Am o idee'],['comandat','📦 Comandat'],['cumparat','🛍️ Cumpărat'],['impachetat','🎀 Împachetat'],['predat','✅ Predat']];
+let ME = null, TOKEN = null;
+
+async function renderMe(token, fresh){
+  TOKEN = token;
+  let j;
+  try { j = await api('me', null, token); }
+  catch(e){ app.innerHTML = `<div class="card"><h2>Hopa</h2><p class="err">${esc(e.message)}</p><a class="btn sec" href="${esc(baseUrl())}">Pagina de înscriere</a></div>`; if(/valid/.test(e.message)) ls.del(LS_KEY); return; }
+  ME = j;
+  const info = j.info, me = j.me, link = meLink(token);
+  $('#subtitle').textContent = `Bună, ${me.name}!`;
+  const revealed = info.status === 'revealed';
+  let html = '';
+
+  if(fresh) html += `<div class="card">
+    <h2>Gata, ești înscrisă! 🎉</h2>
+    <p><b>Salvează linkul de mai jos.</b> E cheia ta: cu el afli pe cine ai tras și îți editezi lista. Nu-l trimite pe grupul comun.</p>
+    <div class="linkbox"><code>${esc(link)}</code></div>
+    <div class="row" style="margin-top:10px"><button class="sec" id="cp1">Copiază</button><a class="btn green" target="_blank" rel="noopener" href="${esc(waShare('Linkul meu Secret Santa (nu-l da nimănui): '+link))}">Trimite-mi-l pe WhatsApp</a></div>
+  </div>`;
+
+  html += `<div class="card"><div class="row"><h2 class="grow" style="margin:0">Secret Santa ${esc(info.year)}</h2><span class="pill ${STATUS_CLS[info.status]}">${STATUS_TXT[info.status]}</span></div>${infoBlock(info)}</div>`;
+
+  if(j.target){
+    html += `<div class="card target">
+      <h2>Tu îi faci cadou lui…</h2>
+      <div id="env" class="envelope">✉️ Atinge ca să deschizi plicul</div>
+      <div id="tgt" class="hidden"><div class="name">${esc(j.target.name)}</div><p style="opacity:.85;margin:0">Shhh 🤫, e secret până la schimbul de cadouri.</p></div>
+    </div>
+    <div class="card">
+      <h2>Lista de dorințe a lui ${esc(j.target.name)}</h2>
+      ${j.target.about ? `<p>${linkify(j.target.about)}</p>`:''}
+      ${j.target.wishes.length ? j.target.wishes.map(w=>`<div class="wish"><span>🎁</span><div class="t">${esc(w.text)}${w.link?`<br><a href="${esc(w.link)}" target="_blank" rel="noopener">${esc(w.link.replace(/^https?:\/\//,'').slice(0,60))}${w.link.length>68?'…':''}</a>`:''}</div></div>`).join('') : (!j.target.about ? `<p class="muted">Încă nu și-a completat lista. Poți s-o întrebi ceva mai jos, anonim.</p>`:'')}
+    </div>
+    <div class="card">
+      <h2>Cadoul meu</h2>
+      <p class="muted" style="margin-top:0">Doar tu vezi asta.</p>
+      <div class="steps" id="steps">${GIFT.map(([k,l])=>`<button data-k="${k}" class="${me.gift.status===k?'on':''}">${l}</button>`).join('')}</div>
+      <label for="gnote">Notițe (ce iei, de unde, cât a costat)</label>
+      <textarea id="gnote" placeholder="ex. set de cănuțe de la …">${esc(me.gift.note)}</textarea>
+      <p><button class="green" id="savegift">Salvează</button></p>
+    </div>
+    <div class="card">
+      <h2>Întreab-o ceva, anonim</h2>
+      <p class="muted" style="margin-top:0">${esc(j.target.name)} vede întrebarea ca venind de la „Moșul tău secret”.</p>
+      ${(j.asked||[]).map(q=>`<div class="q"><b>Tu:</b> ${esc(q.q)}<div class="a">${q.a?`<b>${esc(j.target.name)}:</b> ${linkify(q.a)}`:'<span class="muted">Fără răspuns încă</span>'}</div></div>`).join('')}
+      <div class="row"><input class="grow" id="askq" maxlength="400" placeholder="ex. Ce mărime porți la mănuși?"><button id="ask">Trimite</button></div>
+    </div>`;
+  } else if(info.status === 'open' || info.status === 'closed'){
+    html += `<div class="card center"><h2>Încă nu s-a făcut tragerea</h2><p>Când organizatoarea face tragerea, intră din nou pe linkul tău ca să afli pe cine ai.</p></div>`;
+  }
+
+  if(j.received && j.received.length){
+    html += `<div class="card"><h2>Întrebări de la Moșul tău secret 🎅</h2>
+      ${j.received.map(q=>`<div class="q"><b>Moșul:</b> ${esc(q.q)}
+        <div class="row" style="margin-top:8px"><input class="grow" data-qa="${esc(q.id)}" value="${esc(q.a)}" maxlength="600" placeholder="Răspunsul tău"><button class="sec" data-qs="${esc(q.id)}">Răspunde</button></div></div>`).join('')}
+    </div>`;
+  }
+
+  if(revealed && j.reveal){
+    html += `<div class="card"><h2>Dezvăluirea 🎉</h2>
+      ${j.mySanta ? `<p>Pe tine te-a avut <b>${esc(j.mySanta)}</b>.</p>`:''}
+      <div class="tablewrap"><table><tr><th>Cine</th><th></th><th>Pentru cine</th></tr>${j.reveal.map(r=>`<tr><td>${esc(r.from)}</td><td>→</td><td>${esc(r.to)}</td></tr>`).join('')}</table></div></div>`;
+  }
+
+  // lista mea de dorințe
+  html += `<div class="card">
+    <h2>Lista mea de dorințe</h2>
+    <p class="muted" style="margin-top:0">O vede doar cea care te-a tras. Pune idei concrete, linkuri, mărimi.</p>
+    <label for="about">Despre mine (mărimi, culori preferate, ce NU-mi place)</label>
+    <textarea id="about" maxlength="1000" placeholder="ex. M la tricouri, iubesc verdele, fără parfumuri">${esc(me.about)}</textarea>
+    <label>Dorințe</label>
+    <div id="wishes"></div>
+    <div class="row"><button class="sec" id="addw">+ Adaugă dorință</button><button class="green" id="savew">Salvează lista</button></div>
+  </div>
+  <div class="card">
+    <h2>Linkul meu</h2>
+    <div class="linkbox"><code>${esc(link)}</code></div>
+    <div class="row" style="margin-top:10px"><button class="sec" id="cp2">Copiază</button><a class="btn sec" target="_blank" rel="noopener" href="${esc(waShare('Linkul meu Secret Santa (nu-l da nimănui): '+link))}">Trimite-mi-l pe WhatsApp</a></div>
+  </div>`;
+  app.innerHTML = html;
+
+  // legături evenimente
+  ['#cp1','#cp2'].forEach(s=>{ const b=$(s); if(b) b.onclick=()=>copy(link); });
+  const env = $('#env');
+  if(env){
+    const open = () => { env.classList.add('hidden'); $('#tgt').classList.remove('hidden'); };
+    if(sessionStorage.getItem('ss_opened')) open();
+    env.onclick = () => { open(); try{sessionStorage.setItem('ss_opened','1')}catch(e){} };
+  }
+  const steps = $('#steps');
+  if(steps) steps.onclick = e => { const b=e.target.closest('button'); if(!b) return; steps.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b)); };
+  const sg = $('#savegift');
+  if(sg) sg.onclick = async () => { const st = steps.querySelector('.on')?.dataset.k || 'idee'; try{ await api('saveMe',{gift:{status:st, note:$('#gnote').value}}, TOKEN); toast('Salvat ✓'); }catch(e){ toast(e.message); } };
+  const ask = $('#ask');
+  if(ask) ask.onclick = async () => { const q=$('#askq').value.trim(); if(!q) return; ask.disabled=true; try{ await api('ask',{q}, TOKEN); toast('Întrebarea a plecat ✓'); renderMe(TOKEN); }catch(e){ toast(e.message); ask.disabled=false; } };
+  app.querySelectorAll('[data-qs]').forEach(b => b.onclick = async () => {
+    const id=b.dataset.qs, a=app.querySelector(`[data-qa="${CSS.escape(id)}"]`).value;
+    try{ await api('answer',{id,a}, TOKEN); toast('Răspuns trimis ✓'); }catch(e){ toast(e.message); }
+  });
+
+  const wl = $('#wishes');
+  const addRow = (w={text:'',link:''}) => {
+    const d = document.createElement('div'); d.className='wishedit';
+    d.innerHTML = `<input class="tx" maxlength="200" placeholder="Ce îți dorești" value="${esc(w.text)}"><input class="l" maxlength="500" placeholder="Link (opțional)" value="${esc(w.link)}" inputmode="url"><button class="ghost" title="Șterge" aria-label="Șterge">✕</button>`;
+    d.querySelector('button').onclick = () => d.remove();
+    wl.appendChild(d);
+  };
+  (me.wishes.length ? me.wishes : [{text:'',link:''}]).forEach(addRow);
+  $('#addw').onclick = () => addRow();
+  $('#savew').onclick = async () => {
+    const wishes = [...wl.querySelectorAll('.wishedit')].map(r=>({text:r.querySelector('.tx').value, link:r.querySelector('.l').value}));
+    try{ await api('saveMe',{wishes, about:$('#about').value}, TOKEN); toast('Lista a fost salvată ✓'); }catch(e){ toast(e.message); }
+  };
+}
+
+// ================== PANOU ORGANIZATOARE ==================
+async function renderAdmin(token){
+  let j;
+  try { j = await api('admin', null, token); }
+  catch(e){ app.innerHTML = `<div class="card"><p class="err">${esc(e.message)}</p></div>`; return; }
+  const info = j.info, P = j.participants, st = info.status;
+  $('#subtitle').textContent = 'Panou organizatoare';
+  const joinUrl = baseUrl();
+  const opened = P.filter(p=>p.seenPair).length, withList = P.filter(p=>p.wishCount>0).length;
+  const myTok = ls.get(LS_KEY);
+
+  app.innerHTML = `
+  <div class="card">
+    <div class="row"><h2 class="grow" style="margin:0">Secret Santa ${esc(info.year)}</h2><span class="pill ${STATUS_CLS[st]}">${STATUS_TXT[st]}</span></div>
+    <p class="muted">Panoul nu arată perechile, așa că poți participa și tu. Înscrie-te ca celelalte, din <a href="${esc(joinUrl)}">pagina de înscriere</a>${myTok?` (sau <a href="?t=${esc(myTok)}">pagina ta</a>)`:''}.</p>
+    <div class="stats">
+      <div class="stat"><b>${P.length}</b><span>înscrise</span></div>
+      <div class="stat"><b>${withList}</b><span>cu listă</span></div>
+      <div class="stat"><b>${st==='open'||st==='closed'?'—':opened}</b><span>și-au văzut perechea</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Invitația pentru grup</h2>
+    <p class="muted" style="margin-top:0">Trimite pe grupul de WhatsApp linkul de înscriere${j.hasCode?' și cuvântul-cheie':''}.</p>
+    <div class="linkbox"><code>${esc(joinUrl)}</code></div>
+    <div class="row" style="margin-top:10px"><button class="sec" id="cpj">Copiază</button>
+    <a class="btn green" target="_blank" rel="noopener" href="${esc(waShare(`🎁 Facem Secret Santa! Înscrie-te aici: ${joinUrl}${j.hasCode?'\nCuvânt-cheie: (scrie-l aici)':''}\nDupă înscriere primești un link personal: păstrează-l doar pentru tine.`))}">Trimite pe WhatsApp</a></div>
+  </div>
+
+  <div class="card">
+    <h2>Pașii</h2>
+    <div class="row" style="gap:8px">
+      ${st==='open' ? `<button class="sec" data-st="closed">1. Închide înscrierile</button>`:''}
+      ${st==='closed' ? `<button class="sec" data-st="open">Redeschide înscrierile</button>`:''}
+      ${(st==='open'||st==='closed') ? `<button class="green" id="draw" ${P.length<3?'disabled':''}>🎲 Trage la sorți</button>`:''}
+      ${st==='drawn' && j.canRedraw ? `<button class="sec" id="draw">🎲 Refă tragerea</button><button class="sec" data-st="open">Redeschide înscrierile</button>`:''}
+      ${st==='drawn' ? `<button data-st="revealed">🎉 Dezvăluie perechile acum</button>`:''}
+    </div>
+    <p class="muted">${
+      st==='open' ? (P.length<3?'Sunt necesare minimum 3 participante pentru tragere.':'Poți trage la sorți direct; înscrierile se închid automat.') :
+      st==='closed' ? 'Nimeni nu se mai poate înscrie. Când ești gata, trage la sorți.' :
+      st==='drawn' ? (j.canRedraw ? 'Nimeni nu și-a deschis încă perechea: mai poți reface tragerea sau redeschide înscrierile pentru cine întârzie.' : 'Cel puțin o participantă și-a văzut perechea, deci tragerea e definitivă. ') + (info.date?` Perechile se dezvăluie automat după ${esc(fmtDate(info.date))}.`:' Setează data schimbului ca perechile să se dezvăluie automat după ea.') :
+      'Toată lumea vede acum cine pe cine a avut.'
+    }</p>
+    <p class="muted" style="margin:0">${j.prevYearRule ? 'La tragere se evită perechile de anul trecut.' : 'Prima ediție: fără excluderi. De la anul, tragerea evită automat perechile din anul precedent.'}</p>
+    <div id="drawmsg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Detalii</h2>
+    <div class="row">
+      <div class="grow"><label for="bud">Buget</label><input id="bud" maxlength="60" placeholder="ex. 100 lei" value="${esc(info.budget)}"></div>
+      <div class="grow"><label for="dt">Data schimbului</label><input id="dt" type="date" value="${esc(info.date)}"></div>
+    </div>
+    <label for="nt">Mesaj pentru toate (loc, oră, reguli)</label>
+    <textarea id="nt" maxlength="600" placeholder="ex. Ne vedem la … de la ora 18:00">${esc(info.note)}</textarea>
+    <label for="jc">Cuvânt-cheie pentru înscriere</label>
+    <input id="jc" autocomplete="off" placeholder="${j.hasCode?'(setat, scrie unul nou ca să-l schimbi)':'(niciunul, oricine are linkul se poate înscrie)'}">
+    ${j.hasCode?`<label style="font-weight:400"><input type="checkbox" id="jcoff" style="width:auto"> Scoate cuvântul-cheie</label>`:''}
+    <p><button class="green" id="saveset">Salvează</button></p>
+  </div>
+
+  <div class="card">
+    <h2>Participante</h2>
+    ${P.length ? `<div class="tablewrap"><table>
+      <tr><th>Nume</th><th>Listă</th><th>${st==='drawn'||st==='revealed'?'Pereche văzută':'Înscrisă'}</th><th></th></tr>
+      ${P.map(p=>`<tr>
+        <td><b>${esc(p.name)}</b>${p.phone?`<br><a class="muted" href="tel:${esc(p.phone)}">${esc(p.phone)}</a>`:''}</td>
+        <td>${p.wishCount?'<span class="pill ok">da</span>':'<span class="pill">nu</span>'}</td>
+        <td>${st==='drawn'||st==='revealed' ? (p.seenPair?'<span class="pill ok">da</span>':'<span class="pill warn">nu</span>') : `<span class="muted">${ago(p.joinedAt)}</span>`}</td>
+        <td style="white-space:nowrap"><button class="ghost" data-relink="${esc(p.id)}" title="Link nou">🔗 Link nou</button>${st==='open'||st==='closed'?`<button class="ghost" data-rm="${esc(p.id)}" title="Șterge">✕</button>`:''}</td>
+      </tr>`).join('')}
+    </table></div>` : '<p class="muted">Încă nu s-a înscris nimeni.</p>'}
+    <div id="relink"></div>
+  </div>
+
+  <div class="card">
+    <h2>Ediții</h2>
+    <p class="muted" style="margin-top:0">Ediții salvate: ${j.years.map(esc).join(', ')}. O ediție nouă pornește cu înscrieri goale; tragerea va evita perechile din anul precedent.</p>
+    <div class="row"><input id="ny" style="max-width:120px" inputmode="numeric" maxlength="4" value="${Number(info.year)+1}"><button class="sec" id="newy">Pornește ediția nouă</button></div>
+  </div>`;
+
+  const reload = () => renderAdmin(token);
+  $('#cpj').onclick = () => copy(joinUrl);
+  app.querySelectorAll('[data-st]').forEach(b => b.onclick = async () => {
+    const s = b.dataset.st;
+    const msg = {closed:'Închizi înscrierile?', open:'Redeschizi înscrierile? Dacă tragerea a avut loc, va fi anulată.', revealed:'Dezvălui toate perechile acum, pentru toată lumea?'}[s];
+    if(!confirm(msg)) return;
+    try{ await api('adminStatus',{status:s}, token); reload(); }catch(e){ toast(e.message); }
+  });
+  const dr = $('#draw');
+  if(dr) dr.onclick = async () => {
+    if(!confirm(`Tragi la sorți pentru ${P.length} participante? Înscrierile se închid.`)) return;
+    dr.disabled = true;
+    try{
+      const r = await api('adminDraw',{}, token);
+      toast('Tragerea s-a făcut ✓');
+      await reload();
+      $('#drawmsg').innerHTML = `<p><b>Gata!</b> Anunță pe grup că fiecare își poate deschide linkul personal ca să afle pe cine are.${r.relaxed?' <br><span class="err">Nu s-au putut evita toate perechile de anul trecut, așa că unele s-ar putea repeta.</span>':''}</p>`;
+    }catch(e){ toast(e.message); dr.disabled=false; }
+  };
+  $('#saveset').onclick = async () => {
+    const body = {budget:$('#bud').value, date:$('#dt').value, note:$('#nt').value};
+    const jc = $('#jc').value.trim(), off = $('#jcoff')?.checked;
+    if(off) body.joinCode = ''; else if(jc) body.joinCode = jc;
+    try{ await api('adminSettings', body, token); toast('Salvat ✓'); reload(); }catch(e){ toast(e.message); }
+  };
+  app.querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => {
+    if(!confirm('Ștergi participanta?')) return;
+    try{ await api('adminRemove',{id:b.dataset.rm}, token); reload(); }catch(e){ toast(e.message); }
+  });
+  app.querySelectorAll('[data-relink]').forEach(b => b.onclick = async () => {
+    if(!confirm('Generezi un link nou? Linkul vechi nu va mai funcționa.')) return;
+    try{
+      const r = await api('adminRelink',{id:b.dataset.relink}, token);
+      const url = meLink(r.token);
+      $('#relink').innerHTML = `<h3>Link nou pentru ${esc(r.name)}</h3><div class="linkbox"><code>${esc(url)}</code></div>
+        <div class="row" style="margin-top:10px"><button class="sec" id="cpr">Copiază</button><a class="btn green" target="_blank" rel="noopener" href="${esc(waShare(`Linkul tău nou de Secret Santa (păstrează-l doar pentru tine): ${url}`))}">Trimite pe WhatsApp</a></div>`;
+      $('#cpr').onclick = () => copy(url);
+      $('#relink').scrollIntoView({behavior:'smooth', block:'center'});
+    }catch(e){ toast(e.message); }
+  });
+  $('#newy').onclick = async () => {
+    const y = $('#ny').value.trim();
+    if(!confirm(`Pornești ediția ${y}? Ediția curentă rămâne salvată, dar pagina va arăta ediția nouă.`)) return;
+    try{ await api('adminNewYear',{year:y}, token); reload(); }catch(e){ toast(e.message); }
+  };
+}
+
+route();
+</script>
+</body>
+</html>

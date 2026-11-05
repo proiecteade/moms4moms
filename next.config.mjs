@@ -25,10 +25,10 @@ const securityHeaders = [
     value: [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
-      "style-src 'self' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: https: blob:",
       "connect-src 'self' https://*.supabase.co https://*.supabase.in https://www.google-analytics.com https://analytics.google.com https://graph.facebook.com",
-      "font-src 'self'",
+      "font-src 'self' https://fonts.gstatic.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -55,6 +55,7 @@ const nextConfig = {
   async rewrites() {
     return [
       { source: '/splitbill', destination: '/splitbill/index.html' },
+      { source: '/secretsanta', destination: '/secretsanta/index.html' },
     ]
   },
   async headers() {
