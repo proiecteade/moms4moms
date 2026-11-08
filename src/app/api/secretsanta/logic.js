@@ -178,13 +178,13 @@ export function handle(a, inp, tok, d) {
       me.lastSeen = now()
       const res = {
         info: publicInfo(d),
-        me: { id: me.id, name: me.name, phone: me.phone, wishes: me.wishes, about: me.about, easybox: me.easybox || '', gift: me.gift },
+        me: { id: me.id, name: me.name, phone: me.phone, wishes: me.wishes, about: me.about, easybox: me.easybox || '', email: me.email || '', gift: me.gift },
       }
       const revealed = isRevealed(y)
       if (y.status !== 'open' && y.pairs[me.id]) {
         if (!me.seenPair) me.seenPair = now()
         const r = pById(y, y.pairs[me.id])
-        if (r) res.target = { name: r.name, wishes: r.wishes, about: r.about, easybox: r.easybox || '' }
+        if (r) res.target = { name: r.name, wishes: r.wishes, about: r.about, easybox: r.easybox || '', phone: r.easybox ? (r.phone || '') : '', email: r.easybox ? (r.email || '') : '' }
         const pick = q => ({ id: q.id, q: q.q, a: q.a, ts: q.ts })
         res.asked = y.questions.filter(q => q.from === me.id).map(pick)
         res.received = y.questions.filter(q => q.to === me.id).map(pick)
@@ -218,6 +218,7 @@ export function handle(a, inp, tok, d) {
       }
       if ('about' in inp) me.about = clean(inp.about, 1000)
       if ('easybox' in inp) me.easybox = clean(inp.easybox, 300)
+      if ('email' in inp) me.email = clean(inp.email, 120)
       if ('phone' in inp) me.phone = clean(inp.phone, 30)
       if (inp.gift && typeof inp.gift === 'object') {
         const st = ['idee', 'comandat', 'cumparat', 'impachetat', 'predat'].includes(inp.gift.status) ? inp.gift.status : 'idee'

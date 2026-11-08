@@ -237,7 +237,7 @@ async function renderMe(token, fresh){
     <div class="card">
       <h2>Lista de dorințe a lui ${esc(j.target.name)}</h2>
       ${j.target.about ? `<p>${linkify(j.target.about)}</p>`:''}
-      ${j.target.easybox ? `<div class="wish"><span>📦</span><div class="t"><b>Easybox</b> (dacă nu vă vedeți la schimb, trimite-i cadoul aici):<br>${esc(j.target.easybox)}<br><a href="https://www.google.com/maps/search/${encodeURIComponent('easybox '+j.target.easybox)}" target="_blank" rel="noopener">Vezi pe hartă</a></div></div>`:''}
+      ${j.target.easybox ? `<div class="wish"><span>📦</span><div class="t"><b>Easybox</b> (dacă nu vă vedeți la schimb, trimite-i cadoul aici):<br>${esc(j.target.easybox)}<br><a href="https://www.google.com/maps/search/${encodeURIComponent('easybox '+j.target.easybox)}" target="_blank" rel="noopener">Vezi pe hartă</a>${j.target.phone?`<br>📞 <a href="tel:${esc(j.target.phone.replace(/\s/g,''))}">${esc(j.target.phone)}</a>`:''}${j.target.email?`<br>✉️ <a href="mailto:${esc(j.target.email)}">${esc(j.target.email)}</a>`:''}</div></div>`:''}
       ${j.target.wishes.length ? j.target.wishes.map(w=>`<div class="wish"><span>🎁</span><div class="t">${esc(w.text)}${w.link?`<br><a href="${esc(w.link)}" target="_blank" rel="noopener">${esc(w.link.replace(/^https?:\/\//,'').slice(0,60))}${w.link.length>68?'…':''}</a>`:''}</div></div>`).join('') : (!j.target.about ? `<p class="muted">Încă nu și-a completat lista. Poți s-o întrebi ceva mai jos, anonim.</p>`:'')}
     </div>
     <div class="card">
@@ -277,9 +277,14 @@ async function renderMe(token, fresh){
     <p class="muted" style="margin-top:0">O vede doar cea care te-a tras. Pune idei concrete, linkuri, mărimi.</p>
     <label for="about">Despre mine (mărimi, culori preferate, ce NU-mi place)</label>
     <textarea id="about" maxlength="1000" placeholder="ex. M la tricouri, iubesc verdele, fără parfumuri">${esc(me.about)}</textarea>
-    <label for="easybox">📦 Easybox-ul cel mai apropiat de tine (nume + adresă)</label>
+    <h3 style="margin-top:18px">📦 Pentru livrare la easybox</h3>
+    <p class="muted" style="margin:0">Ca să-ți poată trimite cadoul cine te-a tras, dacă nu poate ajunge la întâlnire. Le vede doar ea.</p>
+    <label for="easybox">Easybox-ul cel mai apropiat de tine (nume + adresă)</label>
     <input id="easybox" maxlength="300" placeholder="ex. easybox Mega Image Drumul Taberei, Str. Brașov 25" value="${esc(me.easybox||'')}">
-    <p class="muted" style="margin:4px 0 0">Ca să-ți poată trimite cadoul cine te-a tras, dacă nu poate ajunge la întâlnire.</p>
+    <div class="row" style="align-items:flex-start">
+      <div class="grow"><label for="dphone">Telefon</label><input id="dphone" maxlength="30" inputmode="tel" placeholder="07xx xxx xxx" value="${esc(me.phone||'')}"></div>
+      <div class="grow"><label for="demail">Email</label><input id="demail" maxlength="120" type="email" inputmode="email" placeholder="nume@exemplu.ro" value="${esc(me.email||'')}"></div>
+    </div>
     <label>Dorințe</label>
     <div id="wishes"></div>
     <div class="row"><button class="sec" id="addw">+ Adaugă dorință</button><button class="green" id="savew">Salvează lista</button></div>
@@ -321,7 +326,7 @@ async function renderMe(token, fresh){
   $('#addw').onclick = () => addRow();
   $('#savew').onclick = async () => {
     const wishes = [...wl.querySelectorAll('.wishedit')].map(r=>({text:r.querySelector('.tx').value, link:r.querySelector('.l').value}));
-    try{ await api('saveMe',{wishes, about:$('#about').value, easybox:$('#easybox').value}, TOKEN); toast('Lista a fost salvată ✓'); }catch(e){ toast(e.message); }
+    try{ await api('saveMe',{wishes, about:$('#about').value, easybox:$('#easybox').value, phone:$('#dphone').value, email:$('#demail').value}, TOKEN); toast('Lista a fost salvată ✓'); }catch(e){ toast(e.message); }
   };
 }
 
