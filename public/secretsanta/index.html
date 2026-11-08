@@ -128,7 +128,7 @@ function infoBlock(info){
     <div class="stat"><b>${info.names.length}</b><span>înscrise</span></div>
     <div class="stat"><b>${info.budget ? esc(info.budget) : '—'}</b><span>buget</span></div>
     <div class="stat"><b>${info.date ? (dd>0? dd : dd===0?'azi':'✓') : '—'}</b><span>${info.date ? (dd>0?'zile până la '+esc(fmtDate(info.date)):esc(fmtDate(info.date))) : 'data se anunță'}</span></div>
-  </div>${info.note ? `<p class="muted" style="margin:12px 0 0">${linkify(info.note)}</p>`:''}`;
+  </div>${info.note ? `<p class="muted" style="margin:12px 0 0;white-space:pre-line">${linkify(info.note)}</p>`:''}`;
 }
 const STATUS_TXT = {open:'Înscrieri deschise', closed:'Înscrieri închise', drawn:'Tragerea a avut loc', revealed:'Perechile au fost dezvăluite'};
 const STATUS_CLS = {open:'ok', closed:'warn', drawn:'red', revealed:'ok'};
