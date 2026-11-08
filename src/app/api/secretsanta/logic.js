@@ -79,6 +79,7 @@ function findByToken(y, tok) {
   return y.participants.findIndex(p => heq(p.tokenHash, hh))
 }
 const pById = (y, id) => y.participants.find(p => p.id === id) || null
+const hasDrawn = y => y.pairs && Object.keys(y.pairs).length > 0
 const anySeen = y => y.participants.some(p => p.seenPair)
 
 function publicInfo(d) {
@@ -270,6 +271,16 @@ export function handle(a, inp, tok, d) {
         hasCode: !!d.config.joinCodeHash, years: Object.keys(d.years).sort(),
         prevYearRule: !!prevPairs(d),
       })
+    }
+    case 'adminPairs': {
+      if (!hasDrawn(y)) fail('Tragerea nu a avut loc încă.')
+      const pairs = []
+      for (const [g, r] of Object.entries(y.pairs)) {
+        const gp = pById(y, g), rp = pById(y, r)
+        if (gp && rp) pairs.push({ from: gp.name, to: rp.name, gift: gp.gift?.status || 'idee' })
+      }
+      pairs.sort((a, b) => a.from.localeCompare(b.from, 'ro'))
+      return out({ pairs })
     }
     case 'adminSettings': {
       for (const [k, max] of [['budget', 60], ['date', 10], ['note', 600]]) if (k in inp) y[k] = clean(inp[k], max)

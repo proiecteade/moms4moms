@@ -206,6 +206,7 @@ function renderJoin(info){
 
 // ================== PAGINA PARTICIPANTEI ==================
 const GIFT = [['idee','💭 Am o idee'],['comandat','📦 Comandat'],['cumparat','🛍️ Cumpărat'],['impachetat','🎀 Împachetat'],['predat','✅ Predat']];
+const GIFT_TXT = Object.fromEntries(GIFT);
 let ME = null, TOKEN = null;
 
 async function renderMe(token, fresh){
@@ -407,6 +408,12 @@ async function renderAdmin(token){
     <div id="relink"></div>
   </div>
 
+  ${st==='drawn'||st==='revealed' ? `<div class="card">
+    <h2>Perechile 🔒</h2>
+    <p class="muted" style="margin-top:0">Doar pentru organizatoare. Lista include și cine te-a tras pe tine.</p>
+    <div id="pairs"><button class="sec" id="showpairs">Arată perechile</button></div>
+  </div>` : ''}
+
   <div class="card">
     <h2>Ediții</h2>
     <p class="muted" style="margin-top:0">Ediții salvate: ${j.years.map(esc).join(', ')}. O ediție nouă pornește cu înscrieri goale; tragerea va evita perechile din anul precedent.</p>
@@ -414,6 +421,15 @@ async function renderAdmin(token){
   </div>`;
 
   const reload = () => renderAdmin(token);
+  const sp = $('#showpairs');
+  if(sp) sp.onclick = async () => {
+    if(!confirm('Vezi toate perechile, inclusiv cine te-a tras pe tine? Îți strică surpriza.')) return;
+    try{
+      const r = await api('adminPairs',{}, token);
+      $('#pairs').innerHTML = `<div class="tablewrap"><table><tr><th>Cine</th><th></th><th>Pentru cine</th><th>Cadou</th></tr>${r.pairs.map(x=>`<tr><td>${esc(x.from)}</td><td>→</td><td>${esc(x.to)}</td><td><span class="muted">${esc(GIFT_TXT[x.gift]||x.gift)}</span></td></tr>`).join('')}</table></div><p><button class="sec" id="hidepairs">Ascunde</button></p>`;
+      $('#hidepairs').onclick = reload;
+    }catch(e){ toast(e.message); }
+  };
   $('#cpj').onclick = () => copy(joinUrl);
   app.querySelectorAll('[data-st]').forEach(b => b.onclick = async () => {
     const s = b.dataset.st;
