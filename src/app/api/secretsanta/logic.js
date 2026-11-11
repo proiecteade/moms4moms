@@ -264,6 +264,7 @@ export function handle(a, inp, tok, d) {
         id: p.id, name: p.name, phone: p.phone, joinedAt: p.joinedAt, lastSeen: p.lastSeen,
         seenPair: !!p.seenPair, wishCount: p.wishes.length + (p.about !== '' ? 1 : 0),
         giftStatus: p.gift.status,
+        wishes: p.wishes, about: p.about,
       }))
       return out({
         info: publicInfo(d), participants: list,

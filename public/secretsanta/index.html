@@ -75,6 +75,13 @@ th{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mute
 .center{text-align:center}
 .hidden{display:none!important}
 footer{text-align:center;color:var(--mute);font-size:13px;padding:0 0 30px}
+details.wl{border-bottom:1px solid var(--line);padding:10px 0}
+details.wl summary{cursor:pointer;list-style:none;display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+details.wl summary::-webkit-details-marker{display:none}
+details.wl summary::before{content:'▸';color:var(--berry);transition:.15s}
+details.wl[open] summary::before{transform:rotate(90deg)}
+details.wl[data-empty] summary{opacity:.6}
+.wlbody{padding:8px 0 0 18px}
 .names{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .names span{background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 10px;font-size:14px}
 </style>
@@ -408,6 +415,22 @@ async function renderAdmin(token){
     <div id="relink"></div>
   </div>
 
+  <div class="card">
+    <h2>Ce și-a dorit fiecare</h2>
+    <p class="muted" style="margin-top:0">Listele de dorințe ale tuturor, vizibile doar în panoul tău.</p>
+    ${P.length ? P.map(p => {
+      const ws = p.wishes||[], has = p.about || ws.length;
+      return `<details class="wl" ${has?'':'data-empty'}>
+        <summary><b>${esc(p.name)}</b> <span class="muted">· ${ws.length} ${ws.length===1?'dorință':'dorințe'}${p.about?' + notițe':''}</span></summary>
+        <div class="wlbody">
+          ${p.about ? `<p style="margin:0 0 6px;white-space:pre-line"><i>${linkify(p.about)}</i></p>` : ''}
+          ${ws.map(w=>`<div class="wish"><span>🎁</span><div class="t">${esc(w.text)}${w.link?`<br><a href="${esc(w.link)}" target="_blank" rel="noopener">${esc(w.link.replace(/^https?:\/\//,'').slice(0,60))}${w.link.length>68?'…':''}</a>`:''}</div></div>`).join('')}
+          ${has ? '' : '<p class="muted" style="margin:0">Nu și-a completat încă lista.</p>'}
+        </div>
+      </details>`;
+    }).join('') + `<p style="margin:12px 0 0"><button class="ghost" id="wlall">Deschide toate</button></p>` : '<p class="muted">Încă nu s-a înscris nimeni.</p>'}
+  </div>
+
   ${st==='drawn'||st==='revealed' ? `<div class="card">
     <h2>Perechile 🔒</h2>
     <p class="muted" style="margin-top:0">Doar pentru organizatoare. Lista include și cine te-a tras pe tine.</p>
@@ -421,6 +444,8 @@ async function renderAdmin(token){
   </div>`;
 
   const reload = () => renderAdmin(token);
+  const wla = $('#wlall');
+  if(wla) wla.onclick = () => { const ds=[...app.querySelectorAll('details.wl')]; const open=!ds.every(d=>d.open); ds.forEach(d=>d.open=open); wla.textContent = open?'Închide toate':'Deschide toate'; };
   const sp = $('#showpairs');
   if(sp) sp.onclick = async () => {
     if(!confirm('Vezi toate perechile, inclusiv cine te-a tras pe tine? Îți strică surpriza.')) return;
