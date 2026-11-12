@@ -20,6 +20,16 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 ## Stare
 - Ultimul commit înainte de reorganizare: 2026-11-11 — Secret Santa: listele de dorințe ale tuturor în panoul organizatoarei
 
+## Unde sunt cheile (fără valori)
+- Cheile Supabase (URL, anon, service role): în Vercel → proiectul moms4moms → Settings → Environment Variables (și local în `.env.local`, care nu e în git).
+- Parola bazei de date Supabase: în Supabase → proiectul moms4moms → Settings → Database (se poate reseta fără să strice site-ul).
+- Contul de admin al site-ului: Supabase Auth.
+- Tokenul serverului (Hermes, read-only pe proiecteade, expiră 27 oct 2027): pe server, `~/.config/proiecteade/token`.
+- Recomandare: toate cheile de mai sus și parolele conturilor (GitHub, Vercel, Supabase) într-un manager de parole.
+
+## Backup
+- Baza de date Supabase: săptămânal, în repo-ul privat `proiecteade/backup` (`supabase/moms4moms/`).
+
 ## Cum lucrăm
 - Proiectul Claude: **💜 Moms4Moms** — chatul 🛠 Features pentru cod/design, chatul 📝 Conținut doar pentru date.
 - Claude face tot git-ul (commit, push) și verifică pagina live după publicare. Adelina nu urcă nimic manual.
@@ -28,3 +38,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 
 ## Jurnal
 - 2026-11-12: creat CONTEXT.md și HERMES.md (organizarea pe proiecte Claude cu chat Features + chat Conținut).
+- 2026-11-12: adăugat „Unde sunt cheile” și „Backup”.
