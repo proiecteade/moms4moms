@@ -23,7 +23,7 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 ## Unde sunt cheile (fără valori)
 - Cheile Supabase (URL, anon, service role): în Vercel → proiectul moms4moms → Settings → Environment Variables (și local în `.env.local`, care nu e în git).
 - Parola bazei de date Supabase: în Supabase → proiectul moms4moms → Settings → Database (se poate reseta fără să strice site-ul).
-- Contul de admin al site-ului: Supabase Auth.
+- Contul de admin al site-ului: Supabase Auth (contul email/parolă, marcat `app_metadata.role = 'admin'`).
 - Tokenul serverului (Hermes, read-only pe proiecteade, expiră 27 oct 2027): pe server, `~/.config/proiecteade/token`.
 - Recomandare: toate cheile de mai sus și parolele conturilor (GitHub, Vercel, Supabase) într-un manager de parole.
 
@@ -39,3 +39,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 ## Jurnal
 - 2026-11-12: creat CONTEXT.md și HERMES.md (organizarea pe proiecte Claude cu chat Features + chat Conținut).
 - 2026-11-12: adăugat „Unde sunt cheile” și „Backup”.
+- 2026-11-12: securitate — activat RLS pe `contact_messages` (alertă critică Supabase). Vizitatorii doar trimit mesaje; citire/marcare/ștergere doar adminul (`app_metadata.role='admin'`). Șterse 3 politici vechi prin care orice cont logat citea mesajele. SQL: `supabase/contact-messages-rls.sql`. De discutat: `doctors`, `reviews`, `suggestions`, `site_feedback` încă permit aprobare/ștergere oricărui cont logat (nu doar adminului).
