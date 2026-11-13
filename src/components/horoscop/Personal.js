@@ -77,7 +77,6 @@ export default function Personal({ month, entries, profiles, query }) {
               <article className="hz-panel is-asc">
                 <h2><span className="hz-panel-icon">↑</span>Prin ascendentul tău în {SIGN_BY_SLUG[me.asc_sign].name}</h2>
                 <p><em>{G(asc.teaser)}</em> {G(asc.general)}</p>
-                <Link href={`/horoscop/${me.asc_sign}${query}`} className="hzp-more">Citește tot pentru {SIGN_BY_SLUG[me.asc_sign].name} →</Link>
               </article>
             )}
           </div>
