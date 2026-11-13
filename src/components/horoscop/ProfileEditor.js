@@ -8,36 +8,68 @@ import { SIGN_BY_SLUG } from '@/lib/horoscop'
 const REL = { eu: 'Eu', copil: 'Copil', partener: 'Partener' }
 const blank = (relation, gender = '') => ({ key: Math.random().toString(36).slice(2), relation, gender, name: '', birth_date: '', birth_time: '', noTime: false, place_name: '', lat: null, lon: null, tz: 'Europe/Bucharest' })
 
-function PlaceSearch({ value, onPick }) {
+function PlaceSearch({ value, picked, onPick }) {
   const [q, setQ] = useState(value || '')
   const [res, setRes] = useState([])
   const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
   const t = useRef(null)
+  const box = useRef(null)
   useEffect(() => { setQ(value || '') }, [value])
+
+  // Se închide la atingere în afara listei (Safari nu are blur sigur pe butoane)
+  useEffect(() => {
+    if (!open) return
+    const close = (e) => { if (box.current && !box.current.contains(e.target)) setOpen(false) }
+    document.addEventListener('pointerdown', close)
+    document.addEventListener('touchstart', close, { passive: true })
+    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('touchstart', close) }
+  }, [open])
+
+  // Pe telefon, adu lista în zona vizibilă (deasupra tastaturii)
+  useEffect(() => {
+    if (open && box.current && window.innerWidth < 760) box.current.scrollIntoView({ block: 'start', behavior: 'smooth' })
+  }, [open])
+
+  function label(p) { return [p.name, p.admin1, p.country_code !== 'RO' ? p.country : null].filter(Boolean).join(', ') }
+  function pick(p) {
+    onPick({ place_name: label(p), lat: p.latitude, lon: p.longitude, tz: p.timezone || 'Europe/Bucharest' })
+    setQ(label(p)); setOpen(false); setRes([])
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur()
+  }
   function search(v) {
     setQ(v); clearTimeout(t.current)
-    if (v.trim().length < 2) { setRes([]); return }
+    onPick({ place_name: v, lat: null, lon: null, tz: 'Europe/Bucharest' })
+    if (v.trim().length < 2) { setRes([]); setOpen(false); return }
     t.current = setTimeout(async () => {
+      setLoading(true)
       try {
         const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(v.trim())}&count=7&language=ro&format=json`)
         const j = await r.json()
         setRes(j.results || []); setOpen(true)
       } catch { setRes([]) }
-    }, 300)
+      setLoading(false)
+    }, 350)
   }
   return (
-    <div className="hzp-place">
-      <input value={q} onChange={e => search(e.target.value)} onFocus={() => res.length && setOpen(true)} placeholder="ex. București, Iași, Chișinău" autoComplete="off" />
-      {open && res.length > 0 && (
-        <ul className="hzp-place-list">
+    <div className="hzp-place" ref={box}>
+      <input value={q} onChange={e => search(e.target.value)} onFocus={() => res.length && setOpen(true)}
+        onKeyDown={e => { if (e.key === 'Escape') setOpen(false); if (e.key === 'Enter' && res[0]) { e.preventDefault(); pick(res[0]) } }}
+        placeholder="ex. București, Iași, Chișinău" autoComplete="off" autoCorrect="off" spellCheck={false} enterKeyHint="done" />
+      {open && (
+        <ul className="hzp-place-list" role="listbox">
+          {res.length === 0 && <li className="hzp-place-empty">{loading ? 'Caut…' : 'Nu am găsit localitatea. Încearcă altă scriere.'}</li>}
           {res.map(p => (
-            <li key={p.id}><button type="button" onClick={() => {
-              const label = [p.name, p.admin1, p.country_code !== 'RO' ? p.country : null].filter(Boolean).join(', ')
-              onPick({ place_name: label, lat: p.latitude, lon: p.longitude, tz: p.timezone || 'Europe/Bucharest' }); setQ(label); setOpen(false)
-            }}>{p.name}<span>{[p.admin1, p.country].filter(Boolean).join(', ')}</span></button></li>
+            <li key={p.id}>
+              <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => pick(p)}>
+                {p.name}<span>{[p.admin1, p.country].filter(Boolean).join(', ')}</span>
+              </button>
+            </li>
           ))}
+          <li><button type="button" className="hzp-place-close" onMouseDown={e => e.preventDefault()} onClick={() => setOpen(false)}>Închide lista ✕</button></li>
         </ul>
       )}
+      {!open && q && !picked && q.trim().length >= 2 && <span className="hzp-place-hint">Alege localitatea din listă ca să calculăm ascendentul.</span>}
     </div>
   )
 }
@@ -147,7 +179,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
               <input type="time" value={p.noTime ? '' : p.birth_time} disabled={p.noTime} onChange={e => upd(p.key, { birth_time: e.target.value })} />
               <span className="hzp-check"><input type="checkbox" checked={p.noTime} onChange={e => upd(p.key, { noTime: e.target.checked })} /> nu știu ora</span>
             </label>
-            <label>Localitatea nașterii<PlaceSearch value={p.place_name} onPick={(v) => upd(p.key, v)} /></label>
+            <label>Localitatea nașterii<PlaceSearch value={p.place_name} picked={p.lat != null} onPick={(v) => upd(p.key, v)} /></label>
           </div>
           <ChartBadge p={p} />
         </div>
