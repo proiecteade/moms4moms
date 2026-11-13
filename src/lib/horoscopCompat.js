@@ -4,7 +4,7 @@ import { SIGNS, SIGN_BY_SLUG, ELEMENTS } from './horoscop'
 
 const ASPECTS = {
   0: { name: 'Aceeași zodie', score: 4,
-    partener: 'Vă înțelegeți din priviri, pentru că aveți aceleași nevoi și același ritm. Capcana e că vă amplificați și defectele, așa că e bine ca unul să tragă de frână când celălalt accelerează.',
+    partener: 'Vă înțelegeți din priviri, pentru că aveți aceleași nevoi și același ritm. Capcana e că vă amplificați și defectele, așa că e bine ca ((unul|una)) să tragă de frână când ((celălalt|cealaltă)) accelerează.',
     copil: '[[nume]] e oglinda ta: [[îl|o]] înțelegi intuitiv, dar te vezi și pe tine în reacțiile [[lui|ei]]. Răbdarea cu [[el|ea]] e, de fapt, răbdare cu tine.' },
   1: { name: 'Vecini pe roată', score: 2,
     partener: 'Sunteți foarte diferiți, deși stați unul lângă altul pe roata zodiacului. Fiecare are ce învăța de la celălalt, dacă renunțați la ideea că felul vostru e singurul corect.',
@@ -22,11 +22,16 @@ const ASPECTS = {
     partener: 'Nu vă înțelegeți mereu din prima, pentru că aveți nevoi diferite care cer mici compromisuri zilnice. Cu umor și flexibilitate, relația devine surprinzător de bogată.',
     copil: 'Uneori nu ghicești de ce are nevoie, și e normal. Întreabă-[[l|o]] direct și adaptează-te pas cu pas, iar [[nume]] va simți efortul tău.' },
   6: { name: 'Opuși care se atrag', score: 3,
-    partener: 'Fiecare are ce îi lipsește celuilalt, de aici atracția puternică. Tensiunile apar când trageți în direcții opuse, iar echilibrul vine din a vă lăsa spațiu.',
+    partener: 'Fiecare are ce îi lipsește ((celuilalt|celeilalte)), de aici atracția puternică. Tensiunile apar când trageți în direcții opuse, iar echilibrul vine din a vă lăsa spațiu.',
     copil: '[[nume]] are temperamentul opus ție și te scoate din zona de confort. Acceptă-i felul de a fi: te învață exact ce aveai nevoie să înveți.' },
 }
 
 // [[masculin|feminin]] = genul celeilalte persoane, [[nume]] = prenumele ei; {masculin|feminin} = genul tău
+// ((masculin|feminin)) = pentru perechea voastră: forma feminină doar dacă sunteți amândouă femei/fete
+export function forPair(text, bothFemale) {
+  return (text || '').replace(/\(\(([^()|]*)\|([^()|]*)\)\)/g, (_, m, f) => (bothFemale ? f : m))
+}
+
 export function forOther(text, gender = 'm', name = 'copilul') {
   return (text || '').replace(/\[\[nume\]\]/g, name).replace(/\[\[([^\[\]|]*)\|([^\[\]|]*)\]\]/g, (_, m, f) => (gender === 'm' ? m : f))
 }

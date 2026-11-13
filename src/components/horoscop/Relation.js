@@ -1,5 +1,5 @@
 import { SIGN_BY_SLUG, formatRange, g } from '@/lib/horoscop'
-import { compat, forOther, signDistance } from '@/lib/horoscopCompat'
+import { compat, forOther, forPair, signDistance } from '@/lib/horoscopCompat'
 
 export const firstName = (n) => (n || '').trim().split(' ')[0]
 export const genderOf = (p, me) => p.gender || (p.relation === 'partener' ? ((me?.gender || 'f') === 'f' ? 'm' : 'f') : (p.relation === 'eu' ? 'f' : 'm'))
@@ -16,7 +16,8 @@ export default function Relation({ me, p, month, full = false }) {
   if (!c) return null
   const dist = signDistance(me.sun_sign, p.sun_sign)
   const note = month?.pair_notes?.[String(dist)]
-  const T = (t) => g(forOther(t, pg, name), mg)
+  const both = mg === 'f' && pg === 'f'
+  const T = (t) => g(forOther(forPair(t, both), pg, name), mg)
   const mine = [me.sun_sign, me.asc_sign].filter(Boolean)
   const theirs = [p.sun_sign, p.asc_sign].filter(Boolean)
   const shared = (month?.watchouts || [])
@@ -38,7 +39,7 @@ export default function Relation({ me, p, month, full = false }) {
       )}
       {shared.length > 0 && (
         <div className="hzr-block">
-          <span className="hzr-label">Zile care vă ating pe amândoi</span>
+          <span className="hzr-label">Zile care vă ating pe {both ? 'amândouă' : 'amândoi'}</span>
           <ul className="hzr-dates">
             {shared.map((w, i) => <li key={i}><b>{formatRange(w.start, w.end)}</b> {w.title}</li>)}
           </ul>

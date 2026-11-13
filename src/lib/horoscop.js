@@ -157,3 +157,19 @@ export const MOON_NEEDS = {
   varsator: 'Are nevoie să fie {acceptat|acceptată} așa cum e, cu ideile {lui|ei} trăsnite, și de puțin timp doar pentru {el|ea}.',
   pesti: 'Se liniștește prin povești, muzică și imaginație. Are nevoie de blândețe, nu de grabă.',
 }
+
+// Portretul copilului din fiecare zodie (fix): fire, puncte forte, sensibilități. {m|f} = genul copilului.
+export const KID_PROFILE = {
+  berbec: '{Curajos|Curajoasă}, {energic|energică} și {competitiv|competitivă}. Învață făcând și are nevoie de mișcare în fiecare zi. Sensibilități: îi e greu să aștepte, iar furia vine repede, dar trece la fel de repede.',
+  taur: '{Calm|Calmă}, {afectuos|afectuoasă} și {răbdător|răbdătoare}, cu mare nevoie de confort și rutină. Îi plac mâncarea bună, mângâierile și lucrurile „ale {lui|ei}”. Sensibilități: schimbările bruște și graba.',
+  gemeni: '{Curios|Curioasă}, {vorbăreț|vorbăreață} și {isteț|isteață}, se plictisește repede și învață din întrebări. Are nevoie de stimulare și de povești. Sensibilități: suprastimularea și serile agitate, cu somn greu.',
+  rac: '{Tandru|Tandră}, {grijuliu|grijulie} și foarte {atașat|atașată} de casă și de mama. Simte atmosfera din jur înainte să o înțeleagă. Sensibilități: despărțirile, tensiunile din familie și schimbările de mediu.',
+  leu: '{Generos|Generoasă}, {jucăuș|jucăușă} și {creativ|creativă}, iubește să fie {admirat|admirată}. Are inimă mare și energie de lider. Sensibilități: orgoliul rănit și senzația că nu e {văzut|văzută}.',
+  fecioara: '{Atent|Atentă} la detalii, {ordonat|ordonată} și {dornic|dornică} să ajute. Îi plac regulile clare și lucrurile făcute „cum trebuie”. Sensibilități: critica, greșelile proprii și haosul din jur.',
+  balanta: '{Sociabil|Sociabilă}, {blând|blândă} și cu simț estetic, caută armonia și prietenii. Se înțelege ușor cu toată lumea. Sensibilități: conflictele, alegerile grele și nedreptatea.',
+  scorpion: '{Intens|Intensă}, {loial|loială} și foarte {intuitiv|intuitivă}, simte totul profund. Se atașează puternic de oamenii de încredere. Sensibilități: promisiunile încălcate și lipsa de intimitate.',
+  sagetator: '{Vesel|Veselă}, {optimist|optimistă} și {aventuros|aventuroasă}, cu o mie de „de ce”. Iubește libertatea, natura și umorul. Sensibilități: plictiseala, regulile fără explicație și statul pe loc.',
+  capricorn: '{Serios|Serioasă}, {responsabil|responsabilă} și {perseverent|perseverentă}, pare mai mare decât e. Îi plac provocările pe care le poate duce la capăt. Sensibilități: presiunea de a fi {perfect|perfectă} și lipsa de joacă.',
+  varsator: '{Original|Originală}, {independent|independentă} și {inventiv|inventivă}, gândește altfel decât ceilalți. Are nevoie de spațiu și de prieteni. Sensibilități: constrângerile și să fie {comparat|comparată} cu alții.',
+  pesti: '{Visător|Visătoare}, {empatic|empatică} și {artistic|artistică}, cu imaginație bogată. Simte emoțiile celor din jur ca pe ale {lui|ei}. Sensibilități: zgomotul, graba și asprimea.',
+}

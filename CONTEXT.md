@@ -46,3 +46,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 - 2026-11-13: horoscop — gen (f/m) pe fiecare profil și texte cu `{masculin|feminin}` (funcția `g()` din `src/lib/horoscop.js`); copiii cu aceeași zodie se diferențiază prin ascendent (textul lunar al ascendentului) și Lună (`MOON_NEEDS`); login pornit de pe /horoscop întoarce la /horoscop; ciorna lunară programată pe 20 ale lunii.
 - 2026-11-13: noiembrie 2026 aprobat și publicat (la cererea Adelinei).
 - 2026-11-13: horoscop — cardurile familiei arată doar relația pe luna asta (`pair_notes` pe lună + zile comune); pagină nouă /horoscop/familie/<id> cu horoscopul complet al fiecărui membru; linkuri spre horoscopul general pe toate paginile personale.
+- 2026-11-13: horoscop — pagina copilului: „pe larg” (câmp lunar `kids_more`) + portretul fix al copilului pe zodie (`KID_PROFILE`); forme pentru pereche „voi două / amândouă” (`((m|f))`).

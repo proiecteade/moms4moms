@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/components/AuthProvider'
 import { SIGNS, SECTIONS, monthLabel, LEVEL, KIND_ICON } from '@/lib/horoscop'
 
-const ENTRY_FIELDS = ['teaser', 'general', 'love', 'career', 'health', 'moms', 'family', 'kids', 'lucky_days', 'lucky_color', 'lucky_number', 'tip']
+const ENTRY_FIELDS = ['teaser', 'general', 'love', 'career', 'health', 'moms', 'family', 'kids', 'kids_more', 'lucky_days', 'lucky_color', 'lucky_number', 'tip']
 const KINDS = [['retro', 'Retrograd'], ['moon', 'Lună nouă / plină'], ['eclipse', 'Eclipsă'], ['aspect', 'Aspect'], ['ingress', 'Intrare în zodie'], ['shadow', 'Umbră']]
 
 function nextMonth(m) {
@@ -207,6 +207,8 @@ export default function HoroscopAdmin() {
               <div><label>⌂ În familie (pentru cine are zodia asta, în relația cu familia)</label><textarea rows={3} value={draft.family || ''} onChange={e => setDraft({ ...draft, family: e.target.value })} /></div>
               <div><label>☺ Copilul din zodia asta (sfat pentru mamă)</label><textarea rows={3} value={draft.kids || ''} onChange={e => setDraft({ ...draft, kids: e.target.value })} /></div>
             </div>
+            <label>☾ Copilul din zodia asta, pe larg (pagina copilului)</label>
+            <textarea rows={3} value={draft.kids_more || ''} onChange={e => setDraft({ ...draft, kids_more: e.target.value })} />
             <div className="hza-grid3">
               <div><label>Zile bune</label><input value={draft.lucky_days || ''} onChange={e => setDraft({ ...draft, lucky_days: e.target.value })} /></div>
               <div><label>Culoarea lunii</label><input value={draft.lucky_color || ''} onChange={e => setDraft({ ...draft, lucky_color: e.target.value })} /></div>
@@ -257,7 +259,7 @@ export default function HoroscopAdmin() {
             <button className="hza-btn" onClick={() => setMonthDraft(d => ({ ...d, watchouts: [...d.watchouts, { title: '', start: `${cur}-01`, end: `${cur}-01`, kind: 'aspect', level: 'info', text: '' }] }))}>+ Adaugă perioadă</button>
           </div>
 
-          <label style={{ marginTop: 18 }}>Relațiile luna asta (în cardurile familiei, după distanța dintre zodii). [[nume]] = prenumele celuilalt.</label>
+          <label style={{ marginTop: 18 }}>Relațiile luna asta (în cardurile familiei, după distanța dintre zodii). [[nume]] = prenumele celuilalt, ((m|f)) = forma pentru „voi doi” / „voi două”.</label>
           {[['0', 'Aceeași zodie'], ['1', 'Vecini pe roată'], ['2', 'Prieteni buni (sextil)'], ['3', 'Provocare (pătrat)'], ['4', 'Armonie (trigon)'], ['5', 'Ajustări fine'], ['6', 'Opuși (opoziție)']].map(([k, l]) => (
             <div key={k}>
               <label style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 600 }}>{l}</label>
