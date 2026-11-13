@@ -7,12 +7,13 @@ import Footer from './Footer'
 export default function SiteShell({ children }) {
   const pathname = usePathname()
   const isLogin = pathname === '/login'
+  const bare = isLogin || pathname?.startsWith('/horoscop')
 
   return (
     <>
-      {!isLogin && <Nav />}
+      {!bare && <Nav />}
       {children}
-      {!isLogin && <Footer />}
+      {!bare && <Footer />}
     </>
   )
 }

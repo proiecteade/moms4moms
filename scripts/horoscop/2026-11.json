@@ -1,0 +1,259 @@
+{
+  "month": "2026-11",
+  "title": "Luna în care se limpezesc apele",
+  "intro": "Noiembrie începe cu frâna trasă: Mercur și Venus merg amândouă înapoi, așa că discuțiile vechi, promisiunile și sentimentele nelămurite revin la suprafață. Pe 13 noiembrie ambele își reiau drumul, iar a doua jumătate a lunii aduce curaj, energie și chef de planuri mari. Pe scurt: prima parte e pentru recitit și reparat, a doua pentru pornit la drum.",
+  "watchouts": [
+    {
+      "start": "2026-10-24",
+      "end": "2026-11-13",
+      "kind": "retro",
+      "level": "atentie",
+      "title": "Mercur retrograd în Scorpion",
+      "text": "Verifică de două ori mesajele, programările și actele. Nu semna contracte importante și nu cumpăra electronice scumpe dacă poți amâna până după 13 noiembrie."
+    },
+    {
+      "start": "2026-10-03",
+      "end": "2026-11-13",
+      "kind": "retro",
+      "level": "atentie",
+      "title": "Venus retrogradă",
+      "text": "Pot reapărea foști sau certuri vechi. Nu lua decizii definitive în cuplu și amână schimbările mari de look sau cumpărăturile impulsive."
+    },
+    {
+      "start": "2026-11-04",
+      "end": "2026-11-04",
+      "kind": "aspect",
+      "level": "bine",
+      "title": "Soarele se unește cu Mercur",
+      "text": "O zi bună pentru o idee limpede sau o discuție sinceră care descâlcește lucrurile."
+    },
+    {
+      "start": "2026-11-09",
+      "end": "2026-11-09",
+      "kind": "moon",
+      "level": "bine",
+      "title": "Lună Nouă în Scorpion (ora 09:02)",
+      "text": "Moment bun să decizi ce vrei să lași în urmă. Mai degrabă hotărăști decât să începi ceva de la zero, pentru că Mercur e încă retrograd."
+    },
+    {
+      "start": "2026-11-13",
+      "end": "2026-11-13",
+      "kind": "aspect",
+      "level": "bine",
+      "title": "Mercur și Venus își reiau mersul direct",
+      "text": "Se ridică ceața: comunicarea se fluidizează, iar relațiile se pot repara. Rar se întâmplă ca ambele să o facă în aceeași zi."
+    },
+    {
+      "start": "2026-11-14",
+      "end": "2026-11-17",
+      "kind": "aspect",
+      "level": "energie",
+      "title": "Marte se unește cu Jupiter în Leu",
+      "text": "Val de curaj și optimism, vârful fiind pe 16 noiembrie. Bun pentru inițiativă, sport, proiecte creative. Atenție la exagerări: promisiuni prea mari, cheltuieli din entuziasm, viteză la volan."
+    },
+    {
+      "start": "2026-11-18",
+      "end": "2026-11-19",
+      "kind": "aspect",
+      "level": "atentie",
+      "title": "Soarele în tensiune cu Marte și Jupiter",
+      "text": "Orgolii și nervi la purtător. Respiră înainte să răspunzi, mai ales acasă și la serviciu."
+    },
+    {
+      "start": "2026-11-22",
+      "end": "2026-11-22",
+      "kind": "ingress",
+      "level": "bine",
+      "title": "Soarele intră în Săgetător",
+      "text": "Începe sezonul Săgetătorului: mai multă veselie, chef de ieșiri și de planuri de vacanță."
+    },
+    {
+      "start": "2026-11-24",
+      "end": "2026-11-24",
+      "kind": "moon",
+      "level": "energie",
+      "title": "Lună Plină în Gemeni (ora 16:53)",
+      "text": "Vești, conversații și schimbări de perspectivă. Emoțiile pot fi mai intense în jurul acestei date, inclusiv la copii, iar somnul poate fi mai agitat."
+    },
+    {
+      "start": "2026-11-25",
+      "end": "2026-11-25",
+      "kind": "ingress",
+      "level": "bine",
+      "title": "Marte intră în Fecioară",
+      "text": "Energia trece de la spectacol la organizare: liste, curățenie, rutine, sănătate."
+    },
+    {
+      "start": "2026-11-13",
+      "end": "2026-11-30",
+      "kind": "shadow",
+      "level": "info",
+      "title": "Umbra lui Mercur",
+      "text": "Până la final de lună lucrurile încă se așază. Lasă puțin spațiu în plus în planuri și nu te grăbi cu deciziile mari."
+    }
+  ],
+  "sources": [
+    {
+      "name": "AstroCafe — horoscop lunar",
+      "url": "https://www.astrocafe.ro/horoscop/lunar"
+    },
+    {
+      "name": "Observatorul Urseanu — fazele Lunii",
+      "url": "https://astro-urseanu.ro/fazele-lunii/"
+    },
+    {
+      "name": "Observatorul Urseanu — săptămâna astronomică",
+      "url": "https://astro-urseanu.ro/saptamana-astronomica/"
+    },
+    {
+      "name": "CHANI — calendarul astrologic 2026 (verificare date)",
+      "url": "https://chani.com/this-year/key-dates/astrological-key-dates-of-2026"
+    }
+  ],
+  "entries": {
+    "berbec": {
+      "teaser": "Curaj, pasiune și bani puși în ordine.",
+      "general": "Prima parte a lunii te întoarce la subiecte pe care le credeai închise: bani comuni, datorii, promisiuni făcute altora. După 13 noiembrie, Marte, planeta ta, se întâlnește cu Jupiter și îți aprinde scânteia: ai chef de joacă, de creat și de ieșit din rutină.",
+      "love": "Mijlocul lunii e romantic și jucăuș: o surpriză, o ieșire în doi sau un flirt care te înviorează. Ai grijă doar să nu transformi orice discuție într-o competiție.",
+      "career": "Facturile, taxele și ratele cer atenție la început de lună, iar o problemă veche de bani sau de moștenire poate reveni. După 16 noiembrie ai energie pentru un proiect personal, iar după 22 merg mai bine colaborările cu cei din străinătate. Nu cheltui din entuziasm.",
+      "health": "Energia vine în valuri. Mișcarea te ajută să descarci tensiunea, dar nu forța: Marte cu Jupiter te face să crezi că poți orice.",
+      "moms": "Ești mama care inventează jocuri pe loc, iar luna asta copiii o să te iubească pentru asta. Pune energia de la mijlocul lunii într-o activitate cu ei: un atelier de pictură, o ieșire în parc, o petrecere în pijamale. Când simți că explodezi, ia cinci minute doar pentru tine.",
+      "lucky_days": "4, 16, 24",
+      "lucky_color": "roșu rubin",
+      "lucky_number": "9",
+      "tip": "Alege-ți bătăliile: nu orice provocare merită răspuns."
+    },
+    "taur": {
+      "teaser": "Relațiile trec un test, iar tu ieși mai puternică.",
+      "general": "Scorpionul, zodia opusă ție, ține reflectorul pe relații. Conversații neterminate și neînțelegeri vechi pot reveni ca să fie, în sfârșit, lămurite. Spre final de lună, Luna Plină îți atrage atenția spre bani și spre cât de mult te prețuiești.",
+      "love": "Nu mai face compromisuri în tăcere: loialitatea nu înseamnă să înghiți tot. O discuție sinceră după 13 noiembrie poate apropia cuplul mai mult decât crezi.",
+      "career": "Până pe 14 noiembrie pot apărea fricțiuni cu colegele, așa că pune totul pe hârtie. În a doua parte a lunii banii se mișcă mai bine și apar surse noi de câștig.",
+      "health": "Stresul se duce la gât și la umeri. Odihna, o baie caldă și mesele la ore fixe te repun pe picioare.",
+      "moms": "Ești stâlpul casei, dar luna asta ai voie să ceri ajutor. Împarte sarcinile cu partenerul sau cu bunicii fără să te simți vinovată. Copiii învață din exemplul tău că și mamele au limite, și asta e un lucru bun.",
+      "lucky_days": "13, 20, 24",
+      "lucky_color": "verde smarald",
+      "lucky_number": "6",
+      "tip": "Spune ce simți înainte să se adune."
+    },
+    "gemeni": {
+      "teaser": "Rutine noi și o Lună Plină doar a ta.",
+      "general": "Mercur, planeta ta, e retrograd până pe 13 noiembrie, așa că e momentul ideal să vezi ce obiceiuri îți mănâncă timpul și energia. Pe 24 noiembrie, Luna Plină cade chiar în zodia ta: îți dai seama ce vrei cu adevărat și cum vrei să fii văzută.",
+      "love": "După 22 noiembrie, apropierea și comunicarea devin prioritare. Nu trebuie să te ridici la așteptările nimănui, fii doar tu.",
+      "career": "Început de lună aglomerat, cu mult de lucru și colegi care îți cer ajutorul. Pune limite, ca să nu te epuizezi. Ordinea făcută acum în program și în e-mailuri te eliberează pentru decembrie.",
+      "health": "Somnul e cheia lunii. Lasă telefonul deoparte seara, mai ales în jurul Lunii Pline, când mintea merge pe repede-înainte.",
+      "moms": "Ai o mie de taburi deschise în minte, așa că alege o singură rutină care să vă ușureze diminețile: hainele pregătite de seara, un mic-dejun simplu, aceeași melodie la plecare. Copiii se liniștesc când știu ce urmează, iar tu câștigi zece minute de liniște.",
+      "lucky_days": "13, 22, 24",
+      "lucky_color": "galben lămâie",
+      "lucky_number": "5",
+      "tip": "Mai puține lucruri, făcute mai bine."
+    },
+    "rac": {
+      "teaser": "Bucurie, creativitate și acasă mai liniștit.",
+      "general": "Scorpionul îți activează zona bucuriei, a creativității și a copiilor. Luna Nouă din 9 noiembrie poate aduce o idee frumoasă sau un proiect creativ. Subiectele legate de casă și familie se limpezesc după ce Mercur și Venus merg din nou înainte.",
+      "love": "Romantismul revine în viața ta. Nu amâna momentele frumoase până termini toate treburile, pentru că treburile nu se termină niciodată.",
+      "career": "Prima săptămână e bună pentru casă: un obiect util cumpărat, lucruri de care nu mai ai nevoie vândute, mici îmbunătățiri. Apoi ai inspirație pentru proiecte în care îți pui sufletul.",
+      "health": "Emoțiile se simt în stomac. Mâncarea caldă, ceaiurile și plimbările scurte te echilibrează.",
+      "moms": "E luna ta de mamă jucăușă: e momentul perfect să faceți împreună ceva creativ, de la un album foto la decorațiunile de Crăciun. Bucuria nu trebuie câștigată după ce faci curat. Lasă vasele în chiuvetă o seară și construiți un fort din pături.",
+      "lucky_days": "9, 13, 22",
+      "lucky_color": "argintiu",
+      "lucky_number": "2",
+      "tip": "Fericirea nu se amână."
+    },
+    "leu": {
+      "teaser": "Marte și Jupiter în zodia ta: momentul să strălucești.",
+      "general": "Este luna ta! Marte și Jupiter se întâlnesc în Leu pe 16 noiembrie și îți dau un val de încredere și curaj. Înainte de mișcările mari, verifică însă dacă alegi pentru tine sau pentru aprobarea altora.",
+      "love": "Ești magnetică și se vede. În familie pot avea loc discuții importante, iar un secret ieșit la iveală te poate tulbura: alege cu grijă cu cine vorbești. Ai grijă la orgolii în jurul datei de 18 noiembrie.",
+      "career": "Dacă ai un proiect, o idee de business sau vrei să ceri o promovare, mijlocul lunii e ideal. Pune limite realiste, pentru că energia de acum te poate face să-ți asumi prea mult.",
+      "health": "Ai multă energie, dar nu o arde pe toată deodată. Începe sportul treptat, nu în forță.",
+      "moms": "Copiii te văd ca pe o supereroină luna asta, așa că folosește energia ca să le arăți că visurile se pot face. Implică-i într-un proiect al tău, oricât de mic. Și nu uita că nu trebuie să fii perfectă ca să fii o mamă minunată.",
+      "lucky_days": "14, 16, 22",
+      "lucky_color": "auriu",
+      "lucky_number": "1",
+      "tip": "Ai încredere în ambiția ta, fără să aștepți aplauze."
+    },
+    "fecioara": {
+      "teaser": "Vorbește, nu tăcea: claritatea vine după 13.",
+      "general": "Mercur, planeta ta, retrograd până pe 13 noiembrie, aduce înapoi discuții, contracte și neînțelegeri vechi. E bine să le lămurești acum, în loc să taci ca să eviți conflictul. Pe 25 noiembrie, Marte intră în zodia ta și îți dă inițiativă și energie.",
+      "love": "Spune clar ce îți lipsește. Partenerul nu ghicește, iar tu nu trebuie să duci totul singură.",
+      "career": "De la 14 noiembrie pot apărea cheltuieli mai mari, poate pentru un curs sau o călătorie. Recitește e-mailurile importante, iar spre final de lună pune în practică un plan amânat.",
+      "health": "Stomacul și somnul sunt sensibile la stres. Ritualurile simple de seară, cum ar fi un ceai sau un duș cald, te ajută mult.",
+      "moms": "Planificatoarea din tine are luna asta voie să lase ceva neplanificat. Copiilor nu le trebuie o casă impecabilă, ci o mamă prezentă. Fă o listă cu trei lucruri importante pe zi, nu cu douăzeci, iar restul poate aștepta.",
+      "lucky_days": "4, 13, 25",
+      "lucky_color": "bej cald",
+      "lucky_number": "5",
+      "tip": "Spune ce gândești, cu blândețe, dar spune."
+    },
+    "balanta": {
+      "teaser": "Venus își reia drumul, iar tu îți reiei puterea.",
+      "general": "Venus, planeta ta, a fost retrogradă în zodia ta și își reia mersul pe 13 noiembrie. Ai trecut printr-o reevaluare a relațiilor, a banilor și a felului în care te vezi. Acum știi mai bine ce contează pentru tine.",
+      "love": "După 13 noiembrie, relațiile se încălzesc și se pot repara. Echilibrul înseamnă să-ți pui pe cântar și propriile nevoi, nu doar pe ale celorlalți.",
+      "career": "Banii te preocupă la început de lună, dar veniturile din muncă acoperă cheltuielile. După 14 noiembrie ai mult mai multă energie și drumuri dese: alege-le pe cele care contează și odihnește-te între ele.",
+      "health": "Ascultă-ți corpul și dă-i odihnă. Rinichii și spatele îți cer multă apă și pauze.",
+      "moms": "Mereu împaci pe toată lumea, dar luna asta pune-te pe listă. Un sfert de oră de cafea în liniște, o seară cu prietenele, un mic răsfăț. O mamă care își umple paharul are mai multă răbdare pentru toți ceilalți.",
+      "lucky_days": "13, 22, 28",
+      "lucky_color": "roz pudrat",
+      "lucky_number": "7",
+      "tip": "Și nevoile tale contează."
+    },
+    "scorpion": {
+      "teaser": "Închei un capitol și renaști mai puternică.",
+      "general": "Ești în centrul lunii: Soarele, Mercur și Lună Nouă, toate în zodia ta. Ai ocazia să închei un capitol și să te redefinești. Comunicarea se îmbunătățește după 13 noiembrie, iar la mijloc de lună ești mai vizibilă la serviciu.",
+      "love": "Discuțiile pe care le credeai încheiate se pot redeschide, iar multe se lămuresc abia după 24 noiembrie. Lasă trecutul să plece. Luna Nouă din 9 noiembrie e un moment bun să-ți spui intenția.",
+      "career": "Ai vizibilitate și șanse de recunoaștere. Păstrează-ți calmul cu șefii și cu cei care au putere de decizie, mai ales în jurul datelor de 16–19 noiembrie.",
+      "health": "E o lună intensă emoțional. Scrisul, plimbările și somnul suficient te ajută să eliberezi ce ai strâns.",
+      "moms": "E luna ta aniversară, deci sărbătorește-te! Lasă-i pe copii să te răsfețe cu un desen, o prăjitură strâmbă sau o îmbrățișare lungă. Iartă-ți micile greșeli de mamă: nu ești suma lor.",
+      "lucky_days": "9, 13, 16",
+      "lucky_color": "vișiniu",
+      "lucky_number": "8",
+      "tip": "Ce lași să plece îți face loc pentru ce vine."
+    },
+    "sagetator": {
+      "teaser": "Din 22 noiembrie începe sezonul tău.",
+      "general": "Începutul lunii e mai interiorizat: apar emoții nelămurite și ai nevoie de liniște. Pe 22 noiembrie Soarele intră în zodia ta și îți readuce optimismul. Luna Plină din 24 pune în centru relațiile și libertatea ta.",
+      "love": "În jurul datei de 24 noiembrie, o relație ajunge într-un punct important. Ai nevoie atât de apropiere, cât și de spațiu, așa că spune-le pe amândouă.",
+      "career": "Pot apărea tensiuni la serviciu: gândirea calmă și obiectivă rezolvă mai mult decât reacția la cald. Acțiunile discrete reușesc. După Luna Nouă din 9 noiembrie, renunță la obiceiurile care te țin pe loc.",
+      "health": "Prima parte a lunii cere odihnă, iar a doua îți readuce energia. Nu sări direct de la canapea la maraton.",
+      "moms": "Ești mama aventurilor, iar de la final de lună ai energie pentru ieșiri, excursii scurte și planuri de iarnă. Până atunci, bucură-te de serile liniștite acasă, cu povești și pături. Copiii își amintesc mai mult momentele simple decât pe cele grandioase.",
+      "lucky_days": "9, 22, 24",
+      "lucky_color": "mov",
+      "lucky_number": "3",
+      "tip": "Odihna de acum e combustibilul pentru decembrie."
+    },
+    "capricorn": {
+      "teaser": "Oameni buni în jurul tău și pași siguri.",
+      "general": "Luna te face să te uiți la prietenii, colegi și grupurile din care faci parte. Rămân lângă tine cei cu aceleași valori. Banii comuni și investițiile pe termen lung cer planuri atente, iar pașii mici și siguri te duc departe.",
+      "love": "Calitatea contează mai mult decât cantitatea. O seară liniștită în doi valorează mai mult decât o petrecere mare.",
+      "career": "Relațiile cu șefii și cu instituțiile sunt foarte active: ascultă și ce îți cer ceilalți. Alianțele profesionale se pot reface sau consolida după 13 noiembrie.",
+      "health": "Genunchii și spatele simt oboseala. Întinderile, o pernă bună și pauzele de la birou fac minuni.",
+      "moms": "Organizezi totul ca un general, dar luna asta caută-ți „tribul”: alte mame cu care să împarți sfaturi, drumuri la grădiniță sau o cafea. Comunitatea, ca moms4moms, te ajută mai mult decât crezi. Nu trebuie să le duci pe toate singură.",
+      "lucky_days": "13, 16, 28",
+      "lucky_color": "gri antracit",
+      "lucky_number": "4",
+      "tip": "Înconjoară-te de oameni care te ridică."
+    },
+    "varsator": {
+      "teaser": "Cariera se reașază, iar dragostea surprinde.",
+      "general": "Te gândești din nou la cariera ta și la proiectele lăsate neterminate. Apar ocazii de colaborare, dar evită luptele pentru putere. În jurul datei de 24 noiembrie, creativitatea și romantismul primesc un impuls, iar surprizele sunt posibile.",
+      "love": "Luna Plină din 24 aduce scântei: o declarație, o ieșire spontană, o idee nebunească pe care o faceți împreună.",
+      "career": "Pot apărea controverse cu șefii: rezolvă-le pașnic, chiar dacă ai dreptate. Marte și Jupiter, față în față cu zodia ta, aduc oameni cu orgolii mari. De la 14 noiembrie apar mai multe drumuri, pentru muncă sau plăcere.",
+      "health": "Ai nevoie de aer, de mișcare și de oameni. O plimbare în frig îți limpezește mintea mai bine decât orice.",
+      "moms": "Ești mama cu idei originale, iar luna asta copiii au nevoie de ele. Încearcă ceva nou împreună: un experiment de știință în bucătărie, un joc inventat, o seară fără ecrane. Succesul de mamă se măsoară în râsete, nu în like-uri.",
+      "lucky_days": "13, 24, 29",
+      "lucky_color": "albastru electric",
+      "lucky_number": "11",
+      "tip": "Definește succesul în felul tău."
+    },
+    "pesti": {
+      "teaser": "Un capitol nou începe în suflet și în minte.",
+      "general": "Te gândești la ce crezi, la ce vrei să înveți și unde ai vrea să călătorești. După Luna Nouă din 9 noiembrie se poate deschide un capitol nou: un curs, o carte, o întrebare spirituală. Spre final de lună, casa, familia și cuplul trec pe primul plan.",
+      "love": "Din 25 noiembrie, parteneriatul primește mai multă atenție. Spune ce visezi, pentru că celălalt poate visa alături de tine.",
+      "career": "Banii sunt tema lunii: facturi, taxe, datorii vechi sau ajutor pentru cineva drag. Ești productivă dacă îți pui limite practice, iar visele mari au nevoie de pași mici, scriși în calendar.",
+      "health": "Ești ca un burete pentru emoțiile celor din jur. Fă-ți timp pentru liniște, muzică sau rugăciune, ca să le dai drumul.",
+      "moms": "Sensibilitatea ta e un superpower de mamă: simți ce are copilul înainte să spună. Luna asta, creează un mic ritual de seară cu el, cu o poveste, o întrebare despre ziua lui și o îmbrățișare. Și nu uita: ai voie să fii și tu îngrijită.",
+      "lucky_days": "9, 13, 25",
+      "lucky_color": "turcoaz",
+      "lucky_number": "12",
+      "tip": "Visează mare, pășește mic."
+    }
+  }
+}

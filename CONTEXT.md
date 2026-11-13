@@ -3,7 +3,7 @@
 > Citește-l la începutul fiecărui chat despre acest repo; actualizează-l la final.
 
 ## Ce e
-Platforma de recomandări de medici (Next.js 16 + Supabase), plus /unde-iesim, /splitbill și /secretsanta.
+Platforma de recomandări de medici (Next.js 16 + Supabase), plus /unde-iesim, /splitbill, /secretsanta și /horoscop (vezi HOROSCOP.md).
 
 - **Adresă:** https://moms4moms.ro
 - **Repo:** proiecteade/moms4moms (branch main)
@@ -41,3 +41,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 - 2026-11-12: adăugat „Unde sunt cheile” și „Backup”.
 - 2026-11-12: securitate — activat RLS pe `contact_messages` (alertă critică Supabase). Vizitatorii doar trimit mesaje; citire/marcare/ștergere doar adminul (`app_metadata.role='admin'`). Șterse 3 politici vechi prin care orice cont logat citea mesajele. SQL: `supabase/contact-messages-rls.sql`.
 - 2026-11-12: securitate — moderarea doar pentru admin: la `doctors`, `reviews`, `suggestions`, `site_feedback` doar adminul (`public.is_admin()`) vede ce e în așteptare, aprobă, modifică, șterge. Fiecare își poate șterge doar recenziile și recomandările proprii (înainte oricine, fără cont, ștergea orice recomandare). SQL: `supabase/admin-only-moderation.sql`. De verificat: tabelul `restaurants` nu există în baza de date, deși „Unde ieșim” îl folosește.
+- 2026-11-13: /horoscop: pagină publică cu design mistic (12 zodii, pagină pe zodie cu secțiunea „Pentru mămici”, „Atenție pentru toți” cu perioade, dicționarul planetelor) + admin la /horoscop/admin (editare, aprobare pe zodie, publicare pe lună, acces pentru încă un admin prin `horoscope_admins`). Tabele: `horoscope_months`, `horoscope_entries`, `horoscope_admins` (SQL: `supabase/horoscop-schema.sql`). Noiembrie 2026 importat ca ciornă. Nav/Footer ascunse pe /horoscop (SiteShell). Reguli: HOROSCOP.md.

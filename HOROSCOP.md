@@ -1,0 +1,48 @@
+# HOROSCOP.md — cum se face horoscopul lunar (/horoscop)
+
+## Pe scurt
+- Pagina publică: https://moms4moms.ro/horoscop (+ /horoscop/<zodie>)
+- Adminul: https://moms4moms.ro/horoscop/admin (Adelina + cine e în tabelul `horoscope_admins`)
+- Date: Supabase, tabelele `horoscope_months` (luna, intro, „Atenție pentru toți”, surse) și `horoscope_entries` (12 zodii).
+- Publicul vede doar lunile cu `status = 'published'`. Ciornele se văd doar de admin, cu `?preview=1`.
+
+## Fluxul lunar
+1. În jurul datei de 20 a lunii, Claude citește sursele pentru luna următoare și scrie ciorna (`scripts/horoscop/AAAA-LL.json` → import în Supabase ca `draft`).
+2. Adminii citesc, editează și aprobă fiecare zodie în /horoscop/admin.
+3. Adminii apasă „Publică luna”. Până atunci, pe site rămâne luna precedentă.
+4. Claude nu publică niciodată singur și nu suprascrie o zodie aprobată (importul atinge doar rândurile `draft`).
+
+## Surse (alese de Adelina)
+- https://www.astrocafe.ro/horoscop/lunar: temele lunii pe zodii
+- https://astro-urseanu.ro/fazele-lunii/: datele și orele Lunii Noi și ale Lunii Pline. Coloana lor arată constelația astronomică, iar zodia astrologică se ia din calendarul astrologic.
+- https://astro-urseanu.ro/saptamana-astronomica/: ce fac planetele pe cer, ca să interpretăm impactul
+- Pentru verificarea datelor (retrograde, intrări în zodii, conjuncții): un calendar astrologic, de exemplu CHANI.
+
+## Reguli de scris
+- Rezumat în cuvintele noastre. Nu copiem fraze din surse.
+- Sursele NU apar pe pagina publică, ci doar în admin.
+- Ton: cald, practic, de la mamă la mamă. Secțiunea „Pentru mămici” e obligatorie la fiecare zodie, cu un sfat concret pentru viața cu copiii.
+- Secțiuni: teaser, energia lunii, dragoste, carieră și bani, sănătate și energie, pentru mămici, zile bune, culoare, cifră, sfatul lunii.
+- „Atenție pentru toți” = perioadele valabile pentru toate zodiile (retrograde, Lună Nouă/Plină cu ora, eclipse, conjuncții importante, intrări în zodii).
+- Fără sfaturi medicale. Fără predicții sigure. Totul are scop de divertisment.
+
+## Dicționarul planetelor (cum interpretăm)
+- Soarele: esența, eul, voința, vitalitatea
+- Luna: emoțiile, instinctele, subconștientul, nevoile
+- Mercur: comunicarea, gândirea, rațiunea, învățarea
+- Venus: dragostea, frumusețea, armonia, relațiile, valorile
+- Marte: energia, acțiunea, dorința, impulsivitatea, agresivitatea
+- Jupiter: expansiunea, norocul, optimismul, creșterea, încrederea
+- Saturn: responsabilitatea, structura, limitele, lecțiile, maturitatea
+- Uranus: schimbarea, inovația, revoluția, originalitatea, independența
+- Neptun: visarea, imaginația, spiritualitatea, iluziile, confuzia
+- Pluton: transformarea, puterea, moartea și renașterea
+- Lilith (Luna Neagră): umbrele, atracțiile interzise, instinctele refulate
+- Chiron: rana interioară, vindecarea, învățarea prin experiență
+- Punctele calculate (ascendent, descendent, mijlocul cerului): se calculează din harta natală
+
+## Fișiere
+- `src/app/horoscop/`: paginile publice, adminul și designul (`horoscop.css`)
+- `src/lib/horoscop.js`: zodiile, constelațiile, planetele
+- `scripts/horoscop/AAAA-LL.json` + `to-sql.js`: ciorna lunii și importul ei
+- `supabase/horoscop-schema.sql`: tabelele și regulile de acces
