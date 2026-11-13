@@ -31,6 +31,7 @@
 - Pagina personală arată în cardurile familiei doar relația (potrivire + `pair_notes` + zilele comune); horoscopul complet al fiecăruia e la /horoscop/familie/<id>.
 - Un copil / mai mulți copii (în „Tu ca mamă”): `<<forma pentru un singur copil|forma pentru mai mulți>>`. În forma de singular, `[[nume]]` = prenumele copilului și `[[masculin|feminin]]` = genul lui (ex. `<<Implică-[[l|o]] pe [[nume]]|Implică-i>>`). Pe paginile publice apare forma de plural.
 - Copiii (și partenerul) cu aceeași zodie se diferențiază prin ascendent (se arată și textul lunar al zodiei ascendentului). La copii mai apare și ce îi liniștește, după zodia Lunii (texte fixe în `MOON_NEEDS`).
+- „Idee de activitate luna asta” (`kids_activity`): 2 fraze, o activitate concretă pentru copilul din zodia respectivă, potrivită lunii și sezonului, cu data cea mai bună (pagina copilului).
 - Fără sfaturi medicale. Fără predicții sigure. Totul are scop de divertisment.
 
 ## Dicționarul planetelor (cum interpretăm)

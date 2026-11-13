@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/components/AuthProvider'
 import { SIGNS, SECTIONS, monthLabel, LEVEL, KIND_ICON } from '@/lib/horoscop'
 
-const ENTRY_FIELDS = ['teaser', 'general', 'love', 'career', 'health', 'moms', 'family', 'kids', 'kids_more', 'lucky_days', 'lucky_color', 'lucky_number', 'tip']
+const ENTRY_FIELDS = ['teaser', 'general', 'love', 'career', 'health', 'moms', 'family', 'kids', 'kids_more', 'kids_activity', 'lucky_days', 'lucky_color', 'lucky_number', 'tip']
 const KINDS = [['retro', 'Retrograd'], ['moon', 'Lună nouă / plină'], ['eclipse', 'Eclipsă'], ['aspect', 'Aspect'], ['ingress', 'Intrare în zodie'], ['shadow', 'Umbră']]
 
 function nextMonth(m) {
@@ -209,6 +209,8 @@ export default function HoroscopAdmin() {
             </div>
             <label>☾ Luna asta pentru copilul din zodia asta, pe larg (pagina copilului în varianta personalizată; 5 fraze)</label>
             <textarea rows={3} value={draft.kids_more || ''} onChange={e => setDraft({ ...draft, kids_more: e.target.value })} />
+            <label>✦ Idee de activitate luna asta pentru copilul din zodia asta (2 fraze)</label>
+            <textarea rows={2} value={draft.kids_activity || ''} onChange={e => setDraft({ ...draft, kids_activity: e.target.value })} />
             <div className="hza-grid3">
               <div><label>Zile bune</label><input value={draft.lucky_days || ''} onChange={e => setDraft({ ...draft, lucky_days: e.target.value })} /></div>
               <div><label>Culoarea lunii</label><input value={draft.lucky_color || ''} onChange={e => setDraft({ ...draft, lucky_color: e.target.value })} /></div>

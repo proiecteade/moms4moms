@@ -74,6 +74,7 @@ export default async function MembruPage({ params, searchParams }) {
             {ascE?.kids && <article className="hz-panel is-asc"><h2><span className="hz-panel-icon">↑</span>Prin ascendentul în {SIGN_BY_SLUG[p.asc_sign].name}</h2><p>{G(ascE.kids)}</p></article>}
             {KID_PROFILE[p.sun_sign] && <article className="hz-panel"><h2><span className="hz-panel-icon">{s.glyph}</span>{name}, ca {s.name}</h2><p>{G(KID_PROFILE[p.sun_sign])}</p></article>}
             {moon && <article className="hz-panel is-moms"><h2><span className="hz-panel-icon">☽</span>Ce {pg === 'm' ? 'îl' : 'o'} liniștește · Luna în {moon.name}</h2><p>{G(MOON_NEEDS[p.moon_sign])}</p></article>}
+            {e.kids_activity && <article className="hz-panel is-asc"><h2><span className="hz-panel-icon">✦</span>Idee de activitate luna asta</h2><p>{G(e.kids_activity)}</p></article>}
           </div>
           <section className="hz-lucky">
             {e.lucky_days && <div><span>Zile bune</span><strong>{e.lucky_days}</strong></div>}
