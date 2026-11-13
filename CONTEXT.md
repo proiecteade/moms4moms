@@ -48,3 +48,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 - 2026-11-13: horoscop — cardurile familiei arată doar relația pe luna asta (`pair_notes` pe lună + zile comune); pagină nouă /horoscop/familie/<id> cu horoscopul complet al fiecărui membru; linkuri spre horoscopul general pe toate paginile personale.
 - 2026-11-13: horoscop — pagina copilului: „pe larg” (câmp lunar `kids_more`) + portretul fix al copilului pe zodie (`KID_PROFILE`); forme pentru pereche „voi două / amândouă” (`((m|f))`).
 - 2026-11-13: horoscop — pe pagina copilului, caseta „Idee de activitate luna asta” (câmp lunar `kids_activity`).
+- 2026-11-13: login din /horoscop → întoarcere garantată pe /horoscop (localStorage `post_login`, citit în AuthProvider), chiar dacă Supabase trimite pe pagina principală; mesaj de login specific pe /horoscop.

@@ -14,13 +14,30 @@ export function AuthProvider({ children }) {
     const supabase = createClient()
     if (!supabase) { setLoading(false); return }
 
+    // După login cu Google/Facebook: întoarce-te pe pagina de pe care ai plecat (ex. /horoscop)
+    function goBackAfterLogin(session) {
+      if (!session?.user) return
+      try {
+        const raw = localStorage.getItem('post_login')
+        if (!raw) return
+        localStorage.removeItem('post_login')
+        const { to: dest, at } = JSON.parse(raw)
+        if (!dest || Date.now() - at > 15 * 60 * 1000) return
+        if (dest.startsWith('/') && !dest.startsWith('//') && dest !== window.location.pathname + window.location.search) {
+          window.location.replace(dest)
+        }
+      } catch {}
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
+      goBackAfterLogin(session)
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null)
+      if (event === 'SIGNED_IN') goBackAfterLogin(session)
       if (event === 'SIGNED_IN' && !session?.user?.user_metadata?.fb_profile_url) {
         const fbIdentity = session?.user?.identities?.find(i => i.provider === 'facebook')
         if (fbIdentity) {

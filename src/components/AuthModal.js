@@ -17,16 +17,23 @@ const FacebookIcon = () => (
 )
 
 export default function AuthModal({ onClose }) {
+  const onHoroscop = typeof window !== 'undefined' && window.location.pathname.startsWith('/horoscop')
+  // Țin minte unde să ne întoarcem după login, chiar dacă Supabase ne trimite pe pagina principală
+  function rememberReturn() {
+    try { localStorage.setItem('post_login', JSON.stringify({ to: onHoroscop ? '/horoscop' : window.location.pathname + window.location.search, at: Date.now() })) } catch {}
+  }
   const redirectTo = typeof window !== 'undefined'
     ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(window.location.pathname.startsWith('/horoscop') ? '/horoscop' : window.location.pathname)}`
     : ''
 
   async function signInWithGoogle() {
+    rememberReturn()
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo } })
   }
 
   async function signInWithFacebook() {
+    rememberReturn()
     const supabase = createClient()
     await supabase.auth.signInWithOAuth({
       provider: 'facebook',
@@ -43,7 +50,9 @@ export default function AuthModal({ onClose }) {
         </div>
         <div className="modal-body">
           <p style={{ fontSize: 14, color: 'var(--ink-light)', marginBottom: '1.5rem', lineHeight: 1.6 }}>
-            Ai nevoie de un cont pentru a recomanda medici și a lăsa comentarii.
+            {onHoroscop
+              ? 'Intră în cont ca să vezi horoscopul personalizat pentru tine și familia ta.'
+              : 'Ai nevoie de un cont pentru a recomanda medici și a lăsa comentarii.'}
           </p>
           <button className="auth-modal-facebook-btn" onClick={signInWithFacebook}>
             <FacebookIcon />
