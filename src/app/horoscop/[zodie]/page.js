@@ -36,9 +36,9 @@ export default async function ZodiePage({ params, searchParams }) {
       {preview && month && month.status !== 'published' && (
         <div className="hz-preview-bar">Previzualizare — ciorna nu e încă publicată. <Link href="/horoscop/admin">Înapoi la admin</Link></div>
       )}
-      <nav className="hz-crumbs">
+      <div className="hz-crumbs">
         <Link href={`/horoscop${query}`}>← Toate zodiile</Link>
-      </nav>
+      </div>
 
       <section className="hz-sign-hero">
         <div className="hz-sign-art">
@@ -93,10 +93,10 @@ export default async function ZodiePage({ params, searchParams }) {
         </div>
       </section>
 
-      <nav className="hz-prevnext">
+      <div className="hz-prevnext">
         <Link href={`/horoscop/${prev.slug}${query}`}>← {prev.glyph} {prev.name}</Link>
         <Link href={`/horoscop/${next.slug}${query}`}>{next.name} {next.glyph} →</Link>
-      </nav>
+      </div>
     </div>
   )
 }
