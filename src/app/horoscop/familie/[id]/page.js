@@ -32,7 +32,8 @@ export default async function MembruPage({ params, searchParams }) {
   const s = SIGN_BY_SLUG[p.sun_sign]
   const el = ELEMENTS[s.element]
   const pg = genderOf(p, me)
-  const G = (t) => g(t, pg)
+  const kids = profiles.filter(x => x.relation === 'copil').map(x => ({ name: x.name, gender: genderOf(x, me) }))
+  const G = (t) => g(t, pg, kids)
   const name = firstName(p.name)
   const e = by[p.sun_sign]
   const isKid = p.relation === 'copil'

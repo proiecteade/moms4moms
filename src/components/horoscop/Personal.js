@@ -32,7 +32,8 @@ export default function Personal({ month, entries, profiles, query }) {
   const el = ELEMENTS[sign.element]
   const first = firstName(me.name)
   const mg = genderOf(me)
-  const G = (t) => g(t, mg)
+  const kids = family.filter(p => p.relation === 'copil').map(p => ({ name: p.name, gender: genderOf(p, me) }))
+  const G = (t) => g(t, mg, kids)
   const famSigns = profiles.map(p => ({ name: p.id === me.id ? 'tu' : firstName(p.name), signs: [p.sun_sign, p.asc_sign].filter(Boolean) }))
 
   return (

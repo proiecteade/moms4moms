@@ -194,7 +194,7 @@ export default function HoroscopAdmin() {
           </div>
 
           {draft && <div style={{ marginTop: 10 }}>
-            <p style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 8 }}>Pentru masculin/feminin scrie între acolade: {'{puternic|puternică}'}, {'{Micul|Micuța}'}, {'{îl|o}'}. Pe site apare automat forma potrivită fiecărei persoane.</p>
+            <p style={{ fontSize: 13, color: 'var(--ink-faint)', marginTop: 8 }}>Pentru masculin/feminin scrie între acolade: {'{puternic|puternică}'}, {'{Micul|Micuța}'}, {'{îl|o}'}. Pentru un copil / mai mulți copii: {'<<[[nume]] învață|Copiii învață>>'} ([[nume]] și {'[[l|o]]'} = copilul, când e unul singur). Pe site apare automat forma potrivită fiecărei persoane.</p>
             <label>Teaser (fraza de pe card)</label>
             <input value={draft.teaser || ''} onChange={e => setDraft({ ...draft, teaser: e.target.value })} />
             {SECTIONS.map(sec => (

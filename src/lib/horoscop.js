@@ -117,8 +117,29 @@ export const RETRO_NOTE = 'Retrograd = planeta pare că merge înapoi pe cer. Te
 export const ASCENDANT_URL = 'https://www.astrosofa.com/horoscope/ascendant'
 
 // Masculin / feminin: în texte scriem {forma masculină|forma feminină}
-export function g(text, gender = 'f') {
-  return (text || '').replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (gender === 'm' ? m : f))
+// Număr de copii: <<cu un singur copil|cu mai mulți>>; în forma de singular, [[nume]] și [[m|f]] = copilul
+function splitTop(inner) {
+  // împarte „unu|multe” la primul | care nu e în interiorul [[...]]
+  let depth = 0
+  for (let i = 0; i < inner.length; i++) {
+    if (inner.startsWith('[[', i)) { depth++; i++; continue }
+    if (inner.startsWith(']]', i)) { depth--; i++; continue }
+    if (inner[i] === '|' && depth === 0) return [inner.slice(0, i), inner.slice(i + 1)]
+  }
+  return [inner, inner]
+}
+
+export function g(text, gender = 'f', kids = null) {
+  const t = (text || '').replace(/<<([\s\S]*?)>>/g, (_, inner) => {
+    const [one, many] = splitTop(inner)
+    if (kids && kids.length === 1) {
+      const k = kids[0]
+      return one.replace(/\[\[nume\]\]/g, (k.name || '').trim().split(' ')[0])
+        .replace(/\[\[([^\[\]|]*)\|([^\[\]|]*)\]\]/g, (__, m, f) => ((k.gender || 'm') === 'm' ? m : f))
+    }
+    return many
+  })
+  return t.replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (gender === 'm' ? m : f))
 }
 
 // Ce liniștește un copil, după zodia Lunii (fix, nu se schimbă lunar)
