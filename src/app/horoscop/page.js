@@ -4,6 +4,7 @@ import { loadMonth, listPublishedMonths } from '@/lib/horoscopData'
 import Constellation from '@/components/horoscop/Constellation'
 import Watchouts from '@/components/horoscop/Watchouts'
 import FindSign from '@/components/horoscop/FindSign'
+import Today from '@/components/horoscop/Today'
 import Personal from '@/components/horoscop/Personal'
 import ProfileEditor from '@/components/horoscop/ProfileEditor'
 import { createClient } from '@/lib/supabase/server'
@@ -75,6 +76,7 @@ export default async function HoroscopPage({ searchParams }) {
           <a href="#zodii" className="hz-btn">Alege-ți zodia ✦</a>
           <a href="#atentie" className="hz-btn hz-btn-ghost">Ce e valabil pentru toți</a>
         </div>
+        <Today items={month.watchouts || []} />
         <FindSign query={query} />
         {!user && <p className="hzp-cta">✨ <HzLoginLink>Intră în cont</HzLoginLink> și primești horoscopul personalizat pentru tine și familia ta, cu ascendent și compatibilități.</p>}
       </section>

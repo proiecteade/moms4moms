@@ -54,3 +54,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 - 2026-11-13: eroare „This page couldn't load” pe /horoscop pentru 5 conturi care puseseră două persoane „Eu”: am mutat al doilea „Eu” pe relația nouă `altcineva` („Alt membru”), formularul nu mai permite două „Eu”, inserările întorc id (fără dubluri la reîncercare), pagină de eroare prietenoasă `src/app/horoscop/error.js`.
 - 2026-11-13: dubla salvare în formularul de familie (butonul se reactiva înainte de redirect) → persoane dublate; blocat cu `lock` + insert care întoarce id.
 - 2026-11-13: șterse 10 profiluri dublate (5 conturi, inclusiv Lorena), păstrat originalul cel mai vechi; 0 dubluri rămase.
+- 2026-11-13: horoscop — „Azi pe cer”, zile de naștere (mesaj + idee de petrecere/cadou), „Cum să-i vorbești” pe pagina copilului, compatibilitatea dintre frați (pe pagina ta și pe pagina fiecărui copil).

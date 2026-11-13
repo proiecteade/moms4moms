@@ -60,3 +60,8 @@
 - `src/lib/horoscop.js`: zodiile, constelațiile, planetele
 - `scripts/horoscop/AAAA-LL.json` + `to-sql.js`: ciorna lunii și importul ei
 - `supabase/horoscop-schema.sql`: tabelele și regulile de acces
+
+## Funcții fixe (nu se scriu lunar)
+- „Azi pe cer” (`src/components/horoscop/Today.js`): arată perioadele active azi, din `watchouts`. Pe pagina personală spune și pe cine din familie privește.
+- Zile de naștere: dacă cineva din familie are ziua în luna afișată, apare mesajul (cu vârsta), iar la copii și o idee de petrecere/cadou pe zodie (`BIRTHDAY_IDEAS`).
+- „Cum să-i vorbești” pe pagina copilului (`KID_TALK`), compatibilitatea dintre frați (`siblings()`): toate în `src/lib/horoscopKids.js`.

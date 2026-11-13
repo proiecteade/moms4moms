@@ -6,7 +6,11 @@ import { createClient } from '@/lib/supabase/server'
 import Constellation from '@/components/horoscop/Constellation'
 import Watchouts from '@/components/horoscop/Watchouts'
 import Relation, { firstName, genderOf } from '@/components/horoscop/Relation'
-import { Signs, GeneralLink, REL_LABEL } from '@/components/horoscop/Personal'
+import { Signs, GeneralLink, REL_LABEL, ani } from '@/components/horoscop/Personal'
+import { Hearts } from '@/components/horoscop/Relation'
+import { KID_TALK, BIRTHDAY_IDEAS, birthdayIn, siblings } from '@/lib/horoscopKids'
+import { forPair } from '@/lib/horoscopCompat'
+import { MONTHS_RO } from '@/lib/horoscop'
 
 export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Horoscopul familiei — Moms4Moms', robots: { index: false } }
@@ -52,6 +56,7 @@ export default async function MembruPage({ params, searchParams }) {
           <span className="hz-eyebrow">{REL_LABEL[p.relation]?.[pg]} · {month ? `horoscop ${monthLabel(month.month, false)}` : 'horoscop'}</span>
           <h1 className="hz-h1">{p.name}</h1>
           <Signs p={p} />
+          {month && birthdayIn(p, month.month) && <span className="hzp-hero-bday">🎂 Împlinește {ani(birthdayIn(p, month.month).age)} pe {birthdayIn(p, month.month).day} {MONTHS_RO[Number(month.month.slice(5)) - 1]}</span>}
           {e?.teaser && <p className="hz-hero-title">{G(e.teaser)}</p>}
           <GeneralLink sign={p.sun_sign} query={query} />
         </div>
@@ -75,6 +80,23 @@ export default async function MembruPage({ params, searchParams }) {
             {KID_PROFILE[p.sun_sign] && <article className="hz-panel"><h2><span className="hz-panel-icon">{s.glyph}</span>{name}, ca {s.name}</h2><p>{G(KID_PROFILE[p.sun_sign])}</p></article>}
             {moon && <article className="hz-panel is-moms"><h2><span className="hz-panel-icon">☽</span>Ce {pg === 'm' ? 'îl' : 'o'} liniștește · Luna în {moon.name}</h2><p>{G(MOON_NEEDS[p.moon_sign])}</p></article>}
             {e.kids_activity && <article className="hz-panel is-asc"><h2><span className="hz-panel-icon">✦</span>Idee de activitate luna asta</h2><p>{G(e.kids_activity)}</p></article>}
+            {KID_TALK[p.sun_sign] && <article className="hz-panel"><h2><span className="hz-panel-icon">❝</span>Cum să-i vorbești</h2><p>{G(KID_TALK[p.sun_sign])}</p></article>}
+            {(() => {
+              const sibs = profiles.filter(x => x.relation === 'copil' && x.id !== p.id && SIGN_BY_SLUG[x.sun_sign])
+              if (!sibs.length) return null
+              return (
+                <article className="hz-panel is-moms">
+                  <h2><span className="hz-panel-icon">♡</span>Cu {sibs.length > 1 ? 'frații' : (genderOf(sibs[0], me) === 'f' ? 'sora' : 'fratele')}</h2>
+                  {sibs.map(x => {
+                    const sib = siblings(p.sun_sign, x.sun_sign)
+                    if (!sib) return null
+                    const bothF = pg === 'f' && genderOf(x, me) === 'f'
+                    return <div key={x.id} className="hzr-block"><div className="hzr-head" style={{ borderBottom: 0, paddingBottom: 0 }}><span>Cu {firstName(x.name)} ({SIGN_BY_SLUG[x.sun_sign].name}): <b>{sib.name}</b></span><Hearts n={sib.score} /></div><p>{forPair(sib.text, bothF)}</p></div>
+                  })}
+                </article>
+              )
+            })()}
+            {month && birthdayIn(p, month.month) && BIRTHDAY_IDEAS[p.sun_sign] && <article className="hz-panel"><h2><span className="hz-panel-icon">🎂</span>Idee pentru ziua {pg === 'm' ? 'lui' : 'ei'}</h2><p>{G(BIRTHDAY_IDEAS[p.sun_sign])}</p></article>}
           </div>
           <section className="hz-lucky">
             {e.lucky_days && <div><span>Zile bune</span><strong>{e.lucky_days}</strong></div>}
