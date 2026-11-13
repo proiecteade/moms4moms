@@ -15,6 +15,8 @@ export const metadata = {
 export default function HoroscopLayout({ children }) {
   return (
     <div className="hz">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+      <link rel="stylesheet" precedence="default" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" />
       <div className="hz-sky" aria-hidden="true">
         <div className="hz-stars hz-stars-1" />
         <div className="hz-stars hz-stars-2" />

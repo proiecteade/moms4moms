@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
 /* ============ HOROSCOP — design mistic ============ */
 .hz{
   --hz-display:'Cinzel'; --hz-serif:'Cormorant Garamond';
@@ -215,3 +214,6 @@
 .hz-planet strong{display:block;font-family:var(--hz-display),serif;font-weight:600;letter-spacing:.06em;color:#fff4d6;font-size:16px;}
 .hz-planet span{font-size:17px;color:var(--ink-soft);line-height:1.35;}
 @media (max-width:760px){.hz-ascendant{flex-direction:column;align-items:flex-start;padding:22px;}}
+
+.hz-loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;gap:14px;color:var(--ink-soft);font-style:italic;}
+.hz-loading-moon{font-size:56px;color:var(--gold);animation:hzTwinkle 1.6s ease-in-out infinite;filter:drop-shadow(0 0 18px rgba(243,213,138,.6));}
