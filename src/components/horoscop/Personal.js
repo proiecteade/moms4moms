@@ -1,12 +1,12 @@
 import Link from 'next/link'
-import { SIGN_BY_SLUG, ELEMENTS, SECTIONS, MOON_NEEDS, monthLabel, g } from '@/lib/horoscop'
-import { compat, forOther } from '@/lib/horoscopCompat'
+import { SIGN_BY_SLUG, ELEMENTS, SECTIONS, monthLabel, g } from '@/lib/horoscop'
 import Constellation from './Constellation'
 import Watchouts from './Watchouts'
+import Relation, { firstName, genderOf } from './Relation'
 
-const REL_LABEL = { copil: { m: 'băiat', f: 'fată' }, partener: { m: 'partener', f: 'parteneră' } }
+export const REL_LABEL = { copil: { m: 'băiat', f: 'fată' }, partener: { m: 'partener', f: 'parteneră' } }
 
-function Signs({ p }) {
+export function Signs({ p }) {
   const s = SIGN_BY_SLUG[p.sun_sign], a = p.asc_sign && SIGN_BY_SLUG[p.asc_sign], m = p.moon_sign && SIGN_BY_SLUG[p.moon_sign]
   return (
     <div className="hzp-chips">
@@ -17,8 +17,9 @@ function Signs({ p }) {
   )
 }
 
-function Hearts({ n }) {
-  return <span className="hzp-hearts" aria-label={`${n} din 5`}>{'♥'.repeat(n)}<i>{'♥'.repeat(5 - n)}</i></span>
+export function GeneralLink({ sign, query }) {
+  const s = SIGN_BY_SLUG[sign]
+  return <Link href={`/horoscop/${sign}${query || ''}`} className="hzp-general-link">Horoscopul general pentru {s.name}, fără personalizare →</Link>
 }
 
 export default function Personal({ month, entries, profiles, query }) {
@@ -29,10 +30,10 @@ export default function Personal({ month, entries, profiles, query }) {
   const asc = me.asc_sign && me.asc_sign !== me.sun_sign ? by[me.asc_sign] : null
   const sign = SIGN_BY_SLUG[me.sun_sign]
   const el = ELEMENTS[sign.element]
-  const first = me.name.split(' ')[0]
-  const mg = me.gender || 'f'
+  const first = firstName(me.name)
+  const mg = genderOf(me)
   const G = (t) => g(t, mg)
-  const famSigns = profiles.map(p => ({ name: p.id === me.id ? 'tu' : p.name.split(' ')[0], signs: [p.sun_sign, p.asc_sign].filter(Boolean) }))
+  const famSigns = profiles.map(p => ({ name: p.id === me.id ? 'tu' : firstName(p.name), signs: [p.sun_sign, p.asc_sign].filter(Boolean) }))
 
   return (
     <div className="hz-sign hzp" style={{ '--el': el.color, '--el-glow': el.glow }}>
@@ -50,6 +51,7 @@ export default function Personal({ month, entries, profiles, query }) {
           <Signs p={me} />
           {month?.title && <p className="hz-hero-title">{month.title}</p>}
           {month?.intro && <p className="hzp-intro">{month.intro}</p>}
+          <GeneralLink sign={me.sun_sign} query={query} />
         </div>
       </section>
 
@@ -91,17 +93,12 @@ export default function Personal({ month, entries, profiles, query }) {
 
       {family.length > 0 && (
         <section className="hzp-family">
-          <div className="hz-section-head"><span className="hz-eyebrow">cei dragi</span><h2 className="hz-h2">Familia ta luna asta</h2></div>
+          <div className="hz-section-head"><span className="hz-eyebrow">relațiile tale luna asta</span><h2 className="hz-h2">Tu și familia ta</h2></div>
           <div className="hzp-fam-grid">
             {family.map(p => {
               const s = SIGN_BY_SLUG[p.sun_sign]
-              const e = by[p.sun_sign]
-              const c = compat(me.sun_sign, p.sun_sign, p.relation === 'copil' ? 'copil' : 'partener')
               const pe = ELEMENTS[s.element]
-              const pg = p.gender || (p.relation === 'partener' ? (mg === 'f' ? 'm' : 'f') : 'm')
-              const field = p.relation === 'copil' ? 'kids' : 'family'
-              const ascE = p.asc_sign && p.asc_sign !== p.sun_sign ? by[p.asc_sign] : null
-              const moonT = p.relation === 'copil' && p.moon_sign ? MOON_NEEDS[p.moon_sign] : null
+              const pg = genderOf(p, me)
               return (
                 <article key={p.id} className="hzp-fam" style={{ '--el': pe.color, '--el-glow': pe.glow }}>
                   <header>
@@ -111,21 +108,8 @@ export default function Personal({ month, entries, profiles, query }) {
                       <span className="hzp-fam-rel">{REL_LABEL[p.relation][pg]} · {s.name}{p.asc_sign ? ` · ascendent ${SIGN_BY_SLUG[p.asc_sign].name}` : ''}</span>
                     </div>
                   </header>
-                  {e && <p className="hzp-fam-text">{g(e[field] || e.teaser, pg)}</p>}
-                  {ascE?.[field] && (
-                    <p className="hzp-fam-sub"><b>↑ Prin ascendentul în {SIGN_BY_SLUG[p.asc_sign].name}:</b> {g(ascE[field], pg)}</p>
-                  )}
-                  {moonT && (
-                    <p className="hzp-fam-sub"><b>☽ Luna în {SIGN_BY_SLUG[p.moon_sign].name}, ce {pg === 'm' ? 'îl' : 'o'} liniștește:</b> {g(moonT, pg)}</p>
-                  )}
-                  {c && (
-                    <div className="hzp-compat">
-                      <div className="hzp-compat-head"><span>Tu și {p.name.split(' ')[0]}: <b>{c.name}</b></span><Hearts n={c.score} /></div>
-                      <p>{G(forOther(c.text, pg, p.name.split(' ')[0]))}</p>
-                      <small>{c.elements}</small>
-                    </div>
-                  )}
-                  <Link href={`/horoscop/${p.sun_sign}${query}`} className="hzp-more">Horoscopul complet {s.name} →</Link>
+                  <Relation me={me} p={p} month={month} />
+                  <Link href={`/horoscop/familie/${p.id}${query}`} className="hzp-more">Horoscopul complet: {firstName(p.name)} →</Link>
                 </article>
               )
             })}
@@ -141,7 +125,8 @@ export default function Personal({ month, entries, profiles, query }) {
 
       <div className="hzp-bottom">
         <Link href="/horoscop?familia=1" className="hz-btn hz-btn-ghost">✎ Editează datele familiei</Link>
-        <Link href={`/horoscop?toate=1${query ? '&' + query.slice(1) : ''}`} className="hz-btn hz-btn-ghost">Vezi toate zodiile</Link>
+        <Link href={`/horoscop/${me.sun_sign}${query}`} className="hz-btn hz-btn-ghost">Horoscopul general {sign.name}</Link>
+        <Link href={`/horoscop?toate=1${query ? '&' + query.slice(1) : ''}`} className="hz-btn hz-btn-ghost">Toate zodiile</Link>
       </div>
     </div>
   )

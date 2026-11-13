@@ -31,6 +31,13 @@ export function forOther(text, gender = 'm', name = 'copilul') {
   return (text || '').replace(/\[\[nume\]\]/g, name).replace(/\[\[([^\[\]|]*)\|([^\[\]|]*)\]\]/g, (_, m, f) => (gender === 'm' ? m : f))
 }
 
+export function signDistance(aSlug, bSlug) {
+  const a = SIGNS.indexOf(SIGN_BY_SLUG[aSlug]), b = SIGNS.indexOf(SIGN_BY_SLUG[bSlug])
+  if (a < 0 || b < 0) return null
+  const d = Math.abs(a - b)
+  return d > 6 ? 12 - d : d
+}
+
 export function compat(aSlug, bSlug, relation = 'partener') {
   const a = SIGNS.indexOf(SIGN_BY_SLUG[aSlug]), b = SIGNS.indexOf(SIGN_BY_SLUG[bSlug])
   if (a < 0 || b < 0) return null

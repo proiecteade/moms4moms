@@ -90,7 +90,7 @@ export default function HoroscopAdmin() {
       const [name, url] = l.split('|').map(x => x.trim()); return url ? { name, url } : { name: l, url: l }
     })
     const watchouts = [...monthDraft.watchouts].sort((a, b) => (a.start || '').localeCompare(b.start || '') || (a.end || '').localeCompare(b.end || ''))
-    const row = { month: cur, title: monthDraft.title, intro: monthDraft.intro, watchouts, sources, updated_at: new Date().toISOString(), updated_by: user.email, ...extra }
+    const row = { month: cur, title: monthDraft.title, intro: monthDraft.intro, watchouts, pair_notes: monthDraft.pair_notes || {}, sources, updated_at: new Date().toISOString(), updated_by: user.email, ...extra }
     const { error } = await supabase.from('horoscope_months').update(row).eq('month', cur)
     setBusy(false)
     if (error) return flash('Nu s-a putut salva luna: ' + error.message, true)
@@ -256,6 +256,14 @@ export default function HoroscopAdmin() {
           <div className="hza-row" style={{ marginTop: 10 }}>
             <button className="hza-btn" onClick={() => setMonthDraft(d => ({ ...d, watchouts: [...d.watchouts, { title: '', start: `${cur}-01`, end: `${cur}-01`, kind: 'aspect', level: 'info', text: '' }] }))}>+ Adaugă perioadă</button>
           </div>
+
+          <label style={{ marginTop: 18 }}>Relațiile luna asta (în cardurile familiei, după distanța dintre zodii). [[nume]] = prenumele celuilalt.</label>
+          {[['0', 'Aceeași zodie'], ['1', 'Vecini pe roată'], ['2', 'Prieteni buni (sextil)'], ['3', 'Provocare (pătrat)'], ['4', 'Armonie (trigon)'], ['5', 'Ajustări fine'], ['6', 'Opuși (opoziție)']].map(([k, l]) => (
+            <div key={k}>
+              <label style={{ textTransform: 'none', letterSpacing: 0, fontWeight: 600 }}>{l}</label>
+              <textarea rows={2} value={monthDraft.pair_notes?.[k] || ''} onChange={e => setMonthDraft(d => ({ ...d, pair_notes: { ...(d.pair_notes || {}), [k]: e.target.value } }))} />
+            </div>
+          ))}
 
           <label style={{ marginTop: 18 }}>Surse folosite (câte una pe rând: nume | link)</label>
           <textarea rows={4} value={monthDraft.sourcesText || ''} onChange={e => setMonthDraft({ ...monthDraft, sourcesText: e.target.value })} />

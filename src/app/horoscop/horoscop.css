@@ -307,3 +307,14 @@
   .hzp-person-head{grid-template-columns:1fr auto;}
   .hzp-gender{grid-column:1/-1;grid-row:2;}
 }
+.hzr{margin-top:6px;}
+.hzr-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:18px;padding-bottom:8px;border-bottom:1px dashed rgba(255,255,255,.12);}
+.hzr-head b{color:#ffd9ee;}
+.hzr-block{margin-top:12px;}
+.hzr-label{display:block;font-family:var(--hz-display),serif;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;}
+.hzr-block p{font-size:18px;}
+.hzr-block small{display:block;margin-top:4px;font-size:14px;color:var(--ink-faint);font-style:italic;}
+.hzr-dates{list-style:none;display:flex;flex-direction:column;gap:4px;font-size:17px;color:var(--ink-soft);}
+.hzr-dates b{color:#fff4d6;font-weight:600;margin-right:6px;}
+.hzp-general-link{display:inline-block;margin-top:8px;font-size:16px;color:var(--ink-soft)!important;}
+.hzp-general-link:hover{color:var(--gold)!important;}

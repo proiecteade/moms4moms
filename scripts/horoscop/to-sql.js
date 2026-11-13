@@ -3,9 +3,9 @@
 const fs = require('fs')
 const d = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'))
 const q = v => v == null ? 'null' : "'" + String(v).replace(/'/g, "''") + "'"
-let sql = `insert into public.horoscope_months (month, status, title, intro, watchouts, sources, updated_by)
-values (${q(d.month)}, 'draft', ${q(d.title)}, ${q(d.intro)}, ${q(JSON.stringify(d.watchouts))}::jsonb, ${q(JSON.stringify(d.sources))}::jsonb, 'claude')
-on conflict (month) do update set title=excluded.title, intro=excluded.intro, watchouts=excluded.watchouts, sources=excluded.sources, updated_at=now(), updated_by='claude'
+let sql = `insert into public.horoscope_months (month, status, title, intro, watchouts, sources, pair_notes, updated_by)
+values (${q(d.month)}, 'draft', ${q(d.title)}, ${q(d.intro)}, ${q(JSON.stringify(d.watchouts))}::jsonb, ${q(JSON.stringify(d.sources))}::jsonb, ${q(JSON.stringify(d.pair_notes || {}))}::jsonb, 'claude')
+on conflict (month) do update set title=excluded.title, intro=excluded.intro, watchouts=excluded.watchouts, sources=excluded.sources, pair_notes=excluded.pair_notes, updated_at=now(), updated_by='claude'
 where public.horoscope_months.status = 'draft';\n`
 const cols = ['teaser','general','love','career','health','moms','lucky_days','lucky_color','lucky_number','tip','family','kids']
 for (const [sign, e] of Object.entries(d.entries)) {

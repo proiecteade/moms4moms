@@ -27,6 +27,8 @@
 - Dicționarul planetelor de mai jos e doar pentru scrierea textelor și nu apare pe site.
 - „Atenție pentru toți” = perioadele valabile pentru toate zodiile (retrograde, Lună Nouă/Plină cu ora, eclipse, conjuncții importante, intrări în zodii).
 - Masculin/feminin: orice cuvânt care depinde de gen se scrie `{masculin|feminin}` (ex. `{puternic|puternică}`, `{Micul|Micuța}`, `Laudă-{l|o}`, `{tată|mamă}`). Textele pentru tine sunt implicit la feminin, iar „Copilul din zodia asta” implicit la masculin. Pe pagina personalizată se alege forma după genul fiecărei persoane.
+- `pair_notes` (pe lună): 7 texte scurte, câte unul pentru fiecare distanță între zodii (0 = aceeași zodie, 1 = vecini, 2 = sextil, 3 = pătrat, 4 = trigon, 5 = quincunx, 6 = opoziție): la ce să fie atent părintele luna asta în relația cu celălalt, legat de evenimentele lunii. `[[nume]]` = prenumele celuilalt, `[[masculin|feminin]]` = genul celuilalt, `{m|f}` = genul cititorului.
+- Pagina personală arată în cardurile familiei doar relația (potrivire + `pair_notes` + zilele comune); horoscopul complet al fiecăruia e la /horoscop/familie/<id>.
 - Copiii (și partenerul) cu aceeași zodie se diferențiază prin ascendent (se arată și textul lunar al zodiei ascendentului). La copii mai apare și ce îi liniștește, după zodia Lunii (texte fixe în `MOON_NEEDS`).
 - Fără sfaturi medicale. Fără predicții sigure. Totul are scop de divertisment.
 

@@ -287,7 +287,7 @@
       "lucky_number": "8",
       "tip": "Ce lași să plece îți face loc pentru ce vine.",
       "family": "Emoții intense și discuții profunde. Spune ce simți fără să testezi pe nimeni. Familia te iubește chiar și când nu ești în cea mai bună formă.",
-      "kids": "{Micul|Micuța} Scorpion simte tot, chiar și ce nu spui. E luna {lui|ei} aniversară: fă-{l|o} să se simtă special și respectă-i nevoia de a avea secretele {lui|ei} mici."
+      "kids": "{Micul|Micuța} Scorpion simte tot, chiar și ce nu spui. E luna {lui|ei} aniversară: fă-{l|o} să se simtă {special|specială} și respectă-i nevoia de a avea secretele {lui|ei} mici."
     },
     "sagetator": {
       "teaser": "Din 22 noiembrie începe sezonul tău.",
@@ -315,7 +315,7 @@
       "lucky_number": "4",
       "tip": "Înconjoară-te de oameni care te ridică.",
       "family": "Duci multe pe umeri. Luna asta lasă-i pe ceilalți să te ajute și bucură-te de timpul liniștit în familie, fără să-l transformi în listă de sarcini.",
-      "kids": "{Micul|Micuța} Capricorn e {serios|serioasă} și vrea să facă singur. Încurajează-i independența, dar amintește-i că joaca e la fel de importantă ca „treaba”."
+      "kids": "{Micul|Micuța} Capricorn e {serios|serioasă} și vrea să facă {singur|singură}. Încurajează-i independența, dar amintește-i că joaca e la fel de importantă ca „treaba”."
     },
     "varsator": {
       "teaser": "Cariera se reașază, iar dragostea surprinde.",
@@ -345,5 +345,14 @@
       "family": "Simți tot ce se întâmplă în casă. Pune-ți limite blânde, ca să nu preiei stresul tuturor, iar după 25 noiembrie cuplul are nevoie de atenție.",
       "kids": "{Micul|Micuța} Pești e {visător|visătoare} și se emoționează ușor. Poveștile, desenul și muzica {îl|o} ajută să-și exprime ce simte, iar seara are nevoie de multă liniște."
     }
+  },
+  "pair_notes": {
+    "0": "Luna asta vă aprindeți la fel și în aceleași zile. Când sunteți amândoi obosiți sau tensionați, unul trebuie să cedeze primul: fă tu pasul, mai ales pe 18–19 noiembrie.",
+    "1": "Ritmurile voastre se decalează luna asta: când tu vrei să încetinești, [[nume]] are chef de altceva, sau invers. Anunțați-vă planurile din timp și nu luați personal diferențele.",
+    "2": "Lună bună pentru voi doi: comunicarea curge, mai ales după 13 noiembrie, când Mercur își reia mersul. Profită pentru o activitate doar voi doi, care să vă rămână în amintire.",
+    "3": "Luna cu cele mai multe scântei: în jurul datelor de 16–19 noiembrie orgoliile cresc și discuțiile mici se pot aprinde. Alege calmul înaintea dreptății și lasă subiectele grele după 20.",
+    "4": "Armonie naturală și luna asta. Valul de energie de la mijlocul lunii vă prinde pe aceeași lungime de undă, așa că e momentul pentru ceva nou făcut împreună.",
+    "5": "Luna cere mici ajustări: ce pentru tine e un detaliu, pentru [[nume]] contează mult. În jurul Lunii Pline din 24, întreabă în loc să presupui.",
+    "6": "Luna Plină din 24 noiembrie vă pune față în față: ce simte unul, celălalt simte invers. Lăsați-vă spațiu și reveniți la discuție după o zi, pentru că diferențele voastre se completează."
   }
 }
