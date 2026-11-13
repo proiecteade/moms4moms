@@ -42,6 +42,34 @@ function PlaceSearch({ value, onPick }) {
   )
 }
 
+// Data în format zz/ll/aaaa (la fel pe toate telefoanele); intern rămâne AAAA-LL-ZZ
+function isoToRo(iso) { if (!iso) return ''; const [y, m, d] = iso.split('-'); return `${d}/${m}/${y}` }
+function DateInput({ value, onChange }) {
+  const [txt, setTxt] = useState(isoToRo(value))
+  const [bad, setBad] = useState(false)
+  useEffect(() => { setTxt(isoToRo(value)) }, [value])
+  function change(raw) {
+    const digits = raw.replace(/\D/g, '').slice(0, 8)
+    let t = digits
+    if (digits.length > 4) t = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`
+    else if (digits.length > 2) t = `${digits.slice(0, 2)}/${digits.slice(2)}`
+    setTxt(t)
+    if (digits.length === 8) {
+      const d = +digits.slice(0, 2), m = +digits.slice(2, 4), y = +digits.slice(4)
+      const dt = new Date(Date.UTC(y, m - 1, d))
+      const ok = y > 1900 && dt.getUTCMonth() === m - 1 && dt.getUTCDate() === d && dt <= new Date()
+      setBad(!ok)
+      onChange(ok ? `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}` : '')
+    } else { setBad(false); onChange('') }
+  }
+  return (
+    <>
+      <input type="text" inputMode="numeric" placeholder="zz/ll/aaaa" value={txt} onChange={e => change(e.target.value)} maxLength={10} autoComplete="bday" />
+      {bad && <span className="hz-find-err" style={{ fontSize: 14 }}>Data nu e validă.</span>}
+    </>
+  )
+}
+
 function ChartBadge({ p }) {
   const c = computeChart({ ...p, birth_time: p.noTime ? null : p.birth_time })
   if (!c.sun_sign) return null
@@ -114,7 +142,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
           </div>
           <div className="hzp-fields">
             <label>Nume<input value={p.name} onChange={e => upd(p.key, { name: e.target.value })} placeholder={p.relation === 'copil' ? 'ex. Matei' : 'ex. Ana'} maxLength={60} /></label>
-            <label>Data nașterii<input type="date" value={p.birth_date} onChange={e => upd(p.key, { birth_date: e.target.value })} max={new Date().toISOString().slice(0, 10)} /></label>
+            <label>Data nașterii<DateInput value={p.birth_date} onChange={v => upd(p.key, { birth_date: v })} /></label>
             <label>Ora nașterii
               <input type="time" value={p.noTime ? '' : p.birth_time} disabled={p.noTime} onChange={e => upd(p.key, { birth_time: e.target.value })} />
               <span className="hzp-check"><input type="checkbox" checked={p.noTime} onChange={e => upd(p.key, { noTime: e.target.checked })} /> nu știu ora</span>
