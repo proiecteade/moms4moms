@@ -4,7 +4,7 @@ import Constellation from './Constellation'
 import Watchouts from './Watchouts'
 import Relation, { firstName, genderOf } from './Relation'
 
-export const REL_LABEL = { copil: { m: 'băiat', f: 'fată' }, partener: { m: 'partener', f: 'parteneră' } }
+export const REL_LABEL = { copil: { m: 'băiat', f: 'fată' }, partener: { m: 'partener', f: 'parteneră' }, altcineva: { m: 'din familie', f: 'din familie' }, eu: { m: 'din familie', f: 'din familie' } }
 
 export function Signs({ p }) {
   const s = SIGN_BY_SLUG[p.sun_sign], a = p.asc_sign && SIGN_BY_SLUG[p.asc_sign], m = p.moon_sign && SIGN_BY_SLUG[p.moon_sign]
@@ -24,7 +24,7 @@ export function GeneralLink({ sign, query }) {
 
 export default function Personal({ month, entries, profiles, query }) {
   const me = profiles.find(p => p.relation === 'eu') || profiles[0]
-  const family = profiles.filter(p => p.id !== me.id)
+  const family = profiles.filter(p => p.id !== me.id && SIGN_BY_SLUG[p.sun_sign])
   const by = Object.fromEntries(entries.map(e => [e.sign, e]))
   const mine = by[me.sun_sign]
   const asc = me.asc_sign && me.asc_sign !== me.sun_sign ? by[me.asc_sign] : null
@@ -105,7 +105,7 @@ export default function Personal({ month, entries, profiles, query }) {
                     <span className="hzp-fam-glyph">{s.glyph}</span>
                     <div>
                       <h3>{p.name}</h3>
-                      <span className="hzp-fam-rel">{REL_LABEL[p.relation][pg]} · {s.name}{p.asc_sign ? ` · ascendent ${SIGN_BY_SLUG[p.asc_sign].name}` : ''}</span>
+                      <span className="hzp-fam-rel">{REL_LABEL[p.relation]?.[pg] || 'din familie'} · {s.name}{p.asc_sign ? ` · ascendent ${SIGN_BY_SLUG[p.asc_sign].name}` : ''}</span>
                     </div>
                   </header>
                   <Relation me={me} p={p} month={month} />

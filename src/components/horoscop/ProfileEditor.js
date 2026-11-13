@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { computeChart } from '@/lib/astroCalc'
 import { SIGN_BY_SLUG } from '@/lib/horoscop'
 
-const REL = { eu: 'Eu', copil: 'Copil', partener: 'Partener' }
+const REL = { eu: 'Eu', copil: 'Copil', partener: 'Partener', altcineva: 'Alt membru (bunică, frate…)' }
 const blank = (relation, gender = '') => ({ key: Math.random().toString(36).slice(2), relation, gender, name: '', birth_date: '', birth_time: '', noTime: false, place_name: '', lat: null, lon: null, tz: 'Europe/Bucharest' })
 
 function PlaceSearch({ value, picked, onPick }) {
@@ -136,6 +136,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
       if (!p.gender) return setErr(`Alege dacă ${p.name} e ${p.relation === 'copil' ? 'fată sau băiat' : 'femeie sau bărbat'}.`)
     }
     if (!people.some(p => p.relation === 'eu')) return setErr('Adaugă-te și pe tine („Eu”).')
+    if (people.filter(p => p.relation === 'eu').length > 1) return setErr('Doar o persoană poate fi „Eu”. Pentru ceilalți alege Copil, Partener sau Alt membru.')
     setSaving(true)
     try {
       if (removed.length) await supabase.from('horoscope_profiles').delete().in('id', removed)
@@ -143,10 +144,15 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
         const time = p.noTime ? null : (p.birth_time || null)
         const c = computeChart({ birth_date: p.birth_date, birth_time: time, lat: p.lat, lon: p.lon, tz: p.tz })
         const row = { relation: p.relation, gender: p.gender, name: p.name.trim(), birth_date: p.birth_date, birth_time: time, place_name: p.place_name || null, lat: p.lat, lon: p.lon, tz: p.tz || 'Europe/Bucharest', ...c, sort: i, updated_at: new Date().toISOString() }
-        const { error } = p.id
-          ? await supabase.from('horoscope_profiles').update(row).eq('id', p.id)
-          : await supabase.from('horoscope_profiles').insert(row)
-        if (error) throw error
+        if (p.id) {
+          const { error } = await supabase.from('horoscope_profiles').update(row).eq('id', p.id)
+          if (error) throw error
+        } else {
+          const { data, error } = await supabase.from('horoscope_profiles').insert(row).select('id').single()
+          if (error) throw error
+          p.id = data.id
+          setPeople(ps => ps.map(x => x.key === p.key ? { ...x, id: data.id } : x))
+        }
       }
       onDone?.()
       router.push('/horoscop')
@@ -163,7 +169,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
         <div key={p.key} className="hzp-person">
           <div className="hzp-person-head">
             <select value={p.relation} onChange={e => upd(p.key, { relation: e.target.value })} disabled={p.relation === 'eu' && people.filter(x => x.relation === 'eu').length === 1 && i === 0}>
-              {Object.entries(REL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+              {Object.entries(REL).filter(([k]) => i === 0 ? k === 'eu' || p.relation !== 'eu' : k !== 'eu').map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
             <div className="hzp-gender">
               {[['f', p.relation === 'copil' ? 'Fată' : 'Femeie'], ['m', p.relation === 'copil' ? 'Băiat' : 'Bărbat']].map(([v, l]) => (
@@ -187,6 +193,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
       <div className="hzp-actions">
         <button type="button" className="hz-btn hz-btn-ghost" onClick={() => setPeople(ps => [...ps, blank('copil')])}>+ Copil</button>
         <button type="button" className="hz-btn hz-btn-ghost" onClick={() => setPeople(ps => [...ps, blank('partener', ps.find(x => x.relation === 'eu')?.gender === 'm' ? 'f' : 'm')])}>+ Partener</button>
+        <button type="button" className="hz-btn hz-btn-ghost" onClick={() => setPeople(ps => [...ps, blank('altcineva')])}>+ Alt membru</button>
         <button type="button" className="hz-btn" disabled={saving} onClick={save}>{saving ? 'Se salvează…' : 'Salvează și vezi horoscopul ✦'}</button>
       </div>
       {err && <p className="hz-find-err" style={{ textAlign: 'center' }}>{err}</p>}

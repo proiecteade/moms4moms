@@ -75,3 +75,6 @@ grant select, insert, update, delete on public.horoscope_admins to authenticated
 
 -- Funcție pentru admin: „sunt admin de horoscop?”
 grant execute on function public.is_horoscope_admin() to anon, authenticated;
+
+-- 2026-11-13: profiluri de familie (relation: eu / copil / partener / altcineva)
+-- vezi tabelul horoscope_profiles (RLS: doar proprietarul); constrângere relation extinsă cu 'altcineva'
