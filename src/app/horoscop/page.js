@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { SIGNS, ELEMENTS, monthLabel, signDates } from '@/lib/horoscop'
+import { SIGNS, ELEMENTS, monthLabel, signDates, g } from '@/lib/horoscop'
 import { loadMonth, listPublishedMonths } from '@/lib/horoscopData'
 import Constellation from '@/components/horoscop/Constellation'
 import Watchouts from '@/components/horoscop/Watchouts'
@@ -95,7 +95,7 @@ export default async function HoroscopPage({ searchParams }) {
                 <span className="hz-card-glyph">{s.glyph}</span>
                 <span className="hz-card-name">{s.name}</span>
                 <span className="hz-card-dates">{signDates(s)}</span>
-                {e?.teaser && <span className="hz-card-teaser">{e.teaser}</span>}
+                {e?.teaser && <span className="hz-card-teaser">{g(e.teaser)}</span>}
                 <span className="hz-card-cta">Citește →</span>
               </Link>
             )

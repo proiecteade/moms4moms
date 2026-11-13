@@ -26,6 +26,8 @@
 - La fiecare perioadă din „Atenție pentru toți” se trec zodiile cele mai atinse (`signs`), pentru că din ele se face „Atenție în familia ta” pe pagina personalizată. Perioadele se scriu în ordinea datelor.
 - Dicționarul planetelor de mai jos e doar pentru scrierea textelor și nu apare pe site.
 - „Atenție pentru toți” = perioadele valabile pentru toate zodiile (retrograde, Lună Nouă/Plină cu ora, eclipse, conjuncții importante, intrări în zodii).
+- Masculin/feminin: orice cuvânt care depinde de gen se scrie `{masculin|feminin}` (ex. `{puternic|puternică}`, `{Micul|Micuța}`, `Laudă-{l|o}`, `{tată|mamă}`). Textele pentru tine sunt implicit la feminin, iar „Copilul din zodia asta” implicit la masculin. Pe pagina personalizată se alege forma după genul fiecărei persoane.
+- Copiii (și partenerul) cu aceeași zodie se diferențiază prin ascendent (se arată și textul lunar al zodiei ascendentului). La copii mai apare și ce îi liniștește, după zodia Lunii (texte fixe în `MOON_NEEDS`).
 - Fără sfaturi medicale. Fără predicții sigure. Totul are scop de divertisment.
 
 ## Dicționarul planetelor (cum interpretăm)

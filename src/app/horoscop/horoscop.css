@@ -280,3 +280,9 @@
 }
 .hza-tag{font-family:inherit;font-size:13px;padding:4px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:transparent;color:var(--ink-soft);cursor:pointer;}
 .hza-tag.on{background:rgba(243,213,138,.18);border-color:var(--gold);color:#fff4d6;}
+.hzp-person-head{gap:10px;}
+.hzp-gender{display:flex;gap:4px;margin-right:auto;padding:3px;border-radius:999px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.1);}
+.hzp-gender button{font-family:inherit;font-size:15px;padding:5px 14px;border-radius:999px;border:none;background:transparent;color:var(--ink-soft);cursor:pointer;}
+.hzp-gender button.on{background:linear-gradient(135deg,#f6dc94,#e2a85d);color:#2a1640;font-weight:600;}
+.hzp-fam-sub{font-size:17px;color:var(--ink-soft);margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.1);}
+.hzp-fam-sub b{color:#fff4d6;font-weight:600;}

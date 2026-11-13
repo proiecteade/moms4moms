@@ -115,3 +115,24 @@ export const PLANETS = [
 
 export const RETRO_NOTE = 'Retrograd = planeta pare că merge înapoi pe cer. Temele ei se reiau, se recitesc, se repară.'
 export const ASCENDANT_URL = 'https://www.astrosofa.com/horoscope/ascendant'
+
+// Masculin / feminin: în texte scriem {forma masculină|forma feminină}
+export function g(text, gender = 'f') {
+  return (text || '').replace(/\{([^{}|]*)\|([^{}|]*)\}/g, (_, m, f) => (gender === 'm' ? m : f))
+}
+
+// Ce liniștește un copil, după zodia Lunii (fix, nu se schimbă lunar)
+export const MOON_NEEDS = {
+  berbec: 'Se liniștește prin mișcare: după o alergare sau un joc fizic, emoțiile se așază mai repede.',
+  taur: 'Are nevoie de confort și ritualuri: aceeași poveste, aceeași pătură, mâncarea preferată.',
+  gemeni: 'Se liniștește vorbind: întreabă-{l|o} ce s-a întâmplat și lasă-{l|o} să povestească.',
+  rac: 'Are nevoie de apropiere și de siguranța casei. Îmbrățișările valorează mai mult decât explicațiile.',
+  leu: 'Are nevoie să se simtă {văzut|văzută} și {apreciat|apreciată}. O laudă sinceră îi schimbă ziua.',
+  fecioara: 'Se liniștește când știe ce urmează: un program clar și sarcini mici, ușor de dus la capăt.',
+  balanta: 'Are nevoie de armonie în jur: certurile dintre adulți {îl|o} tulbură mai mult decât arată.',
+  scorpion: 'Simte intens și are nevoie de încredere totală. Promisiunile ținute contează enorm.',
+  sagetator: 'Are nevoie de spațiu, aer liber și umor. Râsul e cea mai rapidă cale spre calm.',
+  capricorn: 'Se simte în siguranță cu reguli clare și când e {luat|luată} în serios.',
+  varsator: 'Are nevoie să fie {acceptat|acceptată} așa cum e, cu ideile {lui|ei} trăsnite, și de puțin timp doar pentru {el|ea}.',
+  pesti: 'Se liniștește prin povești, muzică și imaginație. Are nevoie de blândețe, nu de grabă.',
+}

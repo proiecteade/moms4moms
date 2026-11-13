@@ -18,7 +18,7 @@ const FacebookIcon = () => (
 
 export default function AuthModal({ onClose }) {
   const redirectTo = typeof window !== 'undefined'
-    ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(window.location.pathname)}`
+    ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(window.location.pathname.startsWith('/horoscop') ? '/horoscop' : window.location.pathname)}`
     : ''
 
   async function signInWithGoogle() {

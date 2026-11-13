@@ -6,7 +6,7 @@ import { computeChart } from '@/lib/astroCalc'
 import { SIGN_BY_SLUG } from '@/lib/horoscop'
 
 const REL = { eu: 'Eu', copil: 'Copil', partener: 'Partener' }
-const blank = (relation) => ({ key: Math.random().toString(36).slice(2), relation, name: '', birth_date: '', birth_time: '', noTime: false, place_name: '', lat: null, lon: null, tz: 'Europe/Bucharest' })
+const blank = (relation, gender = '') => ({ key: Math.random().toString(36).slice(2), relation, gender, name: '', birth_date: '', birth_time: '', noTime: false, place_name: '', lat: null, lon: null, tz: 'Europe/Bucharest' })
 
 function PlaceSearch({ value, onPick }) {
   const [q, setQ] = useState(value || '')
@@ -60,7 +60,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
   const supabase = createClient()
   const [people, setPeople] = useState(() => {
     if (initial.length) return initial.map(p => ({ ...p, key: p.id, birth_time: p.birth_time ? p.birth_time.slice(0, 5) : '', noTime: !p.birth_time }))
-    return [{ ...blank('eu'), name: userName }]
+    return [{ ...blank('eu', 'f'), name: userName }]
   })
   const [removed, setRemoved] = useState([])
   const [err, setErr] = useState('')
@@ -73,6 +73,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
     for (const p of people) {
       if (!p.name.trim()) return setErr('Scrie numele fiecărei persoane.')
       if (!p.birth_date) return setErr(`Alege data nașterii pentru ${p.name}.`)
+      if (!p.gender) return setErr(`Alege dacă ${p.name} e ${p.relation === 'copil' ? 'fată sau băiat' : 'femeie sau bărbat'}.`)
     }
     if (!people.some(p => p.relation === 'eu')) return setErr('Adaugă-te și pe tine („Eu”).')
     setSaving(true)
@@ -81,7 +82,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
       for (const [i, p] of people.entries()) {
         const time = p.noTime ? null : (p.birth_time || null)
         const c = computeChart({ birth_date: p.birth_date, birth_time: time, lat: p.lat, lon: p.lon, tz: p.tz })
-        const row = { relation: p.relation, name: p.name.trim(), birth_date: p.birth_date, birth_time: time, place_name: p.place_name || null, lat: p.lat, lon: p.lon, tz: p.tz || 'Europe/Bucharest', ...c, sort: i, updated_at: new Date().toISOString() }
+        const row = { relation: p.relation, gender: p.gender, name: p.name.trim(), birth_date: p.birth_date, birth_time: time, place_name: p.place_name || null, lat: p.lat, lon: p.lon, tz: p.tz || 'Europe/Bucharest', ...c, sort: i, updated_at: new Date().toISOString() }
         const { error } = p.id
           ? await supabase.from('horoscope_profiles').update(row).eq('id', p.id)
           : await supabase.from('horoscope_profiles').insert(row)
@@ -104,6 +105,11 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
             <select value={p.relation} onChange={e => upd(p.key, { relation: e.target.value })} disabled={p.relation === 'eu' && people.filter(x => x.relation === 'eu').length === 1 && i === 0}>
               {Object.entries(REL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
             </select>
+            <div className="hzp-gender">
+              {[['f', p.relation === 'copil' ? 'Fată' : 'Femeie'], ['m', p.relation === 'copil' ? 'Băiat' : 'Bărbat']].map(([v, l]) => (
+                <button key={v} type="button" className={p.gender === v ? 'on' : ''} onClick={() => upd(p.key, { gender: v })}>{l}</button>
+              ))}
+            </div>
             {i > 0 && <button type="button" className="hzp-remove" onClick={() => { if (p.id) setRemoved(r => [...r, p.id]); setPeople(ps => ps.filter(x => x.key !== p.key)) }}>Șterge</button>}
           </div>
           <div className="hzp-fields">
@@ -120,7 +126,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
       ))}
       <div className="hzp-actions">
         <button type="button" className="hz-btn hz-btn-ghost" onClick={() => setPeople(ps => [...ps, blank('copil')])}>+ Copil</button>
-        <button type="button" className="hz-btn hz-btn-ghost" onClick={() => setPeople(ps => [...ps, blank('partener')])}>+ Partener</button>
+        <button type="button" className="hz-btn hz-btn-ghost" onClick={() => setPeople(ps => [...ps, blank('partener', ps.find(x => x.relation === 'eu')?.gender === 'm' ? 'f' : 'm')])}>+ Partener</button>
         <button type="button" className="hz-btn" disabled={saving} onClick={save}>{saving ? 'Se salvează…' : 'Salvează și vezi horoscopul ✦'}</button>
       </div>
       {err && <p className="hz-find-err" style={{ textAlign: 'center' }}>{err}</p>}

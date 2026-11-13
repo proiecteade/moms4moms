@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { SIGNS, SIGN_BY_SLUG, ELEMENTS, SECTIONS, monthLabel, signDates, compatibles } from '@/lib/horoscop'
+import { SIGNS, SIGN_BY_SLUG, ELEMENTS, SECTIONS, monthLabel, signDates, compatibles, g } from '@/lib/horoscop'
 import { loadMonth } from '@/lib/horoscopData'
 import Constellation from '@/components/horoscop/Constellation'
 import Watchouts from '@/components/horoscop/Watchouts'
@@ -51,7 +51,7 @@ export default async function ZodiePage({ params, searchParams }) {
           <div className="hz-sign-meta">
             <span>{signDates(s)}</span><span>·</span><span>Element: {el.name}</span><span>·</span><span>Planetă: {s.ruler}</span>
           </div>
-          {e?.teaser && <p className="hz-hero-title">{e.teaser}</p>}
+          {e?.teaser && <p className="hz-hero-title">{g(e.teaser)}</p>}
         </div>
       </section>
 
@@ -63,11 +63,11 @@ export default async function ZodiePage({ params, searchParams }) {
             {SECTIONS.map(sec => e[sec.key] && (
               <article key={sec.key} className={`hz-panel ${sec.special ? 'is-moms' : ''}`}>
                 <h2><span className="hz-panel-icon">{sec.icon}</span>{sec.label}</h2>
-                <p>{e[sec.key]}</p>
+                <p>{g(e[sec.key])}</p>
               </article>
             ))}
-            {e.family && <article className="hz-panel"><h2><span className="hz-panel-icon">⌂</span>În familie</h2><p>{e.family}</p></article>}
-            {e.kids && <article className="hz-panel"><h2><span className="hz-panel-icon">☺</span>Copilul {s.name}</h2><p>{e.kids}</p></article>}
+            {e.family && <article className="hz-panel"><h2><span className="hz-panel-icon">⌂</span>În familie</h2><p>{g(e.family)}</p></article>}
+            {e.kids && <article className="hz-panel"><h2><span className="hz-panel-icon">☺</span>Copilul {s.name}</h2><p>{g(e.kids, 'm')}</p></article>}
           </div>
 
           <section className="hz-lucky">
@@ -77,11 +77,11 @@ export default async function ZodiePage({ params, searchParams }) {
           </section>
 
           {e.tip && (
-            <blockquote className="hz-tip"><span>Sfatul lunii</span>„{e.tip}”</blockquote>
+            <blockquote className="hz-tip"><span>Sfatul lunii</span>„{g(e.tip)}”</blockquote>
           )}
 
           <div className="hz-share">
-            <ShareButton title={`Horoscop ${s.name}`} text={e.teaser || `Horoscopul lunii pentru ${s.name}`} />
+            <ShareButton title={`Horoscop ${s.name}`} text={g(e.teaser) || `Horoscopul lunii pentru ${s.name}`} />
           </div>
         </>
       )}
