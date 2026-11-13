@@ -207,7 +207,7 @@ export default function HoroscopAdmin() {
               <div><label>⌂ În familie (pentru cine are zodia asta, în relația cu familia)</label><textarea rows={3} value={draft.family || ''} onChange={e => setDraft({ ...draft, family: e.target.value })} /></div>
               <div><label>☺ Copilul din zodia asta (sfat pentru mamă)</label><textarea rows={3} value={draft.kids || ''} onChange={e => setDraft({ ...draft, kids: e.target.value })} /></div>
             </div>
-            <label>☾ Copilul din zodia asta, pe larg (pagina copilului)</label>
+            <label>☾ Luna asta pentru copilul din zodia asta, pe larg (pagina copilului în varianta personalizată; 5 fraze)</label>
             <textarea rows={3} value={draft.kids_more || ''} onChange={e => setDraft({ ...draft, kids_more: e.target.value })} />
             <div className="hza-grid3">
               <div><label>Zile bune</label><input value={draft.lucky_days || ''} onChange={e => setDraft({ ...draft, lucky_days: e.target.value })} /></div>

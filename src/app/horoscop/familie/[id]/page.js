@@ -70,8 +70,7 @@ export default async function MembruPage({ params, searchParams }) {
         <>
           <div className="hz-section-head"><span className="hz-eyebrow">ca {s.name}</span><h2 className="hz-h2">Luna asta, pentru {name}</h2></div>
           <div className="hz-sections">
-            {e.kids && <article className="hz-panel"><h2><span className="hz-panel-icon">☺</span>Luna asta, pe scurt</h2><p>{G(e.kids)}</p></article>}
-            {e.kids_more && <article className="hz-panel"><h2><span className="hz-panel-icon">☾</span>Luna asta, pe larg</h2><p>{G(e.kids_more)}</p></article>}
+            {(e.kids_more || e.kids) && <article className="hz-panel"><h2><span className="hz-panel-icon">☺</span>Luna asta</h2><p>{G(e.kids_more || e.kids)}</p></article>}
             {ascE?.kids && <article className="hz-panel is-asc"><h2><span className="hz-panel-icon">↑</span>Prin ascendentul în {SIGN_BY_SLUG[p.asc_sign].name}</h2><p>{G(ascE.kids)}</p></article>}
             {KID_PROFILE[p.sun_sign] && <article className="hz-panel"><h2><span className="hz-panel-icon">{s.glyph}</span>{name}, ca {s.name}</h2><p>{G(KID_PROFILE[p.sun_sign])}</p></article>}
             {moon && <article className="hz-panel is-moms"><h2><span className="hz-panel-icon">☽</span>Ce {pg === 'm' ? 'îl' : 'o'} liniștește · Luna în {moon.name}</h2><p>{G(MOON_NEEDS[p.moon_sign])}</p></article>}

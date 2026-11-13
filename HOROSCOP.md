@@ -22,7 +22,7 @@
 - Rezumat în cuvintele noastre. Nu copiem fraze din surse.
 - Sursele NU apar pe pagina publică, ci doar în admin.
 - Ton: cald, practic, de la mamă la mamă. Secțiunea „Pentru mămici” e obligatorie la fiecare zodie, cu un sfat concret pentru viața cu copiii.
-- Secțiuni: teaser, energia lunii, dragoste, carieră și bani, sănătate și energie, „Tu ca mamă”, „În familie” (`family`), „Copilul din zodia asta” (`kids`, scurt) și „pe larg” (`kids_more`, 3 fraze despre luna copilului, inspirate din horoscopul general al zodiei), zile bune, culoare, cifră, sfatul lunii.
+- Secțiuni: teaser, energia lunii, dragoste, carieră și bani, sănătate și energie, „Tu ca mamă”, „În familie” (`family`), „Copilul din zodia asta” (`kids`, scurt) și `kids_more` (textul „Luna asta” de pe pagina copilului: 5 fraze, compilate din horoscopul general al zodiei, aplicate pe copil: stare, energie, relațiile cu ceilalți, somn, ce îl ajută, cu date), zile bune, culoare, cifră, sfatul lunii.
 - La fiecare perioadă din „Atenție pentru toți” se trec zodiile cele mai atinse (`signs`), pentru că din ele se face „Atenție în familia ta” pe pagina personalizată. Perioadele se scriu în ordinea datelor.
 - Dicționarul planetelor de mai jos e doar pentru scrierea textelor și nu apare pe site.
 - „Atenție pentru toți” = perioadele valabile pentru toate zodiile (retrograde, Lună Nouă/Plină cu ora, eclipse, conjuncții importante, intrări în zodii).
