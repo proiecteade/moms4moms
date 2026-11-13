@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import './horoscop.css'
+import { HzAuthButton } from '@/components/horoscop/HzAuth'
 
 
 export const metadata = {
@@ -28,7 +29,10 @@ export default function HoroscopLayout({ children }) {
         <Link href="/horoscop" className="hz-brand">
           <span className="hz-brand-moon">☾</span> Horoscop <span className="hz-brand-sub">by Moms4Moms</span>
         </Link>
-        <Link href="/" className="hz-top-link">moms4moms.ro →</Link>
+        <div className="hz-top-right">
+          <HzAuthButton />
+          <Link href="/" className="hz-top-link">moms4moms.ro →</Link>
+        </div>
       </header>
       <main className="hz-main">{children}</main>
       <footer className="hz-foot">

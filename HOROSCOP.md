@@ -22,7 +22,9 @@
 - Rezumat în cuvintele noastre. Nu copiem fraze din surse.
 - Sursele NU apar pe pagina publică, ci doar în admin.
 - Ton: cald, practic, de la mamă la mamă. Secțiunea „Pentru mămici” e obligatorie la fiecare zodie, cu un sfat concret pentru viața cu copiii.
-- Secțiuni: teaser, energia lunii, dragoste, carieră și bani, sănătate și energie, pentru mămici, zile bune, culoare, cifră, sfatul lunii.
+- Secțiuni: teaser, energia lunii, dragoste, carieră și bani, sănătate și energie, „Tu ca mamă”, „În familie” (`family`), „Copilul din zodia asta” (`kids`), zile bune, culoare, cifră, sfatul lunii.
+- La fiecare perioadă din „Atenție pentru toți” se trec zodiile cele mai atinse (`signs`), pentru că din ele se face „Atenție în familia ta” pe pagina personalizată. Perioadele se scriu în ordinea datelor.
+- Dicționarul planetelor de mai jos e doar pentru scrierea textelor și nu apare pe site.
 - „Atenție pentru toți” = perioadele valabile pentru toate zodiile (retrograde, Lună Nouă/Plină cu ora, eclipse, conjuncții importante, intrări în zodii).
 - Fără sfaturi medicale. Fără predicții sigure. Totul are scop de divertisment.
 
@@ -40,6 +42,12 @@
 - Lilith (Luna Neagră): umbrele, atracțiile interzise, instinctele refulate
 - Chiron: rana interioară, vindecarea, învățarea prin experiență
 - Punctele calculate (ascendent, descendent, mijlocul cerului): se calculează din harta natală
+
+## Varianta personalizată
+- Logat → /horoscop arată horoscopul personal (zodie, ascendent, Luna), familia, compatibilitățile și „Atenție în familia ta”. Delogat → varianta pe zodii.
+- Date: `horoscope_profiles` (fiecare își vede doar rândurile proprii). Calculele se fac în `src/lib/astroCalc.js`, iar localitatea se caută prin Open-Meteo.
+- Compatibilitățile: texte fixe în `src/lib/horoscopCompat.js`, după distanța dintre zodii și tipul relației (cuplu / mamă–copil).
+- `/horoscop?toate=1` = varianta pe zodii chiar dacă ești logată; `/horoscop?familia=1` = editezi datele.
 
 ## Fișiere
 - `src/app/horoscop/`: paginile publice, adminul și designul (`horoscop.css`)

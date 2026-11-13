@@ -1,9 +1,13 @@
 import Link from 'next/link'
-import { SIGNS, ELEMENTS, PLANETS, RETRO_NOTE, monthLabel, signDates } from '@/lib/horoscop'
+import { SIGNS, ELEMENTS, monthLabel, signDates } from '@/lib/horoscop'
 import { loadMonth, listPublishedMonths } from '@/lib/horoscopData'
 import Constellation from '@/components/horoscop/Constellation'
 import Watchouts from '@/components/horoscop/Watchouts'
 import FindSign from '@/components/horoscop/FindSign'
+import Personal from '@/components/horoscop/Personal'
+import ProfileEditor from '@/components/horoscop/ProfileEditor'
+import { createClient } from '@/lib/supabase/server'
+import { HzLoginLink } from '@/components/horoscop/HzAuth'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,6 +20,34 @@ export default async function HoroscopPage({ searchParams }) {
   const qs = [luna && `luna=${luna}`, preview && 'preview=1'].filter(Boolean).join('&')
   const query = qs ? `?${qs}` : ''
   const bySign = Object.fromEntries(entries.map(e => [e.sign, e]))
+
+  // Logată → varianta personalizată (dacă nu a cerut explicit toate zodiile)
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user && sp?.toate !== '1') {
+    const { data: profiles } = await supabase.from('horoscope_profiles').select('*').order('sort')
+    const userName = (user.user_metadata?.full_name || user.user_metadata?.name || '').split(' ')[0]
+    if (!profiles?.length || sp?.familia === '1') {
+      return (
+        <section className="hzp-onboard">
+          <span className="hz-eyebrow">horoscopul tău personalizat</span>
+          <h1 className="hz-h1">{profiles?.length ? 'Familia ta' : 'Hai să-ți citim stelele'}</h1>
+          <p className="hz-lead">Spune-ne când și unde v-ați născut, tu și cei dragi. Calculăm zodia și ascendentul fiecăruia, iar în fiecare lună vezi horoscopul tău, al familiei și cum vă potriviți.</p>
+          <ProfileEditor initial={profiles || []} userName={userName} />
+          {profiles?.length > 0 && <p className="hz-center"><Link href="/horoscop" className="hz-btn hz-btn-ghost">← Înapoi la horoscopul meu</Link></p>}
+        </section>
+      )
+    }
+    const pq = qs ? `?${qs}` : ''
+    return (
+      <>
+        {preview && month && month.status !== 'published' && (
+          <div className="hz-preview-bar">Previzualizare — ciorna nu e încă publicată. <Link href="/horoscop/admin">Înapoi la admin</Link></div>
+        )}
+        <Personal month={month} entries={entries} profiles={profiles} query={pq} />
+      </>
+    )
+  }
 
   if (!month) {
     return (
@@ -44,6 +76,7 @@ export default async function HoroscopPage({ searchParams }) {
           <a href="#atentie" className="hz-btn hz-btn-ghost">Ce e valabil pentru toți</a>
         </div>
         <FindSign query={query} />
+        {!user && <p className="hzp-cta">✨ <HzLoginLink>Intră în cont</HzLoginLink> și primești horoscopul personalizat pentru tine și familia ta, cu ascendent și compatibilități.</p>}
       </section>
 
       <section className="hz-signs" id="zodii">
@@ -71,19 +104,6 @@ export default async function HoroscopPage({ searchParams }) {
       </section>
 
       <Watchouts items={month.watchouts || []} month={month.month} />
-
-      <section className="hz-planets">
-        <div className="hz-section-head">
-          <span className="hz-eyebrow">dicționar ceresc</span>
-          <h2 className="hz-h2">Ce înseamnă planetele</h2>
-          <p className="hz-lead">{RETRO_NOTE}</p>
-        </div>
-        <div className="hz-planet-grid">
-          {PLANETS.map(p => (
-            <div key={p.name} className="hz-planet"><span className="hz-planet-glyph">{p.glyph}</span><div><strong>{p.name}</strong><span>{p.text}</span></div></div>
-          ))}
-        </div>
-      </section>
 
       {archive.length > 1 && (
         <section className="hz-archive">

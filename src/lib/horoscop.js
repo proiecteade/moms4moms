@@ -66,7 +66,7 @@ export const SECTIONS = [
   { key: 'love', label: 'Dragoste și cuplu', icon: '♡' },
   { key: 'career', label: 'Carieră și bani', icon: '✦' },
   { key: 'health', label: 'Sănătate și energie', icon: '❀' },
-  { key: 'moms', label: 'Pentru mămici', icon: '✧', special: true },
+  { key: 'moms', label: 'Tu ca mamă', icon: '✧', special: true },
 ]
 
 export const KIND_ICON = { retro: '℞', moon: '☾', aspect: '✦', ingress: '→', shadow: '◌', eclipse: '◐' }

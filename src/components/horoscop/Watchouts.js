@@ -1,13 +1,16 @@
-import { KIND_ICON, LEVEL, formatRange, todayISO } from '@/lib/horoscop'
+import { KIND_ICON, LEVEL, SIGN_BY_SLUG, formatRange, todayISO } from '@/lib/horoscop'
 
 // „Atenție pentru toți”: bandă cu zilele lunii + carduri pe perioade
-export default function Watchouts({ items = [], month, compact = false }) {
+export default function Watchouts({ items = [], month, compact = false, family = null, eyebrow = 'valabil pentru toate zodiile', title = 'Atenție pentru toți', id = 'atentie', timeline = true }) {
+  // family: [{ name, signs: [...] }] → arată doar perioadele care îi privesc și pe cine
+  const who = (w) => family ? family.filter(f => f.signs.some(s => (w.signs || []).includes(s))).map(f => f.name) : []
+  if (family) items = items.filter(w => who(w).length)
   if (!items.length) return null
   const today = todayISO()
   const [y, m] = month.split('-').map(Number)
   const days = new Date(y, m, 0).getDate()
   const first = `${month}-01`, last = `${month}-${String(days).padStart(2, '0')}`
-  const sorted = [...items].sort((a, b) => (a.start || '').localeCompare(b.start || ''))
+  const sorted = [...items].sort((a, b) => (a.start || '').localeCompare(b.start || '') || (a.end || a.start || '').localeCompare(b.end || b.start || ''))
   const pos = (iso) => {
     const c = iso < first ? first : iso > last ? last : iso
     return ((Number(c.slice(8, 10)) - 1) / days) * 100
@@ -15,13 +18,13 @@ export default function Watchouts({ items = [], month, compact = false }) {
   const todayIn = today >= first && today <= last
 
   return (
-    <section className={`hz-watch ${compact ? 'is-compact' : ''}`} id="atentie">
+    <section className={`hz-watch ${compact ? 'is-compact' : ''}`} id={id}>
       <div className="hz-section-head">
-        <span className="hz-eyebrow">valabil pentru toate zodiile</span>
-        <h2 className="hz-h2">Atenție pentru toți</h2>
+        <span className="hz-eyebrow">{eyebrow}</span>
+        <h2 className="hz-h2">{title}</h2>
       </div>
 
-      {!compact && (
+      {!compact && timeline && (
         <div className="hz-timeline" role="img" aria-label="Perioadele importante ale lunii">
           <div className="hz-timeline-track">
             {sorted.map((w, i) => {
@@ -54,6 +57,11 @@ export default function Watchouts({ items = [], month, compact = false }) {
               </div>
               <h3>{w.title}</h3>
               {!compact && <p>{w.text}</p>}
+              {family ? (
+                <div className="hz-watch-who">Vă privește: <b>{who(w).join(', ')}</b></div>
+              ) : (w.signs?.length > 0 && (
+                <div className="hz-watch-signs" title="Zodiile cele mai atinse">{w.signs.map(s => SIGN_BY_SLUG[s] && <span key={s}>{SIGN_BY_SLUG[s].glyph} {SIGN_BY_SLUG[s].name}</span>)}</div>
+              ))}
             </article>
           )
         })}

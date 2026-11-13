@@ -46,6 +46,10 @@ export default function PrivacyPage() {
         <p>La autentificarea prin Google sau Facebook, acești furnizori ne transmit numele și emailul asociat contului tău. Nu primim parola ta. În cazul Facebook, solicităm și accesul la URL-ul tău public de profil pentru a-l salva în profilul de cont. Funcționarea acestor servicii este guvernată de politicile lor proprii de confidențialitate.</p>
       </Section>
 
+      <Section title="6b. Horoscopul personalizat">
+        <p>Dacă folosești horoscopul personalizat de pe <a href="/horoscop">/horoscop</a>, salvăm în contul tău numele, data, ora și localitatea nașterii pentru tine și pentru membrii familiei pe care îi adaugi. Le folosim doar ca să calculăm zodia, ascendentul și compatibilitățile afișate. Datele sunt vizibile numai din contul tău și le poți modifica sau șterge oricând din pagina horoscopului. Pentru copii îți recomandăm să folosești doar prenumele sau o poreclă. Căutarea localității se face prin serviciul gratuit Open-Meteo, care primește doar textul căutat.</p>
+      </Section>
+
       <Section title="7. Sub-procesatori de date">
         <p>Datele colectate sunt stocate prin <strong>Supabase</strong> (bază de date cloud), care acționează ca sub-procesor de date în conformitate cu GDPR. Supabase oferă garanții adecvate de securitate și conformitate. Date analitice anonime sunt procesate de <strong>Google LLC</strong> prin serviciul Google Analytics 4.</p>
       </Section>

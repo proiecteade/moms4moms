@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/components/AuthProvider'
 import { SIGNS, SECTIONS, monthLabel, LEVEL, KIND_ICON } from '@/lib/horoscop'
 
-const ENTRY_FIELDS = ['teaser', 'general', 'love', 'career', 'health', 'moms', 'lucky_days', 'lucky_color', 'lucky_number', 'tip']
+const ENTRY_FIELDS = ['teaser', 'general', 'love', 'career', 'health', 'moms', 'family', 'kids', 'lucky_days', 'lucky_color', 'lucky_number', 'tip']
 const KINDS = [['retro', 'Retrograd'], ['moon', 'Lună nouă / plină'], ['eclipse', 'Eclipsă'], ['aspect', 'Aspect'], ['ingress', 'Intrare în zodie'], ['shadow', 'Umbră']]
 
 function nextMonth(m) {
@@ -89,7 +89,8 @@ export default function HoroscopAdmin() {
     const sources = (monthDraft.sourcesText || '').split('\n').map(l => l.trim()).filter(Boolean).map(l => {
       const [name, url] = l.split('|').map(x => x.trim()); return url ? { name, url } : { name: l, url: l }
     })
-    const row = { month: cur, title: monthDraft.title, intro: monthDraft.intro, watchouts: monthDraft.watchouts, sources, updated_at: new Date().toISOString(), updated_by: user.email, ...extra }
+    const watchouts = [...monthDraft.watchouts].sort((a, b) => (a.start || '').localeCompare(b.start || '') || (a.end || '').localeCompare(b.end || ''))
+    const row = { month: cur, title: monthDraft.title, intro: monthDraft.intro, watchouts, sources, updated_at: new Date().toISOString(), updated_by: user.email, ...extra }
     const { error } = await supabase.from('horoscope_months').update(row).eq('month', cur)
     setBusy(false)
     if (error) return flash('Nu s-a putut salva luna: ' + error.message, true)
@@ -201,6 +202,10 @@ export default function HoroscopAdmin() {
                 <textarea value={draft[sec.key] || ''} onChange={e => setDraft({ ...draft, [sec.key]: e.target.value })} rows={sec.key === 'general' || sec.key === 'moms' ? 4 : 3} />
               </div>
             ))}
+            <div className="hza-grid2">
+              <div><label>⌂ În familie (pentru cine are zodia asta, în relația cu familia)</label><textarea rows={3} value={draft.family || ''} onChange={e => setDraft({ ...draft, family: e.target.value })} /></div>
+              <div><label>☺ Copilul din zodia asta (sfat pentru mamă)</label><textarea rows={3} value={draft.kids || ''} onChange={e => setDraft({ ...draft, kids: e.target.value })} /></div>
+            </div>
             <div className="hza-grid3">
               <div><label>Zile bune</label><input value={draft.lucky_days || ''} onChange={e => setDraft({ ...draft, lucky_days: e.target.value })} /></div>
               <div><label>Culoarea lunii</label><input value={draft.lucky_color || ''} onChange={e => setDraft({ ...draft, lucky_color: e.target.value })} /></div>
@@ -238,6 +243,13 @@ export default function HoroscopAdmin() {
               </div>
               <label>Ce înseamnă</label>
               <textarea rows={2} value={w.text || ''} onChange={e => setW(i, 'text', e.target.value)} />
+              <label>Zodiile cele mai atinse (apar la „Atenție în familia ta”)</label>
+              <div className="hza-row" style={{ gap: 6 }}>
+                {SIGNS.map(sg => {
+                  const on = (w.signs || []).includes(sg.slug)
+                  return <button key={sg.slug} type="button" className={`hza-tag ${on ? 'on' : ''}`} onClick={() => setW(i, 'signs', on ? w.signs.filter(x => x !== sg.slug) : [...(w.signs || []), sg.slug])}>{sg.glyph} {sg.name}</button>
+                })}
+              </div>
             </div>
           ))}
           <div className="hza-row" style={{ marginTop: 10 }}>

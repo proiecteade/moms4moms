@@ -7,7 +7,7 @@ let sql = `insert into public.horoscope_months (month, status, title, intro, wat
 values (${q(d.month)}, 'draft', ${q(d.title)}, ${q(d.intro)}, ${q(JSON.stringify(d.watchouts))}::jsonb, ${q(JSON.stringify(d.sources))}::jsonb, 'claude')
 on conflict (month) do update set title=excluded.title, intro=excluded.intro, watchouts=excluded.watchouts, sources=excluded.sources, updated_at=now(), updated_by='claude'
 where public.horoscope_months.status = 'draft';\n`
-const cols = ['teaser','general','love','career','health','moms','lucky_days','lucky_color','lucky_number','tip']
+const cols = ['teaser','general','love','career','health','moms','lucky_days','lucky_color','lucky_number','tip','family','kids']
 for (const [sign, e] of Object.entries(d.entries)) {
   sql += `insert into public.horoscope_entries (month, sign, status, ${cols.join(', ')}, updated_by)
 values (${q(d.month)}, ${q(sign)}, 'draft', ${cols.map(c => q(e[c])).join(', ')}, 'claude')

@@ -66,6 +66,8 @@ export default async function ZodiePage({ params, searchParams }) {
                 <p>{e[sec.key]}</p>
               </article>
             ))}
+            {e.family && <article className="hz-panel"><h2><span className="hz-panel-icon">⌂</span>În familie</h2><p>{e.family}</p></article>}
+            {e.kids && <article className="hz-panel"><h2><span className="hz-panel-icon">☺</span>Copilul {s.name}</h2><p>{e.kids}</p></article>}
           </div>
 
           <section className="hz-lucky">
@@ -84,7 +86,7 @@ export default async function ZodiePage({ params, searchParams }) {
         </>
       )}
 
-      {month && <Watchouts items={month.watchouts || []} month={month.month} compact />}
+      {month && <Watchouts items={month.watchouts || []} month={month.month} />}
 
       <section className="hz-compat">
         <h2 className="hz-h3">Zodii compatibile</h2>

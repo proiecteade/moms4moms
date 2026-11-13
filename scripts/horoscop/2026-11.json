@@ -4,20 +4,34 @@
   "intro": "Noiembrie începe cu frâna trasă: Mercur și Venus merg amândouă înapoi, așa că discuțiile vechi, promisiunile și sentimentele nelămurite revin la suprafață. Pe 13 noiembrie ambele își reiau drumul, iar a doua jumătate a lunii aduce curaj, energie și chef de planuri mari. Pe scurt: prima parte e pentru recitit și reparat, a doua pentru pornit la drum.",
   "watchouts": [
     {
-      "start": "2026-10-24",
-      "end": "2026-11-13",
-      "kind": "retro",
-      "level": "atentie",
-      "title": "Mercur retrograd în Scorpion",
-      "text": "Verifică de două ori mesajele, programările și actele. Nu semna contracte importante și nu cumpăra electronice scumpe dacă poți amâna până după 13 noiembrie."
-    },
-    {
       "start": "2026-10-03",
       "end": "2026-11-13",
       "kind": "retro",
       "level": "atentie",
       "title": "Venus retrogradă",
-      "text": "Pot reapărea foști sau certuri vechi. Nu lua decizii definitive în cuplu și amână schimbările mari de look sau cumpărăturile impulsive."
+      "text": "Pot reapărea foști sau certuri vechi. Nu lua decizii definitive în cuplu și amână schimbările mari de look sau cumpărăturile impulsive.",
+      "signs": [
+        "taur",
+        "balanta",
+        "berbec",
+        "scorpion"
+      ]
+    },
+    {
+      "start": "2026-10-24",
+      "end": "2026-11-13",
+      "kind": "retro",
+      "level": "atentie",
+      "title": "Mercur retrograd în Scorpion",
+      "text": "Verifică de două ori mesajele, programările și actele. Nu semna contracte importante și nu cumpăra electronice scumpe dacă poți amâna până după 13 noiembrie.",
+      "signs": [
+        "gemeni",
+        "fecioara",
+        "scorpion",
+        "taur",
+        "leu",
+        "varsator"
+      ]
     },
     {
       "start": "2026-11-04",
@@ -25,7 +39,12 @@
       "kind": "aspect",
       "level": "bine",
       "title": "Soarele se unește cu Mercur",
-      "text": "O zi bună pentru o idee limpede sau o discuție sinceră care descâlcește lucrurile."
+      "text": "O zi bună pentru o idee limpede sau o discuție sinceră care descâlcește lucrurile.",
+      "signs": [
+        "scorpion",
+        "gemeni",
+        "fecioara"
+      ]
     },
     {
       "start": "2026-11-09",
@@ -33,7 +52,13 @@
       "kind": "moon",
       "level": "bine",
       "title": "Lună Nouă în Scorpion (ora 09:02)",
-      "text": "Moment bun să decizi ce vrei să lași în urmă. Mai degrabă hotărăști decât să începi ceva de la zero, pentru că Mercur e încă retrograd."
+      "text": "Moment bun să decizi ce vrei să lași în urmă. Mai degrabă hotărăști decât să începi ceva de la zero, pentru că Mercur e încă retrograd.",
+      "signs": [
+        "scorpion",
+        "taur",
+        "leu",
+        "varsator"
+      ]
     },
     {
       "start": "2026-11-13",
@@ -41,47 +66,13 @@
       "kind": "aspect",
       "level": "bine",
       "title": "Mercur și Venus își reiau mersul direct",
-      "text": "Se ridică ceața: comunicarea se fluidizează, iar relațiile se pot repara. Rar se întâmplă ca ambele să o facă în aceeași zi."
-    },
-    {
-      "start": "2026-11-14",
-      "end": "2026-11-17",
-      "kind": "aspect",
-      "level": "energie",
-      "title": "Marte se unește cu Jupiter în Leu",
-      "text": "Val de curaj și optimism, vârful fiind pe 16 noiembrie. Bun pentru inițiativă, sport, proiecte creative. Atenție la exagerări: promisiuni prea mari, cheltuieli din entuziasm, viteză la volan."
-    },
-    {
-      "start": "2026-11-18",
-      "end": "2026-11-19",
-      "kind": "aspect",
-      "level": "atentie",
-      "title": "Soarele în tensiune cu Marte și Jupiter",
-      "text": "Orgolii și nervi la purtător. Respiră înainte să răspunzi, mai ales acasă și la serviciu."
-    },
-    {
-      "start": "2026-11-22",
-      "end": "2026-11-22",
-      "kind": "ingress",
-      "level": "bine",
-      "title": "Soarele intră în Săgetător",
-      "text": "Începe sezonul Săgetătorului: mai multă veselie, chef de ieșiri și de planuri de vacanță."
-    },
-    {
-      "start": "2026-11-24",
-      "end": "2026-11-24",
-      "kind": "moon",
-      "level": "energie",
-      "title": "Lună Plină în Gemeni (ora 16:53)",
-      "text": "Vești, conversații și schimbări de perspectivă. Emoțiile pot fi mai intense în jurul acestei date, inclusiv la copii, iar somnul poate fi mai agitat."
-    },
-    {
-      "start": "2026-11-25",
-      "end": "2026-11-25",
-      "kind": "ingress",
-      "level": "bine",
-      "title": "Marte intră în Fecioară",
-      "text": "Energia trece de la spectacol la organizare: liste, curățenie, rutine, sănătate."
+      "text": "Se ridică ceața: comunicarea se fluidizează, iar relațiile se pot repara. Rar se întâmplă ca ambele să o facă în aceeași zi.",
+      "signs": [
+        "gemeni",
+        "fecioara",
+        "taur",
+        "balanta"
+      ]
     },
     {
       "start": "2026-11-13",
@@ -89,7 +80,82 @@
       "kind": "shadow",
       "level": "info",
       "title": "Umbra lui Mercur",
-      "text": "Până la final de lună lucrurile încă se așază. Lasă puțin spațiu în plus în planuri și nu te grăbi cu deciziile mari."
+      "text": "Până la final de lună lucrurile încă se așază. Lasă puțin spațiu în plus în planuri și nu te grăbi cu deciziile mari.",
+      "signs": [
+        "gemeni",
+        "fecioara",
+        "scorpion"
+      ]
+    },
+    {
+      "start": "2026-11-14",
+      "end": "2026-11-17",
+      "kind": "aspect",
+      "level": "energie",
+      "title": "Marte se unește cu Jupiter în Leu",
+      "text": "Val de curaj și optimism, vârful fiind pe 16 noiembrie. Bun pentru inițiativă, sport, proiecte creative. Atenție la exagerări: promisiuni prea mari, cheltuieli din entuziasm, viteză la volan.",
+      "signs": [
+        "leu",
+        "varsator",
+        "scorpion",
+        "taur",
+        "berbec",
+        "sagetator"
+      ]
+    },
+    {
+      "start": "2026-11-18",
+      "end": "2026-11-19",
+      "kind": "aspect",
+      "level": "atentie",
+      "title": "Soarele în tensiune cu Marte și Jupiter",
+      "text": "Orgolii și nervi la purtător. Respiră înainte să răspunzi, mai ales acasă și la serviciu.",
+      "signs": [
+        "scorpion",
+        "leu",
+        "varsator",
+        "taur"
+      ]
+    },
+    {
+      "start": "2026-11-22",
+      "end": "2026-11-22",
+      "kind": "ingress",
+      "level": "bine",
+      "title": "Soarele intră în Săgetător",
+      "text": "Începe sezonul Săgetătorului: mai multă veselie, chef de ieșiri și de planuri de vacanță.",
+      "signs": [
+        "sagetator",
+        "gemeni"
+      ]
+    },
+    {
+      "start": "2026-11-24",
+      "end": "2026-11-24",
+      "kind": "moon",
+      "level": "energie",
+      "title": "Lună Plină în Gemeni (ora 16:53)",
+      "text": "Vești, conversații și schimbări de perspectivă. Emoțiile pot fi mai intense în jurul acestei date, inclusiv la copii, iar somnul poate fi mai agitat.",
+      "signs": [
+        "gemeni",
+        "sagetator",
+        "fecioara",
+        "pesti"
+      ]
+    },
+    {
+      "start": "2026-11-25",
+      "end": "2026-11-25",
+      "kind": "ingress",
+      "level": "bine",
+      "title": "Marte intră în Fecioară",
+      "text": "Energia trece de la spectacol la organizare: liste, curățenie, rutine, sănătate.",
+      "signs": [
+        "fecioara",
+        "pesti",
+        "gemeni",
+        "sagetator"
+      ]
     }
   ],
   "sources": [
@@ -121,7 +187,9 @@
       "lucky_days": "4, 16, 24",
       "lucky_color": "roșu rubin",
       "lucky_number": "9",
-      "tip": "Alege-ți bătăliile: nu orice provocare merită răspuns."
+      "tip": "Alege-ți bătăliile: nu orice provocare merită răspuns.",
+      "family": "Acasă ai multă energie, dar și reacții rapide. După 16 noiembrie propune o activitate în familie în loc să te contrazici pe mărunțișuri: o plimbare sau un joc de societate descarcă tensiunea.",
+      "kids": "Micul Berbec are energie de consumat luna asta, mai ales la mijlocul lunii. Dă-i ocazia să alerge și să câștige mici provocări, iar când se înfurie, numește-i emoția înainte să-i pui limita."
     },
     "taur": {
       "teaser": "Relațiile trec un test, iar tu ieși mai puternică.",
@@ -133,7 +201,9 @@
       "lucky_days": "13, 20, 24",
       "lucky_color": "verde smarald",
       "lucky_number": "6",
-      "tip": "Spune ce simți înainte să se adune."
+      "tip": "Spune ce simți înainte să se adune.",
+      "family": "Partenerul sau părinții pot readuce o discuție veche. Ascultă până la capăt, dar spune clar ce te doare. Împăcarea vine după 13 noiembrie, la o masă bună acasă.",
+      "kids": "Micul Taur are nevoie de rutină și liniște, iar schimbările bruște îl dau peste cap. Anunță-l din timp ce urmează și lasă-i obiectul preferat la îndemână în zilele agitate."
     },
     "gemeni": {
       "teaser": "Rutine noi și o Lună Plină doar a ta.",
@@ -145,7 +215,9 @@
       "lucky_days": "13, 22, 24",
       "lucky_color": "galben lămâie",
       "lucky_number": "5",
-      "tip": "Mai puține lucruri, făcute mai bine."
+      "tip": "Mai puține lucruri, făcute mai bine.",
+      "family": "Ești liantul familiei, dar te poți risipi. În jurul Lunii Pline din 24, spune ce îți trebuie, nu ce crezi că ar vrea ceilalți să audă.",
+      "kids": "Micul Gemeni pune o mie de întrebări și vorbește mult. În jurul datei de 24 poate dormi mai greu, așa că ajută-l cu o poveste liniștită și mai puține ecrane seara."
     },
     "rac": {
       "teaser": "Bucurie, creativitate și acasă mai liniștit.",
@@ -157,7 +229,9 @@
       "lucky_days": "9, 13, 22",
       "lucky_color": "argintiu",
       "lucky_number": "2",
-      "tip": "Fericirea nu se amână."
+      "tip": "Fericirea nu se amână.",
+      "family": "Casa e centrul lunii tale. Un mic ritual de familie, ca o seară de film sau o cină fără telefoane, aduce apropierea pe care o cauți.",
+      "kids": "Micul Rac e sensibil la atmosfera din casă. Dacă adulții sunt tensionați, el simte primul. Îmbrățișările lungi și timpul unu-la-unu îl liniștesc."
     },
     "leu": {
       "teaser": "Marte și Jupiter în zodia ta: momentul să strălucești.",
@@ -169,7 +243,9 @@
       "lucky_days": "14, 16, 22",
       "lucky_color": "auriu",
       "lucky_number": "1",
-      "tip": "Ai încredere în ambiția ta, fără să aștepți aplauze."
+      "tip": "Ai încredere în ambiția ta, fără să aștepți aplauze.",
+      "family": "Ai energie cât pentru toți, dar nu toți au ritmul tău. Între 16 și 19 noiembrie ai grijă la cine are ultimul cuvânt: lasă și pe altcineva să strălucească.",
+      "kids": "Micul Leu e în centrul atenției luna asta, cu energie mare și orgoliu pe măsură. Laudă-l pentru efort, nu doar pentru rezultat, și dă-i un rol important într-o activitate de familie."
     },
     "fecioara": {
       "teaser": "Vorbește, nu tăcea: claritatea vine după 13.",
@@ -181,7 +257,9 @@
       "lucky_days": "4, 13, 25",
       "lucky_color": "bej cald",
       "lucky_number": "5",
-      "tip": "Spune ce gândești, cu blândețe, dar spune."
+      "tip": "Spune ce gândești, cu blândețe, dar spune.",
+      "family": "Tinzi să duci singură toată logistica. Împarte sarcinile clar, cu o listă pe frigider, și spune cu voce tare ce te supără, înainte să se adune.",
+      "kids": "Micul Fecioară vrea ca lucrurile să fie „cum trebuie” și se frustrează când nu ies. Spune-i că greșelile sunt normale, iar o sarcină mică de responsabilitate îl face mândru."
     },
     "balanta": {
       "teaser": "Venus își reia drumul, iar tu îți reiei puterea.",
@@ -193,7 +271,9 @@
       "lucky_days": "13, 22, 28",
       "lucky_color": "roz pudrat",
       "lucky_number": "7",
-      "tip": "Și nevoile tale contează."
+      "tip": "Și nevoile tale contează.",
+      "family": "Ești mediatorul casei, dar luna asta ai voie să fii și tu de partea ta. După 13 noiembrie relațiile se îndulcesc: e momentul pentru o întâlnire în doi.",
+      "kids": "Micul Balanță se ceartă rar, dar adună. Întreabă-l cum se simte și oferă-i două variante din care să aleagă, pentru că deciziile prea deschise îl blochează."
     },
     "scorpion": {
       "teaser": "Închei un capitol și renaști mai puternică.",
@@ -205,7 +285,9 @@
       "lucky_days": "9, 13, 16",
       "lucky_color": "vișiniu",
       "lucky_number": "8",
-      "tip": "Ce lași să plece îți face loc pentru ce vine."
+      "tip": "Ce lași să plece îți face loc pentru ce vine.",
+      "family": "Emoții intense și discuții profunde. Spune ce simți fără să testezi pe nimeni. Familia te iubește chiar și când nu ești în cea mai bună formă.",
+      "kids": "Micul Scorpion simte tot, chiar și ce nu spui. E luna lui aniversară: fă-l să se simtă special și respectă-i nevoia de a avea secretele lui mici."
     },
     "sagetator": {
       "teaser": "Din 22 noiembrie începe sezonul tău.",
@@ -217,7 +299,9 @@
       "lucky_days": "9, 22, 24",
       "lucky_color": "mov",
       "lucky_number": "3",
-      "tip": "Odihna de acum e combustibilul pentru decembrie."
+      "tip": "Odihna de acum e combustibilul pentru decembrie.",
+      "family": "Prima parte a lunii ești mai retrasă, iar după 22 noiembrie aduci veselia înapoi în casă. Planifică împreună o mică aventură de iarnă.",
+      "kids": "Micul Săgetător are nevoie de mișcare și de explorare. De la 22 noiembrie e plin de entuziasm, așa că oferă-i ieșiri în aer liber și răspunsuri sincere la întrebările lui."
     },
     "capricorn": {
       "teaser": "Oameni buni în jurul tău și pași siguri.",
@@ -229,7 +313,9 @@
       "lucky_days": "13, 16, 28",
       "lucky_color": "gri antracit",
       "lucky_number": "4",
-      "tip": "Înconjoară-te de oameni care te ridică."
+      "tip": "Înconjoară-te de oameni care te ridică.",
+      "family": "Duci multe pe umeri. Luna asta lasă-i pe ceilalți să te ajute și bucură-te de timpul liniștit în familie, fără să-l transformi în listă de sarcini.",
+      "kids": "Micul Capricorn e serios și vrea să facă singur. Încurajează-i independența, dar amintește-i că joaca e la fel de importantă ca „treaba”."
     },
     "varsator": {
       "teaser": "Cariera se reașază, iar dragostea surprinde.",
@@ -241,7 +327,9 @@
       "lucky_days": "13, 24, 29",
       "lucky_color": "albastru electric",
       "lucky_number": "11",
-      "tip": "Definește succesul în felul tău."
+      "tip": "Definește succesul în felul tău.",
+      "family": "Ai idei multe și chef de altceva. Implică familia în ceva nou, fără să impui, și evită discuțiile despre cine are dreptate între 16 și 19 noiembrie.",
+      "kids": "Micul Vărsător e original și încăpățânat. Lasă-l să facă lucrurile în felul lui când se poate, iar în jurul datei de 24 surprinde-l cu o activitate nouă."
     },
     "pesti": {
       "teaser": "Un capitol nou începe în suflet și în minte.",
@@ -253,7 +341,9 @@
       "lucky_days": "9, 13, 25",
       "lucky_color": "turcoaz",
       "lucky_number": "12",
-      "tip": "Visează mare, pășește mic."
+      "tip": "Visează mare, pășește mic.",
+      "family": "Simți tot ce se întâmplă în casă. Pune-ți limite blânde, ca să nu preiei stresul tuturor, iar după 25 noiembrie cuplul are nevoie de atenție.",
+      "kids": "Micul Pești e visător și se emoționează ușor. Poveștile, desenul și muzica îl ajută să-și exprime ce simte, iar seara are nevoie de multă liniște."
     }
   }
 }
