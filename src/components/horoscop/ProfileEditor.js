@@ -47,7 +47,7 @@ function isoToRo(iso) { if (!iso) return ''; const [y, m, d] = iso.split('-'); r
 function DateInput({ value, onChange }) {
   const [txt, setTxt] = useState(isoToRo(value))
   const [bad, setBad] = useState(false)
-  useEffect(() => { setTxt(isoToRo(value)) }, [value])
+  useEffect(() => { if (value && isoToRo(value) !== txt) setTxt(isoToRo(value)) }, [value])
   function change(raw) {
     const digits = raw.replace(/\D/g, '').slice(0, 8)
     let t = digits
