@@ -125,10 +125,12 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
   const [removed, setRemoved] = useState([])
   const [err, setErr] = useState('')
   const [saving, setSaving] = useState(false)
+  const lock = useRef(false) // blochează a doua apăsare pe „Salvează” (dubla salvare dubla persoanele)
 
   const upd = (k, patch) => setPeople(ps => ps.map(p => p.key === k ? { ...p, ...patch } : p))
 
   async function save() {
+    if (lock.current) return
     setErr('')
     for (const p of people) {
       if (!p.name.trim()) return setErr('Scrie numele fiecărei persoane.')
@@ -137,6 +139,7 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
     }
     if (!people.some(p => p.relation === 'eu')) return setErr('Adaugă-te și pe tine („Eu”).')
     if (people.filter(p => p.relation === 'eu').length > 1) return setErr('Doar o persoană poate fi „Eu”. Pentru ceilalți alege Copil, Partener sau Alt membru.')
+    lock.current = true
     setSaving(true)
     try {
       if (removed.length) await supabase.from('horoscope_profiles').delete().in('id', removed)
@@ -157,9 +160,11 @@ export default function ProfileEditor({ initial = [], userName = '', onDone }) {
       onDone?.()
       router.push('/horoscop')
       router.refresh()
+      return // butonul rămâne blocat până se schimbă pagina
     } catch (e) {
       setErr('Nu s-a putut salva. Încearcă din nou.')
     }
+    lock.current = false
     setSaving(false)
   }
 
