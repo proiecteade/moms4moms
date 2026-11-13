@@ -55,3 +55,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 - 2026-11-13: dubla salvare în formularul de familie (butonul se reactiva înainte de redirect) → persoane dublate; blocat cu `lock` + insert care întoarce id.
 - 2026-11-13: șterse 10 profiluri dublate (5 conturi, inclusiv Lorena), păstrat originalul cel mai vechi; 0 dubluri rămase.
 - 2026-11-13: horoscop — „Azi pe cer”, zile de naștere (mesaj + idee de petrecere/cadou), „Cum să-i vorbești” pe pagina copilului, compatibilitatea dintre frați (pe pagina ta și pe pagina fiecărui copil).
+- 2026-11-13: horoscop — pe pagina fiecărui membru, secțiunea „<nume> și ceilalți”: compatibilitatea cu fiecare alt membru (frați, părinte–copil la persoana a III-a, adulți), `familyPair()` în horoscopKids.js.

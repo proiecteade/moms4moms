@@ -60,3 +60,41 @@ export function birthdayIn(p, month) {
   if (bm !== m) return null
   return { day: bd, age: y - by }
 }
+
+// Părinte (partener sau alt adult) și copil, la persoana a III-a.
+// [[p]] = părintele, [[c]] = copilul, {m|f} = genul părintelui, [[m|f]] = genul copilului, ((m|f)) = amândoi femei/fete
+const PARENT_CHILD = {
+  0: { name: 'Aceeași zodie', score: 4, text: '[[c]] seamănă mult cu [[p]], așa că se înțeleg intuitiv, dar își oglindesc și defectele. Când știu asta, răbdarea dintre ((ei|ele)) vine mult mai ușor.' },
+  1: { name: 'Vecini pe roată', score: 2, text: 'Se mișcă în ritmuri diferite: ce pentru [[p]] e evident, pentru [[c]] e nou. Explicațiile cu „de ce” și timpul petrecut doar în doi îi apropie.' },
+  2: { name: 'Prieteni buni', score: 4, text: 'Comunică ușor și se distrează împreună. Jocul e cea mai bună cale prin care [[p]] îi transmite lucrurile importante.' },
+  3: { name: 'Provocare care îi crește', score: 2, text: '[[c]] testează limitele exact acolo unde [[p]] e mai {sensibil|sensibilă}. Calmul și consecvența construiesc încrederea dintre ((ei|ele)).' },
+  4: { name: 'Armonie naturală', score: 5, text: 'Se potrivesc natural, iar [[c]] se simte [[înțeles|înțeleasă]] fără multe cuvinte. E relația în care blândețea și autoritatea merg mână în mână.' },
+  5: { name: 'Ajustări fine', score: 2, text: 'Nu se ghicesc mereu din prima și au nevoie de mici ajustări. Întrebările directe și răbdarea îi apropie pas cu pas.' },
+  6: { name: 'Opuși care se atrag', score: 3, text: 'Au temperamente opuse, iar [[c]] {îl|o} scoate pe [[p]] din zona de confort. Diferențele lor se completează când se acceptă așa cum sunt.' },
+}
+const ADULTS = { 0: ['Aceeași zodie', 4], 1: ['Vecini pe roată', 2], 2: ['Prieteni buni', 4], 3: ['Provocare', 2], 4: ['Armonie naturală', 5], 5: ['Ajustări fine', 2], 6: ['Opuși care se atrag', 3] }
+
+const fill = (t, map) => Object.entries(map).reduce((s, [k, v]) => s.split(`[[${k}]]`).join(v), t)
+const byGender = (t, re, gender) => t.replace(re, (_, m, f) => (gender === 'm' ? m : f))
+const first = (n) => (n || '').trim().split(' ')[0]
+
+// Compatibilitatea între doi membri ai familiei, văzută din afară (pentru pagina unui membru)
+// a, b: profiluri cu .relation, .sun_sign, .name și genul calculat în .g
+export function familyPair(a, b) {
+  const d = dist(a.sun_sign, b.sun_sign)
+  if (d == null) return null
+  const bothF = a.g === 'f' && b.g === 'f'
+  const pair = (t) => t.replace(/\(\(([^()|]*)\|([^()|]*)\)\)/g, (_, m, f) => (bothF ? f : m))
+  const kidA = a.relation === 'copil', kidB = b.relation === 'copil'
+  if (kidA && kidB) { const s = SIBLINGS[d]; return { name: s.name, score: s.score, text: pair(s.text) } }
+  if (kidA !== kidB) {
+    const parent = kidA ? b : a, child = kidA ? a : b
+    const s = PARENT_CHILD[d]
+    let t = fill(s.text, { p: first(parent.name), c: first(child.name) })
+    t = byGender(t, /\[\[([^\[\]|]*)\|([^\[\]|]*)\]\]/g, child.g)
+    t = byGender(t, /\{([^{}|]*)\|([^{}|]*)\}/g, parent.g)
+    return { name: s.name, score: s.score, text: pair(t) }
+  }
+  const [name, score] = ADULTS[d]
+  return { name, score, text: null }
+}
