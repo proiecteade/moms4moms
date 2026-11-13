@@ -286,3 +286,24 @@
 .hzp-gender button.on{background:linear-gradient(135deg,#f6dc94,#e2a85d);color:#2a1640;font-weight:600;}
 .hzp-fam-sub{font-size:17px;color:var(--ink-soft);margin-top:10px;padding-top:10px;border-top:1px dashed rgba(255,255,255,.1);}
 .hzp-fam-sub b{color:#fff4d6;font-weight:600;}
+/* aliniere formular pe mobil (iOS: inputurile de dată/oră ies din casetă) */
+.hzp-fields label{min-width:0;}
+.hzp-fields input{box-sizing:border-box;max-width:100%;min-width:0;min-height:44px;-webkit-appearance:none;appearance:none;}
+.hzp-fields input[type=date],.hzp-fields input[type=time]{display:block;text-align:left;line-height:1.3;}
+.hzp-fields input::-webkit-date-and-time-value{text-align:left;margin:0;}
+.hzp-fields input::-webkit-datetime-edit{padding:0;}
+.hzp-person-head{flex-wrap:wrap;}
+.hzp-person-head select{min-height:40px;}
+.hzp-check input{-webkit-appearance:auto;appearance:auto;min-height:0;width:18px!important;height:18px;}
+@media (max-width:760px){
+  .hzp-person-head{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;}
+  .hzp-person-head select{font-size:15px;padding:7px 10px;}
+  .hzp-gender{margin-right:0;justify-self:start;}
+  .hzp-gender button{font-size:14px;padding:5px 11px;}
+  .hzp-remove{font-size:14px;padding:5px 10px;}
+  .hzp-badge{flex-direction:column;gap:4px;}
+}
+@media (max-width:400px){
+  .hzp-person-head{grid-template-columns:1fr auto;}
+  .hzp-gender{grid-column:1/-1;grid-row:2;}
+}
