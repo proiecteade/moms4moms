@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { SIGN_BY_SLUG, ELEMENTS, SECTIONS, MOON_NEEDS, monthLabel, g } from '@/lib/horoscop'
-import { compat } from '@/lib/horoscopCompat'
+import { compat, forOther } from '@/lib/horoscopCompat'
 import Constellation from './Constellation'
 import Watchouts from './Watchouts'
 
@@ -121,7 +121,7 @@ export default function Personal({ month, entries, profiles, query }) {
                   {c && (
                     <div className="hzp-compat">
                       <div className="hzp-compat-head"><span>Tu și {p.name.split(' ')[0]}: <b>{c.name}</b></span><Hearts n={c.score} /></div>
-                      <p>{G(c.text)}</p>
+                      <p>{G(forOther(c.text, pg, p.name.split(' ')[0]))}</p>
                       <small>{c.elements}</small>
                     </div>
                   )}
