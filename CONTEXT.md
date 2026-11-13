@@ -50,3 +50,4 @@ Vercel publică automat din branch-ul main. Hellomeri.go.ro nu e implicat.
 - 2026-11-13: horoscop — pe pagina copilului, caseta „Idee de activitate luna asta” (câmp lunar `kids_activity`).
 - 2026-11-13: login din /horoscop → întoarcere garantată pe /horoscop (localStorage `post_login`, citit în AuthProvider), chiar dacă Supabase trimite pe pagina principală; mesaj de login specific pe /horoscop.
 - 2026-11-13: Supabase → Auth → URL Configuration: adăugate redirect URLs `https://www.moms4moms.ro/**` și `https://moms4moms.ro/**` (înainte doar /auth/callback fără www, deci logarea cădea pe Site URL).
+- 2026-11-13: horoscop — lista de localități reparată pentru Safari/iPhone (z-index peste cardurile cu backdrop-filter, închidere la atingere în afară, buton „Închide lista”, Enter alege prima variantă, mesaj dacă nu alegi din listă).
